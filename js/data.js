@@ -1,0 +1,663 @@
+/**
+ * CropNex - Initial Demo Data Repository
+ * Smart India Hackathon 2026 - PS ID 26033
+ * Realistic datasets for crops, prices, tenders, orders, messages, and profiles.
+ */
+
+const INITIAL_PRODUCTS = [
+  {
+    id: 'prod-001',
+    name: 'Tomato - Hybrid',
+    category: 'Vegetables',
+    variety: 'Abhinav Hybrid (Grade A)',
+    farmer: 'Ramesh Patil',
+    farmName: 'Patil Organic Farms',
+    location: 'Nashik, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Nashik',
+    price: 24,
+    unit: 'kg',
+    availableQty: 500,
+    minOrder: 10,
+    qualityGrade: 'A Grade',
+    organic: true,
+    harvestDate: '2026-08-25',
+    estimatedDelivery: '1-2 days',
+    rating: 4.9,
+    reviewsCount: 38,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80',
+    description: 'Fresh and naturally grown hybrid tomatoes directly harvested from our Nashik farm. Firm texture, vibrant red color, chemical residue-free, handpicked with premium sorting for direct consumer and restaurant use.'
+  },
+  {
+    id: 'prod-002',
+    name: 'Onion - Nashik Red',
+    category: 'Vegetables',
+    variety: 'Nashik Lal (Garva)',
+    farmer: 'Sunita Jadhav',
+    farmName: 'Jadhav Agro Producers',
+    location: 'Lasalgaon, Nashik',
+    state: 'Maharashtra',
+    district: 'Nashik',
+    price: 18,
+    unit: 'kg',
+    availableQty: 1200,
+    minOrder: 25,
+    qualityGrade: 'A Grade',
+    organic: false,
+    harvestDate: '2026-08-22',
+    estimatedDelivery: '2-3 days',
+    rating: 4.8,
+    reviewsCount: 52,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80',
+    description: 'Authentic medium-sized Nashik Red Onions with high pungent aroma and long storage life. Ideal for wholesalers, hotels, retail distribution, and export quality standards.'
+  },
+  {
+    id: 'prod-003',
+    name: 'Potato - Kufri Pukhraj',
+    category: 'Vegetables',
+    variety: 'Kufri Pukhraj Large',
+    farmer: 'Mahesh Shinde',
+    farmName: 'Shinde Agro Tech',
+    location: 'Ahmednagar, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Ahmednagar',
+    price: 15,
+    unit: 'kg',
+    availableQty: 850,
+    minOrder: 20,
+    qualityGrade: 'A Grade',
+    organic: true,
+    harvestDate: '2026-08-20',
+    estimatedDelivery: '2-3 days',
+    rating: 4.7,
+    reviewsCount: 29,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80',
+    description: 'Evenly shaped, smooth-skinned table potatoes grown with bio-fertilizers. Excellent dry matter content, perfect for culinary use, snacking, and wholesale procurement.'
+  },
+  {
+    id: 'prod-004',
+    name: 'Mango - Alphonso (Hapus)',
+    category: 'Fruits',
+    variety: 'Devgad Hapus GI-Tagged',
+    farmer: 'Suresh More',
+    farmName: 'Konkan Green Orchards',
+    location: 'Ratnagiri, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Ratnagiri',
+    price: 380,
+    unit: 'dozen',
+    availableQty: 180,
+    minOrder: 2,
+    qualityGrade: 'Export Grade A+',
+    organic: true,
+    harvestDate: '2026-08-24',
+    estimatedDelivery: '1-2 days',
+    rating: 5.0,
+    reviewsCount: 64,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80',
+    description: 'Naturally tree-ripened GI-tagged Devgad Alphonso Mangoes. Unmatched saffron aroma, non-fibrous golden pulp, naturally ripened without carbide. Direct from coastal Konkan orchards.'
+  },
+  {
+    id: 'prod-005',
+    name: 'Wheat - Lokwan Premium',
+    category: 'Grains',
+    variety: 'Lokwan Sharbati Golden',
+    farmer: 'Vithal Gumbhare',
+    farmName: 'Shree Ganesh Krishi Farm',
+    location: 'Solapur, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Solapur',
+    price: 28,
+    unit: 'kg',
+    availableQty: 2200,
+    minOrder: 50,
+    qualityGrade: 'A Grade',
+    organic: false,
+    harvestDate: '2026-08-15',
+    estimatedDelivery: '3-4 days',
+    rating: 4.8,
+    reviewsCount: 41,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80',
+    description: 'Golden, heavy grain Lokwan wheat with high protein and gluten strength. Machine cleaned, moisture-checked at 10.5%, sorted for premium roti and flour milling.'
+  },
+  {
+    id: 'prod-006',
+    name: 'Rice - Basmati 1121',
+    category: 'Grains',
+    variety: '1121 Traditional Long Grain',
+    farmer: 'Prakash Yadav',
+    farmName: 'Kaveri Basin Produce',
+    location: 'Akola, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Akola',
+    price: 75,
+    unit: 'kg',
+    availableQty: 1500,
+    minOrder: 25,
+    qualityGrade: 'Export Grade',
+    organic: true,
+    harvestDate: '2026-08-10',
+    estimatedDelivery: '3-5 days',
+    rating: 4.9,
+    reviewsCount: 47,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+    description: 'Aged 1121 Long Grain Basmati Rice with an average cooked length over 18mm. Delicate aroma, separate grains, non-sticky cooking, perfect for catering and gourmet dining.'
+  },
+  {
+    id: 'prod-007',
+    name: 'Turmeric - Salem Golden',
+    category: 'Spices',
+    variety: 'Salem High Curcumin (5.2%)',
+    farmer: 'Gajendra Chavan',
+    farmName: 'Surya Spices Cultivation',
+    location: 'Nanded, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Nanded',
+    price: 120,
+    unit: 'kg',
+    availableQty: 400,
+    minOrder: 10,
+    qualityGrade: 'A+ Grade',
+    organic: true,
+    harvestDate: '2026-08-18',
+    estimatedDelivery: '2-4 days',
+    rating: 4.9,
+    reviewsCount: 31,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80',
+    description: 'Solar-dried whole turmeric fingers with lab-tested 5.2% curcumin content. Free from lead chromate polish, rich deep orange-yellow hue, suited for pharmaceutical and culinary extractors.'
+  },
+  {
+    id: 'prod-008',
+    name: 'Banana - Robusta Green',
+    category: 'Fruits',
+    variety: 'Grand Naine (G9)',
+    farmer: 'Sanjay Deshmukh',
+    farmName: 'Tapi River Agro Cooperative',
+    location: 'Jalgaon, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Jalgaon',
+    price: 22,
+    unit: 'kg',
+    availableQty: 900,
+    minOrder: 20,
+    qualityGrade: 'A Grade',
+    organic: false,
+    harvestDate: '2026-08-26',
+    estimatedDelivery: '1-2 days',
+    rating: 4.6,
+    reviewsCount: 22,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80',
+    description: 'Export grade green mature bananas grown in Jalgaon banana belt. Uniform finger length, fresh stalk, carefully boxed with foam cushioning for safe inter-city transit.'
+  },
+  {
+    id: 'prod-009',
+    name: 'Green Chilli - G4 Spicy',
+    category: 'Vegetables',
+    variety: 'G-4 Teja Green',
+    farmer: 'Kishore Pawar',
+    farmName: 'Pawar Krishi Udyog',
+    location: 'Kolhapur, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Kolhapur',
+    price: 42,
+    unit: 'kg',
+    availableQty: 320,
+    minOrder: 10,
+    qualityGrade: 'A Grade',
+    organic: true,
+    harvestDate: '2026-08-25',
+    estimatedDelivery: '1-2 days',
+    rating: 4.8,
+    reviewsCount: 19,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=600&q=80',
+    description: 'Glossy dark green chillies with bold pungency. Freshly plucked early morning to retain moisture and snap firmness during transport.'
+  },
+  {
+    id: 'prod-010',
+    name: 'Soybean - Yellow Seed',
+    category: 'Oilseeds',
+    variety: 'JS-335 High Protein',
+    farmer: 'Anand Kulkarni',
+    farmName: 'Marathwada Bio Seeds',
+    location: 'Latur, Maharashtra',
+    state: 'Maharashtra',
+    district: 'Latur',
+    price: 46,
+    unit: 'kg',
+    availableQty: 3000,
+    minOrder: 100,
+    qualityGrade: 'A Grade',
+    organic: false,
+    harvestDate: '2026-08-12',
+    estimatedDelivery: '3-5 days',
+    rating: 4.7,
+    reviewsCount: 27,
+    verified: true,
+    image: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&w=600&q=80',
+    description: 'Cleaned and graded yellow soybean with 39% protein and 19.5% oil yield. Ideal for oil extraction processing units, tofu production, and cattle feed formulation.'
+  }
+];
+
+const INITIAL_TENDERS = [
+  {
+    id: 'TDR-2026-091',
+    title: 'Supply of Fresh Vegetables & Fruits to District Civil Hospital',
+    category: 'Vegetables',
+    organization: 'Maharashtra Public Health Dept / District Civil Hospital',
+    location: 'Nashik, Maharashtra',
+    deadline: '2026-09-15',
+    estimatedValue: '₹ 18,50,000',
+    quantityReq: '25,000 kg seasonal assortment',
+    eligibility: 'Registered Farmer Producer Organizations (FPOs), Cooperative Societies, Self-Help Groups (SHGs)',
+    languages: ['English', 'Marathi'],
+    sourceUrl: 'https://etenders.gov.in/eprocure/app',
+    status: 'Active',
+    description: 'Procurement of daily fresh vegetables (Tomatoes, Onions, Potatoes, Spinach, Cauliflower) and seasonal fruits for hospital kitchen meal preparation.'
+  },
+  {
+    id: 'TDR-2026-084',
+    title: 'Procurement of High-Grade Turmeric for NAFED Buffer Stock',
+    category: 'Spices',
+    organization: 'National Agricultural Cooperative Marketing Federation of India (NAFED)',
+    location: 'Nanded & Sangli, Maharashtra',
+    deadline: '2026-09-20',
+    estimatedValue: '₹ 45,00,000',
+    quantityReq: '35 Metric Tonnes (Salem / Nizamabad variety)',
+    eligibility: 'Verified Farmers, Registered Primary Agricultural Credit Societies (PACS), FPOs',
+    languages: ['English', 'Hindi'],
+    sourceUrl: 'https://etenders.gov.in/eprocure/app',
+    status: 'Active',
+    description: 'Direct procurement of FAQ grade dry turmeric fingers with minimum 4.5% curcumin for national buffer stock and direct welfare distribution.'
+  },
+  {
+    id: 'TDR-2026-077',
+    title: 'Supply of Grade-A Rice & Wheat for Mid-Day Meal Scheme',
+    category: 'Grains',
+    organization: 'Food, Civil Supplies & Consumer Protection Dept',
+    location: 'Pune & Ahmednagar District Schools',
+    deadline: '2026-09-28',
+    estimatedValue: '₹ 62,00,000',
+    quantityReq: '80 Metric Tonnes (Lokwan Wheat / Sona Masoori Rice)',
+    eligibility: 'Farmer Collectives, Agri Aggregators, Grain Millers with FSSAI certification',
+    languages: ['English', 'Hindi', 'Marathi'],
+    sourceUrl: 'https://etenders.gov.in/eprocure/app',
+    status: 'Active',
+    description: 'Distribution of pest-free, lab-certified staple grains to 420 government primary and upper primary schools under the PM POSHAN scheme.'
+  },
+  {
+    id: 'TDR-2026-069',
+    title: 'Procurement of Fresh Table Bananas for Prison Canteen Supplies',
+    category: 'Fruits',
+    organization: 'Inspector General of Prisons & Correctional Services',
+    location: 'Yerwada Central Jail, Pune',
+    deadline: '2026-09-12',
+    estimatedValue: '₹ 8,40,000',
+    quantityReq: '12,000 Dozens (Robusta / Grand Naine)',
+    eligibility: 'Local Farmers, FPOs, Women SHGs',
+    languages: ['English', 'Marathi'],
+    sourceUrl: 'https://etenders.gov.in/eprocure/app',
+    status: 'Active',
+    description: 'Weekly scheduled supply of ripe, unblemished table bananas for inmate dietary standards.'
+  },
+  {
+    id: 'TDR-2026-058',
+    title: 'Supply of Solar Cold Storage & Drying Units for Village Clusters',
+    category: 'Equipment',
+    organization: 'Maharashtra Energy Development Agency (MEDA)',
+    location: 'Solapur & Latur Rural',
+    deadline: '2026-10-05',
+    estimatedValue: '₹ 1,20,00,000',
+    quantityReq: '15 Units of 5MT capacity each',
+    eligibility: 'Agri-Tech Startups, Renewable Energy OEMs, FPO consortia',
+    languages: ['English', 'Hindi'],
+    sourceUrl: 'https://etenders.gov.in/eprocure/app',
+    status: 'Upcoming',
+    description: 'Turnkey installation and 3-year maintenance of decentralized farm-gate micro cold rooms powered by rooftop solar PV.'
+  }
+];
+
+const HISTORICAL_PRICE_DATA = {
+  'Tomato': {
+    current: 2400,
+    predicted: 2650,
+    expectedChange: '+10.4%',
+    trend: 'increasing',
+    confidence: 84,
+    unit: '₹ / quintal',
+    mandi: 'Nashik APMC',
+    historical: [
+      { date: '01 Aug', price: 2150 },
+      { date: '05 Aug', price: 2200 },
+      { date: '09 Aug', price: 2180 },
+      { date: '13 Aug', price: 2260 },
+      { date: '17 Aug', price: 2320 },
+      { date: '21 Aug', price: 2380 },
+      { date: '25 Aug', price: 2400 }
+    ],
+    forecast: [
+      { date: '29 Aug', price: 2460 },
+      { date: '02 Sep', price: 2520 },
+      { date: '06 Sep', price: 2590 },
+      { date: '10 Sep', price: 2650 }
+    ],
+    rationale: 'Monsoon-induced logistical slowdowns in southern production hubs combined with high festival demand in urban markets are projected to push wholesale rates higher over the next 14 days.'
+  },
+  'Onion': {
+    current: 1800,
+    predicted: 1720,
+    expectedChange: '-4.4%',
+    trend: 'decreasing',
+    confidence: 89,
+    unit: '₹ / quintal',
+    mandi: 'Lasalgaon APMC',
+    historical: [
+      { date: '01 Aug', price: 1950 },
+      { date: '05 Aug', price: 1920 },
+      { date: '09 Aug', price: 1880 },
+      { date: '13 Aug', price: 1860 },
+      { date: '17 Aug', price: 1830 },
+      { date: '21 Aug', price: 1810 },
+      { date: '25 Aug', price: 1800 }
+    ],
+    forecast: [
+      { date: '29 Aug', price: 1780 },
+      { date: '02 Sep', price: 1750 },
+      { date: '06 Sep', price: 1730 },
+      { date: '10 Sep', price: 1720 }
+    ],
+    rationale: 'Increased buffer stock releases by government agencies and steady arrivals from central Maharashtra storages will maintain ample market liquidity and soften spot prices.'
+  },
+  'Potato': {
+    current: 1500,
+    predicted: 1580,
+    expectedChange: '+5.3%',
+    trend: 'increasing',
+    confidence: 81,
+    unit: '₹ / quintal',
+    mandi: 'Ahmednagar Mandi',
+    historical: [
+      { date: '01 Aug', price: 1420 },
+      { date: '05 Aug', price: 1440 },
+      { date: '09 Aug', price: 1450 },
+      { date: '13 Aug', price: 1480 },
+      { date: '17 Aug', price: 1490 },
+      { date: '21 Aug', price: 1500 },
+      { date: '25 Aug', price: 1500 }
+    ],
+    forecast: [
+      { date: '29 Aug', price: 1520 },
+      { date: '02 Sep', price: 1540 },
+      { date: '06 Sep', price: 1560 },
+      { date: '10 Sep', price: 1580 }
+    ],
+    rationale: 'Steady consumption across processing units and gradual tapering of cold store inventory will offer moderate upward price support.'
+  },
+  'Wheat': {
+    current: 2800,
+    predicted: 2890,
+    expectedChange: '+3.2%',
+    trend: 'stable_up',
+    confidence: 92,
+    unit: '₹ / quintal',
+    mandi: 'Solapur APMC',
+    historical: [
+      { date: '01 Aug', price: 2750 },
+      { date: '05 Aug', price: 2760 },
+      { date: '09 Aug', price: 2780 },
+      { date: '13 Aug', price: 2790 },
+      { date: '17 Aug', price: 2800 },
+      { date: '21 Aug', price: 2800 },
+      { date: '25 Aug', price: 2800 }
+    ],
+    forecast: [
+      { date: '29 Aug', price: 2820 },
+      { date: '02 Sep', price: 2840 },
+      { date: '06 Sep', price: 2870 },
+      { date: '10 Sep', price: 2890 }
+    ],
+    rationale: 'Consistent institutional procurement demand and low moisture premium batches will sustain firm spot prices throughout the month.'
+  },
+  'Turmeric': {
+    current: 12000,
+    predicted: 12850,
+    expectedChange: '+7.1%',
+    trend: 'increasing',
+    confidence: 79,
+    unit: '₹ / quintal',
+    mandi: 'Nanded APMC',
+    historical: [
+      { date: '01 Aug', price: 11200 },
+      { date: '05 Aug', price: 11400 },
+      { date: '09 Aug', price: 11600 },
+      { date: '13 Aug', price: 11750 },
+      { date: '17 Aug', price: 11900 },
+      { date: '21 Aug', price: 11950 },
+      { date: '25 Aug', price: 12000 }
+    ],
+    forecast: [
+      { date: '29 Aug', price: 12200 },
+      { date: '02 Sep', price: 12450 },
+      { date: '06 Sep', price: 12650 },
+      { date: '10 Sep', price: 12850 }
+    ],
+    rationale: 'High export queries from Middle East and North America, combined with limited high-curcumin finger arrivals, are driving bullish sentiment.'
+  }
+};
+
+const INITIAL_ORDERS = [
+  {
+    id: 'CNX-2026-1048',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Ramesh Patil',
+    farmerPhone: '+91 94220 88712',
+    productName: 'Tomato - Hybrid',
+    category: 'Vegetables',
+    quantity: 100,
+    unit: 'kg',
+    pricePerUnit: 24,
+    subtotal: 2400,
+    logisticsCost: 180,
+    total: 2580,
+    date: '2026-08-27 10:30 AM',
+    status: 'Accepted',
+    paymentMethod: 'Cash on Delivery (Demo)',
+    deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
+    timeline: [
+      { status: 'Order Placed', time: '27 Aug, 10:30 AM', done: true },
+      { status: 'Accepted', time: '27 Aug, 11:15 AM', done: true },
+      { status: 'Preparing', time: '27 Aug, 02:00 PM', done: false },
+      { status: 'Dispatched', time: 'Pending', done: false },
+      { status: 'Out for Delivery', time: 'Pending', done: false },
+      { status: 'Delivered', time: 'Pending', done: false }
+    ]
+  },
+  {
+    id: 'CNX-2026-1045',
+    buyerName: 'FreshBasket Supermarkets',
+    buyerPhone: '+91 99701 55632',
+    farmerName: 'Sunita Jadhav',
+    farmerPhone: '+91 97654 33210',
+    productName: 'Onion - Nashik Red',
+    category: 'Vegetables',
+    quantity: 250,
+    unit: 'kg',
+    pricePerUnit: 18,
+    subtotal: 4500,
+    logisticsCost: 320,
+    total: 4820,
+    date: '2026-08-26 04:15 PM',
+    status: 'Dispatched',
+    paymentMethod: 'Demo UPI Transfer',
+    deliveryAddress: 'Central Hub, MIDC Bhosari, Pune - 411026',
+    timeline: [
+      { status: 'Order Placed', time: '26 Aug, 04:15 PM', done: true },
+      { status: 'Accepted', time: '26 Aug, 05:00 PM', done: true },
+      { status: 'Preparing', time: '27 Aug, 09:00 AM', done: true },
+      { status: 'Dispatched', time: '27 Aug, 01:30 PM', done: true },
+      { status: 'Out for Delivery', time: 'Pending', done: false },
+      { status: 'Delivered', time: 'Pending', done: false }
+    ]
+  },
+  {
+    id: 'CNX-2026-1039',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Mahesh Shinde',
+    farmerPhone: '+91 98901 22345',
+    productName: 'Potato - Kufri Pukhraj',
+    category: 'Vegetables',
+    quantity: 300,
+    unit: 'kg',
+    pricePerUnit: 15,
+    subtotal: 4500,
+    logisticsCost: 280,
+    total: 4780,
+    date: '2026-08-24 11:00 AM',
+    status: 'Delivered',
+    paymentMethod: 'Demo Payment Gateway',
+    deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
+    timeline: [
+      { status: 'Order Placed', time: '24 Aug, 11:00 AM', done: true },
+      { status: 'Accepted', time: '24 Aug, 11:30 AM', done: true },
+      { status: 'Preparing', time: '24 Aug, 03:00 PM', done: true },
+      { status: 'Dispatched', time: '25 Aug, 08:30 AM', done: true },
+      { status: 'Out for Delivery', time: '25 Aug, 01:00 PM', done: true },
+      { status: 'Delivered', time: '25 Aug, 03:45 PM', done: true }
+    ]
+  }
+];
+
+const INITIAL_MESSAGES = {
+  'conv-farmer-1': {
+    id: 'conv-farmer-1',
+    participantId: 'farmer-001',
+    participantName: 'Ramesh Patil',
+    participantRole: 'Farmer (Tomato Producer)',
+    avatar: '👨‍🌾',
+    online: true,
+    lastUpdated: '10:35 AM',
+    messages: [
+      { id: 'm1', sender: 'farmer', text: 'Namaskar Ajay ji. I received your order for 100kg Hybrid Tomatoes. Harvesting is scheduled for early morning tomorrow.', time: '10:30 AM' },
+      { id: 'm2', sender: 'buyer', text: 'Great! Please ensure firm grading. When can we expect the dispatch from Nashik hub?', time: '10:32 AM' },
+      { id: 'm3', sender: 'farmer', text: 'Dispatch will be around 7:00 AM via the CropNex shared cold van. It will reach Pune Market Yard by 11:30 AM.', time: '10:34 AM' },
+      { id: 'm4', sender: 'buyer', text: 'Perfect. Thank you Ramesh ji!', time: '10:35 AM' }
+    ]
+  },
+  'conv-farmer-2': {
+    id: 'conv-farmer-2',
+    participantId: 'farmer-002',
+    participantName: 'Sunita Jadhav',
+    participantRole: 'Farmer (Onion Producer)',
+    avatar: '👩‍🌾',
+    online: true,
+    lastUpdated: 'Yesterday',
+    messages: [
+      { id: 'm1', sender: 'buyer', text: 'Sunita ji, do you have additional 500kg onion stock available for next week delivery?', time: 'Yesterday, 03:15 PM' },
+      { id: 'm2', sender: 'farmer', text: 'Yes, we have 1200kg graded stock ready in storage. You can place the order anytime directly on CropNex.', time: 'Yesterday, 04:00 PM' }
+    ]
+  },
+  'conv-farmer-3': {
+    id: 'conv-farmer-3',
+    participantId: 'farmer-003',
+    participantName: 'Mahesh Shinde',
+    participantRole: 'Farmer (Potato Cultivator)',
+    avatar: '👨‍🌾',
+    online: false,
+    lastUpdated: '2 days ago',
+    messages: [
+      { id: 'm1', sender: 'buyer', text: 'Previous delivery of Kufri Pukhraj was excellent in quality. Thank you.', time: '25 Aug, 05:00 PM' },
+      { id: 'm2', sender: 'farmer', text: 'Happy to serve directly without intermediaries. Looking forward to our next partnership.', time: '25 Aug, 05:15 PM' }
+    ]
+  }
+};
+
+const INITIAL_NOTIFICATIONS = [
+  {
+    id: 'notif-1',
+    title: 'New Order Received',
+    message: 'Ajay Traders placed an order for 100 kg Tomato - Hybrid (Order #CNX-2026-1048).',
+    time: '15 mins ago',
+    read: false,
+    type: 'order'
+  },
+  {
+    id: 'notif-2',
+    title: 'AI Price Trend Alert',
+    message: 'Tomato wholesale rates are projected to increase by +10.4% in Nashik APMC over the next 10 days.',
+    time: '1 hour ago',
+    read: false,
+    type: 'forecast'
+  },
+  {
+    id: 'notif-3',
+    title: 'New Government Tender Matched',
+    message: 'New tender from Maharashtra Public Health Dept for Fresh Vegetable Supply (Est. ₹ 18.5 Lakhs).',
+    time: '3 hours ago',
+    read: true,
+    type: 'tender'
+  },
+  {
+    id: 'notif-4',
+    title: 'Logistics Route Optimization',
+    message: 'Your dispatch route to Pune Market Yard has been optimized with a 21% fuel reduction.',
+    time: '1 day ago',
+    read: true,
+    type: 'logistics'
+  }
+];
+
+const INITIAL_USER_PROFILES = {
+  farmer: {
+    name: 'Ramesh Patil',
+    role: 'Farmer',
+    farmName: 'Patil Organic Farms & Horticulture',
+    village: 'Pimpalgaon Baswant',
+    district: 'Nashik',
+    state: 'Maharashtra',
+    farmSize: '12.5 Acres',
+    primaryCrops: 'Tomato, Onion, Grapes, Green Chilli',
+    phone: '+91 94220 88712',
+    email: 'ramesh.patil@cropnex.demo',
+    verified: true,
+    kycStatus: 'Verified (Aadhaar & Land 7/12 Extract)',
+    rating: 4.9,
+    joinedDate: 'March 2024',
+    activeListings: 4,
+    totalDeliveries: 142
+  },
+  buyer: {
+    name: 'Ajay Traders (Ajay Agarwal)',
+    role: 'Buyer',
+    businessName: 'Ajay Wholesale & Distribution Pvt Ltd',
+    buyerType: 'Wholesaler / Retail Supplier',
+    location: 'Gultekdi Market Yard, Pune',
+    district: 'Pune',
+    state: 'Maharashtra',
+    gstin: '27AABCA1234F1Z5',
+    preferredCrops: 'Tomato, Onion, Potato, Grains',
+    phone: '+91 98231 44521',
+    email: 'procurement@ajaytraders.demo',
+    verified: true,
+    rating: 4.8,
+    joinedDate: 'January 2024',
+    completedOrders: 24,
+    totalSpent: '₹ 4,86,200'
+  },
+  admin: {
+    name: 'CropNex Admin Console',
+    role: 'Admin',
+    department: 'Smart India Hackathon Operations',
+    email: 'admin@cropnex.agri.gov.in',
+    status: 'Super Administrator'
+  }
+};
