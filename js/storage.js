@@ -274,7 +274,12 @@ const StorageService = {
 
   // --- Returns & Claims ---
   getReturns() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.RETURNS) || '[]');
+    const returns = JSON.parse(localStorage.getItem(STORAGE_KEYS.RETURNS) || '[]');
+    if ((!returns || returns.length === 0) && typeof INITIAL_RETURNS !== 'undefined' && INITIAL_RETURNS.length > 0) {
+      localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(INITIAL_RETURNS));
+      return INITIAL_RETURNS;
+    }
+    return returns;
   },
 
   createReturn(returnData) {
@@ -282,7 +287,7 @@ const StorageService = {
     const newReturn = {
       id: 'RET-2026-' + Math.floor(100 + Math.random() * 900),
       requestDate: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
-      status: 'Return Requested',
+      status: 'In Inspection',
       ...returnData
     };
     returns.unshift(newReturn);
@@ -294,7 +299,7 @@ const StorageService = {
 
     this.addNotification({
       title: 'Produce Return Initiated',
-      message: `Return request for ${newReturn.productName || 'produce'} (Order #${newReturn.orderId}). Reason: ${newReturn.reasonLabel || newReturn.reason}.`,
+      message: `Return claim #${newReturn.id} filed for ${newReturn.productName || 'produce'} (Order #${newReturn.orderId}). Reason: ${newReturn.reasonLabel || newReturn.reason}.`,
       type: 'order'
     });
 
@@ -308,6 +313,24 @@ const StorageService = {
     if (ret) {
       ret.status = newStatus;
       localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(returns));
+
+      // Synchronize linked order
+      if (ret.orderId) {
+        if (newStatus === 'Approved & Refunded') {
+          this.updateOrderStatus(ret.orderId, 'Returned');
+        } else if (newStatus === 'Replacement Dispatched') {
+          this.updateOrderStatus(ret.orderId, 'Replacement Dispatched');
+        } else if (newStatus === 'Claim Rejected') {
+          this.updateOrderStatus(ret.orderId, 'Delivered');
+        }
+      }
+
+      this.addNotification({
+        title: 'Return Claim Updated',
+        message: `Claim #${returnId} (${ret.productName}) marked as "${newStatus}".`,
+        type: 'order'
+      });
+
       window.dispatchEvent(new CustomEvent('cropnex:returnsChanged', { detail: { returns } }));
       return ret;
     }

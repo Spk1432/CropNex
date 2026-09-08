@@ -231,105 +231,378 @@ const Dashboard = {
     this.renderFarmerDashboard();
   },
 
+  returnsFilter: 'all',
+  returnsSearchQuery: '',
+  returnsViewMode: 'cards',
+  activeInspectingReturnId: null,
+
+  setReturnsFilter(filter) {
+    this.returnsFilter = filter;
+    document.querySelectorAll('.return-filter-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`rfTab-${filter}`)?.classList.add('active');
+    this.renderFarmerReturns();
+  },
+
+  handleReturnsSearch(query) {
+    this.returnsSearchQuery = (query || '').toLowerCase().trim();
+    this.renderFarmerReturns();
+  },
+
+  setReturnsViewMode(mode) {
+    this.returnsViewMode = mode;
+    const cardsCont = document.getElementById('farmerReturnsCardsContainer');
+    const tableCont = document.getElementById('farmerReturnsTableContainer');
+    const btnCards = document.getElementById('btnReturnsViewCards');
+    const btnTable = document.getElementById('btnReturnsViewTable');
+
+    if (mode === 'cards') {
+      if (cardsCont) cardsCont.style.display = 'grid';
+      if (tableCont) tableCont.style.display = 'none';
+      if (btnCards) { btnCards.style.background = '#059669'; btnCards.style.color = '#fff'; }
+      if (btnTable) { btnTable.style.background = '#fff'; btnTable.style.color = '#475569'; }
+    } else {
+      if (cardsCont) cardsCont.style.display = 'none';
+      if (tableCont) tableCont.style.display = 'block';
+      if (btnTable) { btnTable.style.background = '#059669'; btnTable.style.color = '#fff'; }
+      if (btnCards) { btnCards.style.background = '#fff'; btnCards.style.color = '#475569'; }
+    }
+  },
+
   renderFarmerReturnsTable() {
+    this.renderFarmerReturns();
+  },
+
+  renderFarmerReturns() {
+    const cardsContainer = document.getElementById('farmerReturnsCardsContainer');
     const tbody = document.getElementById('farmerReturnsTableBody');
     const returns = StorageService.getReturns ? StorageService.getReturns() : [];
 
-    // KPI updates
+    // Counts
+    const totalCount = returns.length;
+    const pendingCount = returns.filter(r => r.status === 'In Inspection' || r.status === 'Return Requested').length;
+    const replacementCount = returns.filter(r => r.status === 'Replacement Dispatched').length;
+    const refundedCount = returns.filter(r => r.status === 'Approved & Refunded' || r.status === 'Resolved').length;
+    const rejectedCount = returns.filter(r => r.status === 'Claim Rejected').length;
+
+    const totalDisputedVal = returns.reduce((sum, r) => sum + (r.amount || ((r.quantity || 0) * 20)), 0);
+
+    // KPI elements
     const totalEl = document.getElementById('kpiFarmerReturnsTotal');
     const pendingEl = document.getElementById('kpiFarmerReturnsPending');
+    const replacementsEl = document.getElementById('kpiFarmerReturnsReplacements');
     const resolvedEl = document.getElementById('kpiFarmerReturnsResolved');
+    const totalAmountEl = document.getElementById('kpiFarmerReturnsTotalAmount');
 
-    const pendingCount = returns.filter(r => r.status === 'In Inspection' || r.status === 'Return Requested').length;
-    const resolvedCount = returns.filter(r => r.status === 'Approved & Refunded' || r.status === 'Resolved' || r.status === 'Replacement Dispatched').length;
-
-    if (totalEl) totalEl.textContent = returns.length;
+    if (totalEl) totalEl.textContent = totalCount;
     if (pendingEl) pendingEl.textContent = pendingCount;
-    if (resolvedEl) resolvedEl.textContent = resolvedCount;
+    if (replacementsEl) replacementsEl.textContent = replacementCount;
+    if (resolvedEl) resolvedEl.textContent = refundedCount;
+    if (totalAmountEl) totalAmountEl.textContent = `₹${totalDisputedVal.toLocaleString('en-IN')} total claimed value`;
 
-    if (!tbody) return;
+    // Tab counts
+    const tabAll = document.getElementById('rfCount-all');
+    const tabPending = document.getElementById('rfCount-pending');
+    const tabRepl = document.getElementById('rfCount-replacement');
+    const tabRef = document.getElementById('rfCount-refunded');
+    const tabRej = document.getElementById('rfCount-rejected');
 
-    if (returns.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-500 font-medium">No returned produce claims received. All dispatches in good standing!</td></tr>`;
-      return;
+    if (tabAll) tabAll.textContent = totalCount;
+    if (tabPending) tabPending.textContent = pendingCount;
+    if (tabRepl) tabRepl.textContent = replacementCount;
+    if (tabRef) tabRef.textContent = refundedCount;
+    if (tabRej) tabRej.textContent = rejectedCount;
+
+    // Filter by tab
+    let filtered = returns;
+    if (this.returnsFilter === 'pending') {
+      filtered = filtered.filter(r => r.status === 'In Inspection' || r.status === 'Return Requested');
+    } else if (this.returnsFilter === 'replacement') {
+      filtered = filtered.filter(r => r.status === 'Replacement Dispatched');
+    } else if (this.returnsFilter === 'refunded') {
+      filtered = filtered.filter(r => r.status === 'Approved & Refunded' || r.status === 'Resolved');
+    } else if (this.returnsFilter === 'rejected') {
+      filtered = filtered.filter(r => r.status === 'Claim Rejected');
     }
 
-    tbody.innerHTML = returns.map(ret => {
-      let statusBg = '#fef3c7';
-      let statusColor = '#92400e';
+    // Filter by search query
+    if (this.returnsSearchQuery) {
+      const q = this.returnsSearchQuery;
+      filtered = filtered.filter(r =>
+        (r.id && r.id.toLowerCase().includes(q)) ||
+        (r.orderId && r.orderId.toLowerCase().includes(q)) ||
+        (r.productName && r.productName.toLowerCase().includes(q)) ||
+        (r.buyerName && r.buyerName.toLowerCase().includes(q)) ||
+        (r.reasonLabel && r.reasonLabel.toLowerCase().includes(q))
+      );
+    }
 
-      if (ret.status === 'Approved & Refunded' || ret.status === 'Resolved') {
-        statusBg = '#dcfce7';
-        statusColor = '#166534';
-      } else if (ret.status === 'Replacement Dispatched') {
-        statusBg = '#dbeafe';
-        statusColor = '#1e40af';
-      } else if (ret.status === 'Claim Rejected') {
-        statusBg = '#fee2e2';
-        statusColor = '#991b1b';
+    // Helper for status badge styling
+    const getStatusInfo = (status) => {
+      if (status === 'Approved & Refunded' || status === 'Resolved') {
+        return { cls: 'return-status-refunded', icon: 'check-circle', label: 'Approved & Refunded' };
+      } else if (status === 'Replacement Dispatched') {
+        return { cls: 'return-status-replacement', icon: 'truck', label: 'Replacement Sent' };
+      } else if (status === 'Claim Rejected') {
+        return { cls: 'return-status-rejected', icon: 'x-circle', label: 'Claim Rejected' };
       }
+      return { cls: 'return-status-inspection', icon: 'clock', label: 'Under Inspection' };
+    };
 
-      return `
-        <tr>
-          <td class="font-mono text-xs font-bold text-rose-700">${ret.id}</td>
-          <td class="font-mono text-xs font-semibold text-slate-700">#${ret.orderId}</td>
-          <td>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <img src="${ret.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60'}" 
-                   alt="${ret.productName}" 
-                   style="width:36px; height:36px; border-radius:6px; object-fit:cover; border:1px solid #e2e8f0;">
-              <div>
-                <div class="font-semibold text-slate-800 text-sm">${ret.productName}</div>
-                <div class="text-xs text-slate-500">${ret.date || 'Recent'}</div>
+    // Render Cards View
+    if (cardsContainer) {
+      if (filtered.length === 0) {
+        cardsContainer.innerHTML = `
+          <div style="grid-column: 1/-1; background:#ffffff; border:1px dashed #cbd5e1; border-radius:12px; padding:48px 20px; text-align:center;">
+            <div style="width:54px; height:54px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; color:#64748b;">
+              <i data-lucide="check-circle-2" style="width:28px; height:28px; color:#10b981;"></i>
+            </div>
+            <h4 style="font-size:1.05rem; font-weight:700; color:#1e293b; margin:0 0 4px 0;">No Return Claims Matching Filter</h4>
+            <p style="font-size:0.85rem; color:#64748b; margin:0;">All produce batches in this view are in good standing with zero disputes.</p>
+          </div>
+        `;
+      } else {
+        cardsContainer.innerHTML = filtered.map(ret => {
+          const s = getStatusInfo(ret.status);
+          const isPending = (ret.status === 'In Inspection' || ret.status === 'Return Requested');
+          const borderAccent = isPending ? '#f59e0b' : ret.status === 'Replacement Dispatched' ? '#3b82f6' : ret.status === 'Claim Rejected' ? '#ef4444' : '#10b981';
+          const fallbackImg = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60';
+          const claimValue = ret.amount ? `₹${ret.amount.toLocaleString('en-IN')}` : `₹${((ret.quantity || 0) * 24).toLocaleString('en-IN')}`;
+
+          return `
+            <div class="farmer-return-card" style="border-top:4px solid ${borderAccent};">
+              <!-- Top Row -->
+              <div style="padding:14px 16px 12px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <span style="font-family:monospace; font-weight:800; font-size:0.85rem; color:#be123c;">${ret.id}</span>
+                  <span style="font-size:0.75rem; color:#64748b; margin-left:6px;">Order #${ret.orderId}</span>
+                </div>
+                <span class="return-status-pill ${s.cls}">
+                  <i data-lucide="${s.icon}" style="width:13px; height:13px;"></i>
+                  <span>${s.label}</span>
+                </span>
+              </div>
+
+              <!-- Body -->
+              <div style="padding:16px; display:flex; flex-direction:column; gap:12px; flex:1;">
+                <div style="display:flex; gap:12px; align-items:center;">
+                  <img src="${ret.image || fallbackImg}" alt="${ret.productName}" style="width:56px; height:56px; border-radius:8px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
+                  <div style="flex:1;">
+                    <div style="font-weight:800; font-size:0.95rem; color:#1e293b;">${ret.productName}</div>
+                    <div style="font-size:0.78rem; color:#64748b; margin-top:2px;">
+                      Claim Batch: <strong style="color:#be123c;">${ret.quantity} ${ret.unit || 'kg'}</strong> • Disputed: <strong style="color:#047857;">${claimValue}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Buyer Info -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <span style="color:#64748b; font-size:0.72rem; display:block;">BUYER</span>
+                    <strong style="color:#1e293b;">${ret.buyerName || 'Verified Buyer'}</strong>
+                  </div>
+                  <div style="text-align:right;">
+                    <span style="color:#64748b; font-size:0.72rem; display:block;">SETTLEMENT</span>
+                    <strong style="color:#0f766e;">${ret.resolution || '100% Refund'}</strong>
+                  </div>
+                </div>
+
+                <!-- Reason Tag & Remarks Box -->
+                <div>
+                  <div style="display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; margin-bottom:6px;">
+                    <i data-lucide="alert-circle" style="width:12px; height:12px;"></i>
+                    <span>${ret.reasonLabel || ret.reason || 'Quality Claim'}</span>
+                  </div>
+                  <div style="background:#fffdfd; border-left:3px solid #fca5a5; padding:8px 10px; border-radius:0 6px 6px 0; font-size:0.8rem; color:#475569; line-height:1.4;">
+                    "${ret.description || 'No detailed inspection remarks provided.'}"
+                  </div>
+                </div>
+
+                <div style="font-size:0.72rem; color:#94a3b8; display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:6px;">
+                  <span>Filed: ${ret.requestDate || 'Recent'}</span>
+                  <span>Escrow Protection</span>
+                </div>
+              </div>
+
+              <!-- Card Action Bar -->
+              <div style="padding:12px 16px; background:#fcfcfd; border-top:1px solid #f1f5f9; display:flex; gap:8px; justify-content:flex-end; align-items:center; flex-wrap:wrap;">
+                ${isPending ? `
+                  <button type="button" class="btn btn-xs" onclick="Dashboard.quickApproveReturn('${ret.id}', 'replacement')" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:5px 9px; border-radius:6px;" title="Dispatch Replacement Lot">
+                    <i data-lucide="truck" style="width:13px; height:13px;"></i> Replace
+                  </button>
+                  <button type="button" class="btn btn-xs" onclick="Dashboard.quickApproveReturn('${ret.id}', 'refund')" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:5px 9px; border-radius:6px;" title="Approve 100% Escrow Refund">
+                    <i data-lucide="shield-check" style="width:13px; height:13px;"></i> Refund
+                  </button>
+                  <button type="button" class="btn btn-xs btn-primary" onclick="Dashboard.openReturnDetailModal('${ret.id}')" style="display:inline-flex; align-items:center; gap:4px; padding:5px 12px; font-weight:700; border-radius:6px;">
+                    <i data-lucide="external-link" style="width:13px; height:13px;"></i> Inspect
+                  </button>
+                ` : `
+                  <span style="font-size:0.75rem; color:#64748b; font-weight:600; margin-right:auto;">
+                    <i data-lucide="check" style="width:12px; height:12px; color:#10b981; display:inline;"></i> Finalized
+                  </span>
+                  <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.openReturnDetailModal('${ret.id}')" style="font-size:0.75rem; padding:4px 10px; border-radius:6px;">
+                    View Dossier
+                  </button>
+                `}
               </div>
             </div>
-          </td>
-          <td>
-            <div class="font-semibold text-slate-800 text-sm">${ret.buyerName || 'Verified Buyer'}</div>
-            <div class="text-xs text-slate-500 font-mono">${ret.buyerPhone || ''}</div>
-          </td>
-          <td class="font-semibold text-slate-800">${ret.quantity} ${ret.unit || 'kg'}</td>
-          <td>
-            <span style="display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:600; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; line-height:1.2;">
-              ${ret.reasonLabel || ret.reason || 'Quality Claim'}
-            </span>
-          </td>
-          <td style="max-width:240px;">
-            <p class="text-xs text-slate-600 mb-0" style="margin:0; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="${ret.description || ''}">
-              ${ret.description || 'No additional inspection notes provided.'}
-            </p>
-          </td>
-          <td>
-            <span class="text-xs font-semibold text-slate-700">
-              ${ret.resolution || 'Direct Refund'}
-            </span>
-          </td>
-          <td>
-            <span style="display:inline-block; padding:4px 9px; border-radius:12px; font-size:0.75rem; font-weight:700; background:${statusBg}; color:${statusColor}; white-space:nowrap;">
-              ${ret.status}
-            </span>
-          </td>
-          <td>
-            <select class="form-select text-xs py-1 px-2 border rounded" 
-                    onchange="Dashboard.updateReturnStatus('${ret.id}', this.value)"
-                    style="font-size:0.75rem; padding:4px 8px; border-radius:6px; border:1px solid #cbd5e1; background:#fff; cursor:pointer;">
-              <option value="In Inspection" ${ret.status === 'In Inspection' || ret.status === 'Return Requested' ? 'selected' : ''}>In Inspection</option>
-              <option value="Approved & Refunded" ${ret.status === 'Approved & Refunded' ? 'selected' : ''}>Approve Refund</option>
-              <option value="Replacement Dispatched" ${ret.status === 'Replacement Dispatched' ? 'selected' : ''}>Dispatch Replacement</option>
-              <option value="Claim Rejected" ${ret.status === 'Claim Rejected' ? 'selected' : ''}>Reject Claim</option>
-            </select>
-          </td>
-        </tr>
-      `;
-    }).join('');
+          `;
+        }).join('');
+      }
+    }
+
+    // Render Table View
+    if (tbody) {
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-500 font-medium">No returned produce claims matching filters.</td></tr>`;
+      } else {
+        tbody.innerHTML = filtered.map(ret => {
+          const s = getStatusInfo(ret.status);
+          const isPending = (ret.status === 'In Inspection' || ret.status === 'Return Requested');
+          const fallbackImg = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60';
+          const claimValue = ret.amount ? `₹${ret.amount.toLocaleString('en-IN')}` : `₹${((ret.quantity || 0) * 24).toLocaleString('en-IN')}`;
+
+          return `
+            <tr>
+              <td class="font-mono text-xs font-bold text-rose-700">${ret.id}</td>
+              <td class="font-mono text-xs font-semibold text-slate-700">#${ret.orderId}</td>
+              <td>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <img src="${ret.image || fallbackImg}" alt="${ret.productName}" style="width:38px; height:38px; border-radius:6px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
+                  <div>
+                    <div class="font-bold text-slate-800 text-sm">${ret.productName}</div>
+                    <div class="text-xs text-slate-500">${ret.requestDate || 'Recent'}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="font-semibold text-slate-800 text-sm">${ret.buyerName || 'Verified Buyer'}</div>
+                <div class="text-xs text-slate-500 font-mono">${ret.buyerPhone || ''}</div>
+              </td>
+              <td class="font-semibold text-slate-800">${ret.quantity} ${ret.unit || 'kg'}</td>
+              <td class="font-bold text-emerald-800">${claimValue}</td>
+              <td>
+                <span style="display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; line-height:1.2;">
+                  ${ret.reasonLabel || ret.reason || 'Quality Claim'}
+                </span>
+              </td>
+              <td style="max-width:200px;">
+                <p class="text-xs text-slate-600 mb-0" style="margin:0; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="${ret.description || ''}">
+                  ${ret.description || 'No remarks.'}
+                </p>
+              </td>
+              <td>
+                <span class="return-status-pill ${s.cls}">
+                  <i data-lucide="${s.icon}" style="width:12px; height:12px;"></i>
+                  <span>${s.label}</span>
+                </span>
+              </td>
+              <td>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.openReturnDetailModal('${ret.id}')" style="font-size:0.75rem; padding:4px 8px; border-radius:6px;">
+                    Inspect
+                  </button>
+                  ${isPending ? `
+                    <select class="form-select text-xs" onchange="Dashboard.updateReturnStatus('${ret.id}', this.value)" style="font-size:0.72rem; padding:3px 6px; border-radius:5px; border:1px solid #cbd5e1; cursor:pointer;">
+                      <option value="In Inspection" selected>In Review</option>
+                      <option value="Approved & Refunded">Approve Refund</option>
+                      <option value="Replacement Dispatched">Send Replacement</option>
+                      <option value="Claim Rejected">Reject</option>
+                    </select>
+                  ` : ''}
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
 
     if (window.lucide) lucide.createIcons();
   },
 
+  openReturnDetailModal(returnId) {
+    const returns = StorageService.getReturns ? StorageService.getReturns() : [];
+    const ret = returns.find(r => r.id === returnId);
+    if (!ret) return;
+
+    this.activeInspectingReturnId = returnId;
+
+    const titleEl = document.getElementById('retModalTitle');
+    const subTitleEl = document.getElementById('retModalSubtitle');
+    const imgEl = document.getElementById('retModalProduceImg');
+    const prodNameEl = document.getElementById('retModalProduceName');
+    const orderIdEl = document.getElementById('retModalOrderId');
+    const dateEl = document.getElementById('retModalDate');
+    const qtyEl = document.getElementById('retModalQty');
+    const amountEl = document.getElementById('retModalAmount');
+    const buyerNameEl = document.getElementById('retModalBuyerName');
+    const buyerPhoneEl = document.getElementById('retModalBuyerPhone');
+    const resolutionEl = document.getElementById('retModalResolution');
+    const reasonLabelEl = document.getElementById('retModalReasonLabel');
+    const descEl = document.getElementById('retModalDescription');
+    const statusBadgeEl = document.getElementById('retModalStatusBadge');
+
+    const fallbackImg = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60';
+    const claimVal = ret.amount ? `₹${ret.amount.toLocaleString('en-IN')}` : `₹${((ret.quantity || 0) * 24).toLocaleString('en-IN')}`;
+
+    if (titleEl) titleEl.textContent = `Inspect Return Claim #${ret.id}`;
+    if (subTitleEl) subTitleEl.textContent = `Order Reference #${ret.orderId} • Buyer: ${ret.buyerName || 'Verified Buyer'}`;
+    if (imgEl) imgEl.src = ret.image || fallbackImg;
+    if (prodNameEl) prodNameEl.textContent = ret.productName;
+    if (orderIdEl) orderIdEl.textContent = `#${ret.orderId}`;
+    if (dateEl) dateEl.textContent = ret.requestDate || 'Recent';
+    if (qtyEl) qtyEl.textContent = `${ret.quantity} ${ret.unit || 'kg'}`;
+    if (amountEl) amountEl.textContent = claimVal;
+    if (buyerNameEl) buyerNameEl.textContent = ret.buyerName || 'Ajay Traders';
+    if (buyerPhoneEl) buyerPhoneEl.textContent = ret.buyerPhone || '+91 98231 44521';
+    if (resolutionEl) resolutionEl.textContent = ret.resolution || 'Direct 100% Account Refund';
+    if (reasonLabelEl) reasonLabelEl.textContent = ret.reasonLabel || ret.reason || 'Quality Issue / Spoilage';
+    if (descEl) descEl.textContent = ret.description || 'No additional inspection notes provided.';
+
+    if (statusBadgeEl) {
+      statusBadgeEl.className = 'return-status-pill ' + (
+        ret.status === 'Approved & Refunded' ? 'return-status-refunded' :
+        ret.status === 'Replacement Dispatched' ? 'return-status-replacement' :
+        ret.status === 'Claim Rejected' ? 'return-status-rejected' : 'return-status-inspection'
+      );
+      statusBadgeEl.textContent = ret.status;
+    }
+
+    // Toggle button visibility if already resolved
+    const isPending = (ret.status === 'In Inspection' || ret.status === 'Return Requested');
+    const btnReject = document.getElementById('retModalBtnReject');
+    const btnReplacement = document.getElementById('retModalBtnReplacement');
+    const btnRefund = document.getElementById('retModalBtnRefund');
+
+    if (btnReject) btnReject.style.display = isPending ? 'inline-flex' : 'none';
+    if (btnReplacement) btnReplacement.style.display = isPending ? 'inline-flex' : 'none';
+    if (btnRefund) btnRefund.style.display = isPending ? 'inline-flex' : 'none';
+
+    UI.openModal('farmerReturnDetailModal');
+    if (window.lucide) lucide.createIcons();
+  },
+
+  handleModalReturnAction(actionStatus) {
+    if (!this.activeInspectingReturnId) return;
+    this.updateReturnStatus(this.activeInspectingReturnId, actionStatus);
+    this.activeInspectingReturnId = null;
+    UI.closeAllModals();
+  },
+
+  quickApproveReturn(returnId, actionType) {
+    if (actionType === 'refund') {
+      this.updateReturnStatus(returnId, 'Approved & Refunded');
+      UI.showToast(`Claim #${returnId} approved! Escrow refund initiated.`, 'success');
+    } else if (actionType === 'replacement') {
+      this.updateReturnStatus(returnId, 'Replacement Dispatched');
+      UI.showToast(`Claim #${returnId} marked as Replacement Dispatched!`, 'success');
+    }
+  },
+
   updateReturnStatus(returnId, newStatus) {
     StorageService.updateReturnStatus(returnId, newStatus);
-    UI.showToast(`Return #${returnId} status set to "${newStatus}"`, 'success');
-    this.renderFarmerReturnsTable();
+    UI.showToast(`Return Claim #${returnId} updated to "${newStatus}"`, 'success');
+    this.renderFarmerReturns();
   },
 
   openAddProductModal(editId = null) {

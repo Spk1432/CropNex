@@ -586,9 +586,47 @@ const INITIAL_RETURNS = [
     reason: 'transit_damage',
     reasonLabel: 'Transit Damage / Bruised Tubers',
     description: 'A 40kg bag had crushed tubers during inter-city unloading. Remaining consignment accepted without issue.',
-    resolution: '100% Refund',
+    resolution: 'Direct 100% Account Refund',
     requestDate: '2026-09-07 02:30 PM',
     status: 'In Inspection'
+  },
+  {
+    id: 'RET-2026-874',
+    orderId: 'CNX-2026-1048',
+    productName: 'Tomato - Hybrid',
+    category: 'Vegetables',
+    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400',
+    buyerName: 'FreshBasket Supermarkets',
+    buyerPhone: '+91 99701 55632',
+    farmerName: 'Ramesh Patil',
+    quantity: 50,
+    unit: 'kg',
+    amount: 1200,
+    reason: 'shelf_life_short',
+    reasonLabel: 'Short Shelf Life / Over-Ripe',
+    description: '2 crates were fully ripe upon arrival with less than 24h retail viability. Requested fresh replacement lot.',
+    resolution: 'Immediate Batch Replacement',
+    requestDate: '2026-09-04 11:15 AM',
+    status: 'Replacement Dispatched'
+  },
+  {
+    id: 'RET-2026-862',
+    orderId: 'CNX-2026-1045',
+    productName: 'Onion - Nashik Red',
+    category: 'Vegetables',
+    image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400',
+    buyerName: 'Maharashtra Agri Foods Ltd',
+    buyerPhone: '+91 98902 33411',
+    farmerName: 'Ramesh Patil',
+    quantity: 100,
+    unit: 'kg',
+    amount: 1800,
+    reason: 'wrong_item_qty',
+    reasonLabel: 'Weight Discrepancy at Mandi Weighbridge',
+    description: 'Gross unloading weight showed 100kg shortage against bill of lading. Mandi weigh slip verified and agreed.',
+    resolution: 'Direct 100% Account Refund',
+    requestDate: '2026-08-31 04:45 PM',
+    status: 'Approved & Refunded'
   }
 ];
 

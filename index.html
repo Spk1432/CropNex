@@ -976,9 +976,15 @@
 
         <!-- Live Orders Management Table -->
         <div class="data-table-card">
-          <div class="table-header-row">
-            <h4 class="font-bold text-slate-800">Orders & Fulfillment Status</h4>
-            <span class="text-xs text-slate-500">Status changes automatically notify buyer tracking</span>
+          <div class="table-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h4 class="font-bold text-slate-800">Orders & Fulfillment Status</h4>
+              <span class="text-xs text-slate-500">Status changes automatically notify buyer tracking</span>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm text-red-600" onclick="UI.routeTo('farmer-returns')" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; border-color:#fca5a5; background:#fff1f2; color:#be123c; padding:6px 12px; border-radius:8px; cursor:pointer;">
+              <i data-lucide="rotate-ccw" style="width:14px; height:14px; color:#e11d48;"></i>
+              <span>View Returned Orders & Claims</span>
+            </button>
           </div>
           <div class="table-responsive">
             <table class="data-table">
@@ -1008,60 +1014,152 @@
          ========================================== -->
     <section class="app-view" id="view-farmer-returns">
       <div class="page-container" style="max-width:1360px;">
+        <!-- Header Banner -->
         <div class="page-header-block mb-6" style="margin-bottom:24px;">
-          <span class="user-role-badge" style="background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; margin-bottom:8px; display:inline-block; font-weight:700;">RETURN CLAIMS & SPOILAGE REPORTS</span>
-          <h2 class="text-2xl font-bold text-slate-900">Returned Orders Management</h2>
-          <p class="text-sm text-slate-500">Review returned produce reported by wholesale buyers, inspect reason reports with harvest batch tracking, and approve resolutions or replacements.</p>
-        </div>
-
-        <!-- Returns KPI Cards -->
-        <div class="kpi-cards-grid mb-6" style="margin-bottom:24px;">
-          <div class="kpi-card" style="border-left:4px solid #ef4444;">
-            <span class="kpi-label">Total Returned Orders</span>
-            <div class="kpi-value text-red-600" id="kpiFarmerReturnsTotal">0</div>
-            <span class="text-xs text-slate-500">Initiated by buyers</span>
-          </div>
-          <div class="kpi-card" style="border-left:4px solid #f59e0b;">
-            <span class="kpi-label">Pending Review / Inspection</span>
-            <div class="kpi-value text-amber-600" id="kpiFarmerReturnsPending">0</div>
-            <span class="text-xs text-amber-700 font-semibold">Immediate action needed</span>
-          </div>
-          <div class="kpi-card" style="border-left:4px solid #10b981;">
-            <span class="kpi-label">Resolved / Refunded</span>
-            <div class="kpi-value text-emerald-700" id="kpiFarmerReturnsResolved">0</div>
-            <span class="text-xs text-emerald-700 font-semibold">Settled claims</span>
-          </div>
-        </div>
-
-        <!-- Returns Data Table -->
-        <div class="data-table-card">
-          <div class="table-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
             <div>
-              <h4 class="font-bold text-slate-800">Returned Produce & Buyer Claims</h4>
-              <span class="text-xs text-slate-500">Real-time alerts when a buyer requests return or replacement</span>
+              <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:800; letter-spacing:0.05em; background:#fee2e2; color:#be123c; border:1px solid #fecaca; margin-bottom:8px;">
+                <i data-lucide="rotate-ccw" style="width:13px; height:13px;"></i>
+                <span>FARM-GATE RETURN INSPECTIONS & DISPUTES</span>
+              </div>
+              <h2 class="text-2xl font-bold text-slate-900" style="margin:0 0 6px 0;">Returned Orders & Quality Claims</h2>
+              <p class="text-sm text-slate-500" style="margin:0; max-width:740px;">Review returned produce reported by wholesale buyers, inspect reason reports with harvest batch tracking, and approve instant escrow refunds or replacement dispatches.</p>
             </div>
-            <button type="button" class="btn btn-outline btn-sm" onclick="Dashboard.renderFarmerReturnsTable()" style="display:inline-flex; align-items:center; gap:6px;">
-              <i data-lucide="refresh-cw"></i> <span>Refresh</span>
-            </button>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="UI.routeTo('farmer-orders')" style="display:inline-flex; align-items:center; gap:6px; font-weight:600;">
+                <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
+                <span>Back to Orders</span>
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="Dashboard.renderFarmerReturnsTable()" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
+                <i data-lucide="refresh-cw" style="width:14px; height:14px;"></i>
+                <span>Refresh Claims</span>
+              </button>
+            </div>
           </div>
+        </div>
+
+        <!-- Returns KPI Cards Grid -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; margin-bottom:24px;">
+          <!-- Card 1: Total Claims -->
+          <div class="kpi-card" style="border-left:4px solid #e11d48; background:#fff; padding:18px; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.05); border:1px solid #e2e8f0; border-left:4px solid #e11d48;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.8rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Total Claims</span>
+              <div style="width:36px; height:36px; border-radius:8px; background:#fff1f2; display:flex; align-items:center; justify-content:center; color:#e11d48;">
+                <i data-lucide="rotate-ccw" style="width:18px; height:18px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-red-600" id="kpiFarmerReturnsTotal" style="font-size:1.8rem; font-weight:800; color:#be123c; margin:8px 0 2px 0;">0</div>
+            <span class="text-xs text-slate-500" id="kpiFarmerReturnsTotalAmount">Total buyer dispute claims</span>
+          </div>
+
+          <!-- Card 2: Pending Inspection -->
+          <div class="kpi-card" style="border-left:4px solid #f59e0b; background:#fff; padding:18px; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.05); border:1px solid #e2e8f0; border-left:4px solid #f59e0b;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.8rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Pending Inspection</span>
+              <div style="width:36px; height:36px; border-radius:8px; background:#fef3c7; display:flex; align-items:center; justify-content:center; color:#d97706;">
+                <i data-lucide="clock" style="width:18px; height:18px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-amber-600" id="kpiFarmerReturnsPending" style="font-size:1.8rem; font-weight:800; color:#b45309; margin:8px 0 2px 0;">0</div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; box-shadow:0 0 0 2px rgba(245,158,11,0.3);"></span>
+              <span class="text-xs text-amber-700 font-bold">Immediate review needed</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Replacements Dispatched -->
+          <div class="kpi-card" style="border-left:4px solid #3b82f6; background:#fff; padding:18px; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.05); border:1px solid #e2e8f0; border-left:4px solid #3b82f6;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.8rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Replacements Sent</span>
+              <div style="width:36px; height:36px; border-radius:8px; background:#eff6ff; display:flex; align-items:center; justify-content:center; color:#2563eb;">
+                <i data-lucide="truck" style="width:18px; height:18px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-blue-600" id="kpiFarmerReturnsReplacements" style="font-size:1.8rem; font-weight:800; color:#1d4ed8; margin:8px 0 2px 0;">0</div>
+            <span class="text-xs text-blue-700 font-semibold">Fresh lots dispatched</span>
+          </div>
+
+          <!-- Card 4: Resolved / Refunded -->
+          <div class="kpi-card" style="border-left:4px solid #10b981; background:#fff; padding:18px; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.05); border:1px solid #e2e8f0; border-left:4px solid #10b981;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.8rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Settled & Refunded</span>
+              <div style="width:36px; height:36px; border-radius:8px; background:#ecfdf5; display:flex; align-items:center; justify-content:center; color:#059669;">
+                <i data-lucide="shield-check" style="width:18px; height:18px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-emerald-700" id="kpiFarmerReturnsResolved" style="font-size:1.8rem; font-weight:800; color:#047857; margin:8px 0 2px 0;">0</div>
+            <span class="text-xs text-emerald-700 font-semibold">100% Escrow settlements</span>
+          </div>
+        </div>
+
+        <!-- Filter Tabs, Search & View Switch Toolbar -->
+        <div class="data-table-card" style="padding:14px 18px; margin-bottom:20px; background:#fff; border-radius:10px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <!-- Filter Pills -->
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;" id="farmerReturnsFilterTabs">
+              <button type="button" class="return-filter-btn active" onclick="Dashboard.setReturnsFilter('all')" id="rfTab-all">
+                <span>All Claims</span> (<span id="rfCount-all">0</span>)
+              </button>
+              <button type="button" class="return-filter-btn" onclick="Dashboard.setReturnsFilter('pending')" id="rfTab-pending">
+                <i data-lucide="clock" style="width:13px; height:13px;"></i>
+                <span>Needs Review</span> (<span id="rfCount-pending">0</span>)
+              </button>
+              <button type="button" class="return-filter-btn" onclick="Dashboard.setReturnsFilter('replacement')" id="rfTab-replacement">
+                <i data-lucide="truck" style="width:13px; height:13px;"></i>
+                <span>Replacements</span> (<span id="rfCount-replacement">0</span>)
+              </button>
+              <button type="button" class="return-filter-btn" onclick="Dashboard.setReturnsFilter('refunded')" id="rfTab-refunded">
+                <i data-lucide="check-circle" style="width:13px; height:13px;"></i>
+                <span>Refunded</span> (<span id="rfCount-refunded">0</span>)
+              </button>
+              <button type="button" class="return-filter-btn" onclick="Dashboard.setReturnsFilter('rejected')" id="rfTab-rejected">
+                <span>Rejected</span> (<span id="rfCount-rejected">0</span>)
+              </button>
+            </div>
+
+            <!-- Search & View Toggle -->
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <div style="position:relative; min-width:240px;">
+                <i data-lucide="search" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:#94a3b8;"></i>
+                <input type="text" id="farmerReturnsSearchInput" placeholder="Search by crop, buyer, ID..." oninput="Dashboard.handleReturnsSearch(this.value)" style="width:100%; padding:7px 12px 7px 32px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.85rem;">
+              </div>
+              <div style="display:inline-flex; border:1px solid #cbd5e1; border-radius:6px; overflow:hidden;">
+                <button type="button" id="btnReturnsViewCards" onclick="Dashboard.setReturnsViewMode('cards')" class="btn btn-xs" style="border:none; border-radius:0; padding:6px 10px; background:#059669; color:#fff;" title="Card Grid View">
+                  <i data-lucide="layout-grid" style="width:14px; height:14px;"></i>
+                </button>
+                <button type="button" id="btnReturnsViewTable" onclick="Dashboard.setReturnsViewMode('table')" class="btn btn-xs" style="border:none; border-radius:0; padding:6px 10px; background:#fff; color:#475569;" title="Table View">
+                  <i data-lucide="list" style="width:14px; height:14px;"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards View Container -->
+        <div id="farmerReturnsCardsContainer" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(360px, 1fr)); gap:18px; margin-bottom:28px;">
+          <!-- Injected dynamically via Dashboard.renderFarmerReturns() -->
+        </div>
+
+        <!-- Table View Container -->
+        <div class="data-table-card" id="farmerReturnsTableContainer" style="display:none; margin-bottom:28px;">
           <div class="table-responsive">
             <table class="data-table">
               <thead>
                 <tr>
                   <th>Return ID</th>
-                  <th>Order ID</th>
+                  <th>Order Ref</th>
                   <th>Produce</th>
                   <th>Buyer</th>
-                  <th>Qty</th>
-                  <th>Reason</th>
-                  <th>Notes & Description</th>
-                  <th>Requested Resolution</th>
+                  <th>Quantity</th>
+                  <th>Claim Value</th>
+                  <th>Dispute Reason</th>
+                  <th>Notes</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody id="farmerReturnsTableBody">
-                <!-- Injected via Dashboard.renderFarmerReturnsTable() -->
+                <!-- Injected via Dashboard.renderFarmerReturns() -->
               </tbody>
             </table>
           </div>
@@ -2200,6 +2298,84 @@
         </button>
       </div>
     </form>
+  </div>
+
+  <!-- 8b. Farmer Return Inspection & Action Modal -->
+  <div class="modal-window" id="farmerReturnDetailModal" style="max-width:640px;">
+    <div class="modal-header" style="background:#fff1f2; border-bottom:1px solid #fecaca;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i data-lucide="clipboard-check" style="color:#e11d48; width:22px; height:22px;"></i>
+        <div>
+          <h3 style="margin:0; font-size:1.1rem; color:#881337; font-weight:800;" id="retModalTitle">Inspect Return Claim</h3>
+          <span style="font-size:0.75rem; color:#9f1239;" id="retModalSubtitle">Claim ID #RET-2026-881</span>
+        </div>
+      </div>
+      <button class="btn-icon" data-close-modal>&times;</button>
+    </div>
+    <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px;">
+      <!-- Produce Summary Box -->
+      <div style="display:flex; gap:14px; padding:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; align-items:center;">
+        <img id="retModalProduceImg" src="" alt="Produce" style="width:68px; height:68px; border-radius:8px; object-fit:cover; border:1px solid #cbd5e1; flex-shrink:0;">
+        <div style="flex:1;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:6px;">
+            <h4 style="margin:0; font-size:1rem; font-weight:800; color:#1e293b;" id="retModalProduceName">Produce</h4>
+            <span id="retModalStatusBadge" class="return-status-pill return-status-inspection">In Inspection</span>
+          </div>
+          <div style="margin-top:4px; font-size:0.8rem; color:#64748b;">
+            Linked Order: <strong style="font-family:monospace; color:#0f766e;" id="retModalOrderId">#CNX-2026-1039</strong>
+            • Date: <span id="retModalDate">2026-09-07</span>
+          </div>
+          <div style="margin-top:4px; font-size:0.85rem; font-weight:700; color:#0f172a;">
+            Disputed Batch: <span id="retModalQty" style="color:#be123c;">40 kg</span> • Claim Value: <span id="retModalAmount" style="color:#047857;">₹600</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buyer Details -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; background:#ffffff; border:1px solid #e2e8f0; padding:12px 14px; border-radius:8px;">
+        <div>
+          <span style="font-size:0.72rem; color:#64748b; font-weight:700; text-transform:uppercase;">Wholesale Buyer</span>
+          <div style="font-size:0.88rem; font-weight:700; color:#1e293b;" id="retModalBuyerName">Ajay Traders</div>
+          <div style="font-size:0.78rem; color:#64748b; font-family:monospace;" id="retModalBuyerPhone">+91 98231 44521</div>
+        </div>
+        <div>
+          <span style="font-size:0.72rem; color:#64748b; font-weight:700; text-transform:uppercase;">Requested Settlement</span>
+          <div style="font-size:0.88rem; font-weight:800; color:#0f766e;" id="retModalResolution">Direct 100% Account Refund</div>
+          <div style="font-size:0.75rem; color:#64748b;">Escrow Protected Policy</div>
+        </div>
+      </div>
+
+      <!-- Claim Reason & Notes -->
+      <div style="background:#fffdfd; border:1px solid #fecaca; border-radius:8px; padding:12px 14px;">
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+          <i data-lucide="alert-triangle" style="width:15px; height:15px; color:#e11d48;"></i>
+          <span style="font-size:0.78rem; font-weight:800; color:#9f1239; text-transform:uppercase;">Dispute Reason:</span>
+          <span style="font-size:0.82rem; font-weight:700; color:#b91c1c;" id="retModalReasonLabel">Transit Damage</span>
+        </div>
+        <p style="margin:0; font-size:0.84rem; color:#475569; line-height:1.5; background:#ffffff; padding:10px; border-radius:6px; border:1px solid #fee2e2;" id="retModalDescription">
+          Buyer inspection remarks...
+        </p>
+      </div>
+
+      <!-- Action Selection Guide -->
+      <div style="font-size:0.76rem; color:#64748b; line-height:1.4;">
+        <strong style="color:#334155;">Farmer Resolution Actions:</strong> Selecting an action will immediately update buyer status and trigger escrow adjustment.
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; background:#f8fafc;">
+      <button type="button" class="btn btn-outline btn-sm" data-close-modal>Close</button>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-sm btn-outline text-red-600" id="retModalBtnReject" onclick="Dashboard.handleModalReturnAction('Claim Rejected')" style="border-color:#fca5a5; background:#fff1f2; color:#be123c;">
+          Reject Claim
+        </button>
+        <button type="button" class="btn btn-sm" id="retModalBtnReplacement" onclick="Dashboard.handleModalReturnAction('Replacement Dispatched')" style="background:#2563eb; color:#fff; border-color:#2563eb;">
+          <i data-lucide="truck" style="width:14px; height:14px;"></i> Dispatch Replacement
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" id="retModalBtnRefund" onclick="Dashboard.handleModalReturnAction('Approved & Refunded')" style="background:#059669; border-color:#059669;">
+          <i data-lucide="shield-check" style="width:14px; height:14px;"></i> Approve 100% Refund
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- 9. About Us Modal -->
