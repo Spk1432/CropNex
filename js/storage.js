@@ -14,7 +14,8 @@ const STORAGE_KEYS = {
   PROFILES: 'cropnex_profiles_v1',
   ROLE: 'cropnex_current_role_v1',
   LANG: 'cropnex_current_lang_v1',
-  AUTH: 'cropnex_auth_state_v1'
+  AUTH: 'cropnex_auth_state_v1',
+  RETURNS: 'cropnex_returns_v1'
 };
 
 const StorageService = {
@@ -22,12 +23,16 @@ const StorageService = {
     if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
       this.resetToDefaults();
     }
+    if (!localStorage.getItem(STORAGE_KEYS.RETURNS)) {
+      localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(typeof INITIAL_RETURNS !== 'undefined' ? INITIAL_RETURNS : []));
+    }
   },
 
   resetToDefaults() {
     localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(INITIAL_PRODUCTS));
     localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify([]));
     localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(INITIAL_ORDERS));
+    localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(typeof INITIAL_RETURNS !== 'undefined' ? INITIAL_RETURNS : []));
     localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(['prod-001', 'prod-004']));
     localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(INITIAL_MESSAGES));
     localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
@@ -265,6 +270,48 @@ const StorageService = {
 
     window.dispatchEvent(new CustomEvent('cropnex:ordersChanged', { detail: { orders } }));
     return order;
+  },
+
+  // --- Returns & Claims ---
+  getReturns() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.RETURNS) || '[]');
+  },
+
+  createReturn(returnData) {
+    const returns = this.getReturns();
+    const newReturn = {
+      id: 'RET-2026-' + Math.floor(100 + Math.random() * 900),
+      requestDate: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+      status: 'Return Requested',
+      ...returnData
+    };
+    returns.unshift(newReturn);
+    localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(returns));
+
+    if (newReturn.orderId) {
+      this.updateOrderStatus(newReturn.orderId, 'Return Requested');
+    }
+
+    this.addNotification({
+      title: 'Produce Return Initiated',
+      message: `Return request for ${newReturn.productName || 'produce'} (Order #${newReturn.orderId}). Reason: ${newReturn.reasonLabel || newReturn.reason}.`,
+      type: 'order'
+    });
+
+    window.dispatchEvent(new CustomEvent('cropnex:returnsChanged', { detail: { returns } }));
+    return newReturn;
+  },
+
+  updateReturnStatus(returnId, newStatus) {
+    const returns = this.getReturns();
+    const ret = returns.find(r => r.id === returnId);
+    if (ret) {
+      ret.status = newStatus;
+      localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(returns));
+      window.dispatchEvent(new CustomEvent('cropnex:returnsChanged', { detail: { returns } }));
+      return ret;
+    }
+    return null;
   },
 
   // --- Favorites ---

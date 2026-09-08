@@ -60,27 +60,27 @@
       <!-- Center: Nav Links & Search Bar -->
       <div class="header-center-col" style="display:flex; align-items:center; gap:14px; flex:1; max-width:700px; margin:0 10px;">
         <!-- Nav Links: Home, Marketplace, About Us, Return Order -->
-        <nav class="nav-center-menu" style="display:flex; align-items:center; gap:4px;">
-          <a href="javascript:void(0)" class="nav-link" data-navigate="marketplace" title="CropNex Home">
+        <nav class="nav-center-menu" id="navCenterMenu" style="display:flex; align-items:center; gap:4px;">
+          <a href="javascript:void(0)" class="nav-link" id="navHomeLink" data-navigate="marketplace" title="CropNex Home">
             <i data-lucide="home" style="width:15px; height:15px;"></i>
             <span>Home</span>
           </a>
-          <a href="javascript:void(0)" class="nav-link" data-navigate="marketplace" title="Direct Marketplace">
+          <a href="javascript:void(0)" class="nav-link" id="navMarketplaceLink" data-navigate="marketplace" title="Direct Marketplace">
             <i data-lucide="store" style="width:15px; height:15px;"></i>
             <span>Marketplace</span>
           </a>
-          <a href="javascript:void(0)" class="nav-link" onclick="UI.openAboutModal()" title="About CropNex">
+          <a href="about.html" target="_blank" rel="noopener noreferrer" class="nav-link" id="navAboutUsLink" title="About CropNex">
             <i data-lucide="info" style="width:15px; height:15px;"></i>
             <span>About Us</span>
           </a>
-          <button type="button" class="btn btn-outline btn-sm nav-return-btn" onclick="UI.openReturnOrderModal()" title="Request Return for Orders" style="display:inline-flex; align-items:center; gap:5px; padding:5px 9px; font-size:0.78rem; border-radius:6px; border-color:#e2e8f0; color:#475569; font-weight:600; white-space:nowrap;">
+          <button type="button" class="btn btn-outline btn-sm nav-return-btn" id="navReturnOrderBtn" onclick="UI.openReturnOrderModal()" title="Request Return for Orders" style="display:inline-flex; align-items:center; gap:5px; padding:5px 9px; font-size:0.78rem; border-radius:6px; border-color:#e2e8f0; color:#475569; font-weight:600; white-space:nowrap;">
             <i data-lucide="rotate-ccw" style="width:13px; height:13px; color:#e11d48;"></i>
             <span>Return Order</span>
           </button>
         </nav>
 
         <!-- Navbar Search Bar -->
-        <div class="nav-search-bar" style="position:relative; flex:1; min-width:180px;">
+        <div class="nav-search-bar" id="navSearchBarContainer" style="position:relative; flex:1; min-width:180px;">
           <i data-lucide="search" class="nav-search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:#64748b; pointer-events:none;"></i>
           <input type="text" id="navProduceSearchInput" placeholder="Search farm produce, mandi, crop..." oninput="Marketplace.handleNavbarSearch(this.value)" style="width:100%; padding:7px 30px 7px 34px; border-radius:20px; border:1px solid #cbd5e1; font-size:0.83rem; background:#f8fafc; outline:none; transition:all 0.2s;">
           <button type="button" class="nav-search-clear" id="navSearchClearBtn" onclick="Marketplace.clearNavbarSearch()" style="display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; font-size:16px; color:#94a3b8; cursor:pointer;" title="Clear">&times;</button>
@@ -754,6 +754,13 @@
             <div class="font-bold text-slate-800 text-sm">AI Price Prediction</div>
             <div class="text-xs text-slate-500">Live APMC rate trend discovery</div>
           </div>
+          <div class="stat-card" data-navigate="farmer-returns" style="cursor: pointer; padding: 16px; border: 1px solid #fecaca; background: #fffdfd; transition: all 0.2s ease;">
+            <div class="stat-icon-wrap" style="margin-bottom: 8px; background:#fee2e2; color:#b91c1c;">
+              <i data-lucide="rotate-ccw"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">Returned Orders</div>
+            <div class="text-xs text-red-600">Disputes & quality claims</div>
+          </div>
         </div>
 
         <!-- Charts Grid -->
@@ -992,6 +999,73 @@
               </thead>
               <tbody id="farmerOrdersTableBody">
                 <!-- Injected via Dashboard.renderFarmerOrdersTable() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         VIEW 6E: FARMER RETURNS (Returned Produce & Dispute Tracking)
+         ========================================== -->
+    <section class="app-view" id="view-farmer-returns">
+      <div class="page-container" style="max-width:1360px;">
+        <div class="page-header-block mb-6" style="margin-bottom:24px;">
+          <span class="user-role-badge" style="background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; margin-bottom:8px; display:inline-block; font-weight:700;">RETURN CLAIMS & SPOILAGE REPORTS</span>
+          <h2 class="text-2xl font-bold text-slate-900">Returned Orders Management</h2>
+          <p class="text-sm text-slate-500">Review returned produce reported by wholesale buyers, inspect reason reports with harvest batch tracking, and approve resolutions or replacements.</p>
+        </div>
+
+        <!-- Returns KPI Cards -->
+        <div class="kpi-cards-grid mb-6" style="margin-bottom:24px;">
+          <div class="kpi-card" style="border-left:4px solid #ef4444;">
+            <span class="kpi-label">Total Returned Orders</span>
+            <div class="kpi-value text-red-600" id="kpiFarmerReturnsTotal">0</div>
+            <span class="text-xs text-slate-500">Initiated by buyers</span>
+          </div>
+          <div class="kpi-card" style="border-left:4px solid #f59e0b;">
+            <span class="kpi-label">Pending Review / Inspection</span>
+            <div class="kpi-value text-amber-600" id="kpiFarmerReturnsPending">0</div>
+            <span class="text-xs text-amber-700 font-semibold">Immediate action needed</span>
+          </div>
+          <div class="kpi-card" style="border-left:4px solid #10b981;">
+            <span class="kpi-label">Resolved / Refunded</span>
+            <div class="kpi-value text-emerald-700" id="kpiFarmerReturnsResolved">0</div>
+            <span class="text-xs text-emerald-700 font-semibold">Settled claims</span>
+          </div>
+        </div>
+
+        <!-- Returns Data Table -->
+        <div class="data-table-card">
+          <div class="table-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h4 class="font-bold text-slate-800">Returned Produce & Buyer Claims</h4>
+              <span class="text-xs text-slate-500">Real-time alerts when a buyer requests return or replacement</span>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="Dashboard.renderFarmerReturnsTable()" style="display:inline-flex; align-items:center; gap:6px;">
+              <i data-lucide="refresh-cw"></i> <span>Refresh</span>
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Return ID</th>
+                  <th>Order ID</th>
+                  <th>Produce</th>
+                  <th>Buyer</th>
+                  <th>Qty</th>
+                  <th>Reason</th>
+                  <th>Notes & Description</th>
+                  <th>Requested Resolution</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="farmerReturnsTableBody">
+                <!-- Injected via Dashboard.renderFarmerReturnsTable() -->
               </tbody>
             </table>
           </div>
@@ -1399,10 +1473,7 @@
               <p class="text-xs text-slate-500 mt-1">Official national farmer identity linked with DBT and direct APMC market access.</p>
             </div>
 
-            <div class="flex justify-between items-center mt-4" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
-              <button type="button" class="btn btn-outline text-red-600" onclick="Dashboard.resetAllDemoData()">
-                <i data-lucide="refresh-cw"></i> <span>Reset Default Data</span>
-              </button>
+            <div class="flex justify-end items-center mt-4" style="display:flex; justify-content:flex-end; align-items:center; margin-top:16px;">
               <button type="submit" class="btn btn-primary">
                 <i data-lucide="save"></i> <span data-i18n="btn_save_changes">Save Changes</span>
               </button>

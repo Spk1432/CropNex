@@ -1,0 +1,457 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About CropNex • India's Direct Farm-to-Business Agricultural Platform</title>
+  
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="apple-touch-icon" href="assets/cropnex-logo.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --primary-50: #ecfdf5;
+      --primary-100: #d1fae5;
+      --primary-500: #10b981;
+      --primary-600: #059669;
+      --primary-700: #047857;
+      --primary-800: #065f46;
+      --primary-900: #064e3b;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #fafaf9;
+      color: var(--slate-800);
+      line-height: 1.6;
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--slate-200);
+      padding: 12px 24px;
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #22c55e;
+    }
+
+    .brand-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--primary-800);
+      letter-spacing: -0.03em;
+    }
+
+    .brand-title span {
+      color: var(--primary-500);
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: var(--primary-600);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: var(--primary-700);
+      transform: translateY(-1px);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px 60px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-100);
+      color: var(--primary-800);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 span {
+      color: var(--primary-600);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--slate-600);
+      max-width: 760px;
+      margin: 0 auto 30px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--primary-50);
+      color: var(--primary-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--slate-600);
+      line-height: 1.6;
+    }
+
+    .comparison-section {
+      background: #fff;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 48px;
+    }
+
+    .comparison-section h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .comp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .comp-box {
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .comp-box.traditional {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+    }
+
+    .comp-box.traditional h4 {
+      color: #9f1239;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .comp-box.cropnex {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .comp-box.cropnex h4 {
+      color: #166534;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .comp-list {
+      list-style: none;
+      font-size: 0.88rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .comp-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      background: linear-gradient(135deg, var(--primary-900), var(--primary-700));
+      color: #fff;
+      padding: 32px;
+      border-radius: var(--radius);
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      opacity: 0.9;
+    }
+
+    .support-box {
+      background: #fff;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-align: center;
+    }
+
+    .support-box h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 8px;
+    }
+
+    .support-info {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      font-size: 0.92rem;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 0.85rem;
+      color: var(--slate-600);
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .grid-2, .comp-grid, .stats-bar { grid-template-columns: 1fr; }
+      .top-nav { padding: 10px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="top-nav">
+    <div class="top-nav-inner">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/cropnex-logo.jpg" alt="CropNex Logo">
+        <span class="brand-title">Crop<span>Nex</span></span>
+      </a>
+      <a href="index.html" class="btn-back">
+        <i data-lucide="arrow-left" style="width:16px; height:16px;"></i>
+        <span>Back to CropNex App</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    
+    <!-- Hero -->
+    <section class="hero">
+      <div class="badge-pill">
+        <i data-lucide="award" style="width:14px; height:14px;"></i>
+        Smart India Hackathon 2026 • PS ID 26033
+      </div>
+      <h1>Direct Agricultural Commerce, <span>Empowering Indian Farmers</span></h1>
+      <p>
+        CropNex connects verified farmers directly with wholesale buyers, retailers, and food processors—ensuring fair farm-gate pricing, complete harvest traceability with scannable barcodes, and rapid cold-chain fulfillment.
+      </p>
+    </section>
+
+    <!-- 4 Core Pillars -->
+    <section class="grid-2">
+      <div class="card">
+        <div class="card-icon"><i data-lucide="sprout"></i></div>
+        <h3>Zero Middlemen</h3>
+        <p>
+          By removing multi-layered commission agents and adatyas, CropNex enables farmers to sell at true wholesale rates, yielding up to 35% higher direct earnings while reducing buyer procurement costs.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i data-lucide="scan-barcode"></i></div>
+        <h3>Harvest & Barcode Traceability</h3>
+        <p>
+          Every produce batch is encoded with its exact harvesting date, product life span rating, farm origin, and a scannable barcode verifying farm-direct authenticity and fresh stock quality.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i data-lucide="trending-up"></i></div>
+        <h3>AI Mandi Price Forecasting</h3>
+        <p>
+          Intelligent statistical models track 12 major Maharashtra APMC mandis (Lasalgaon, Pimpalgaon, Gultekdi Pune, Solapur) to project 15-day wholesale rate trends, preventing distress selling.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i data-lucide="truck"></i></div>
+        <h3>Shared Cold-Van Logistics</h3>
+        <p>
+          Smart multi-stop route pooling groups farm produce dispatches from agricultural corridors into shared cold-storage vans, slashing freight expenses by 21% and ensuring delivery within 24 hours.
+        </p>
+      </div>
+    </section>
+
+    <!-- Traditional Mandi vs CropNex Comparison -->
+    <section class="comparison-section">
+      <h2>Why Indian Agriculture Needs CropNex</h2>
+      <div class="comp-grid">
+        <div class="comp-box traditional">
+          <h4>❌ Traditional Mandi Chain</h4>
+          <ul class="comp-list">
+            <li><span>•</span> 4-6 intermediaries taking 30-40% total commission.</li>
+            <li><span>•</span> No harvest traceability; old cold-storage stock sold as fresh.</li>
+            <li><span>•</span> Distress selling during peak harvest arrivals due to lack of market data.</li>
+            <li><span>•</span> Delays up to 48-72 hours leading to high post-harvest wastage.</li>
+          </ul>
+        </div>
+
+        <div class="comp-box cropnex">
+          <h4>✅ The CropNex Digital Corridor</h4>
+          <ul class="comp-list">
+            <li><span>•</span> Direct farmer-to-buyer transaction with transparent settlements.</li>
+            <li><span>•</span> Scannable batch barcodes displaying verified harvesting dates and life span.</li>
+            <li><span>•</span> AI price trends forecasting optimal dispatch windows.</li>
+            <li><span>•</span> Pooled refrigerated transit delivering fresh produce within 24 hours.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Statistics -->
+    <section class="stats-bar">
+      <div>
+        <div class="stat-val">+35%</div>
+        <div class="stat-label">Higher Farmer Earnings</div>
+      </div>
+      <div>
+        <div class="stat-val">100%</div>
+        <div class="stat-label">Harvest Traceability</div>
+      </div>
+      <div>
+        <div class="stat-val">&lt; 24h</div>
+        <div class="stat-label">Farm-to-Hub Delivery</div>
+      </div>
+      <div>
+        <div class="stat-val">0%</div>
+        <div class="stat-label">Hidden Middleman Fees</div>
+      </div>
+    </section>
+
+    <!-- Support & Helpdesk -->
+    <section class="support-box">
+      <div class="card-icon" style="margin:0 auto 12px;"><i data-lucide="headphones"></i></div>
+      <h3>Kisan & Institutional Buyer Helpdesk</h3>
+      <p style="font-size:0.9rem; color:var(--slate-600); max-width:600px; margin:0 auto;">
+        Our dedicated multi-lingual agricultural support desk operates 7 days a week to assist farmers with listing crops, barcode tags, and dispatch logistics.
+      </p>
+      <div class="support-info">
+        <div><strong>📞 Toll-Free Helpline:</strong> 1800-CROPNEX</div>
+        <div><strong>📧 Email Desk:</strong> support@cropnex.in</div>
+        <div><strong>📍 Regional Hub:</strong> Pune - Nashik Agri Corridor, Maharashtra</div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>© 2026 CropNex Platform • Smart India Hackathon PS ID 26033. All rights reserved.</p>
+    </div>
+
+  </main>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

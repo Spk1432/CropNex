@@ -65,6 +65,9 @@ const Dashboard = {
     if (completedEl) completedEl.textContent = completedOrders.length;
     if (earningsEl) earningsEl.textContent = `₹${Math.round(totalSales * 0.94).toLocaleString('en-IN')}`;
 
+    // Render Farmer Returns KPIs and table
+    this.renderFarmerReturnsTable();
+
     // Render Charts
     setTimeout(() => {
       this.renderFarmerCharts();
@@ -215,6 +218,107 @@ const Dashboard = {
     UI.showToast(`Order #${orderId} status updated to "${newStatus}"`, 'success');
     this.renderFarmerOrdersTable(StorageService.getOrders());
     this.renderFarmerDashboard();
+  },
+
+  renderFarmerReturnsTable() {
+    const tbody = document.getElementById('farmerReturnsTableBody');
+    const returns = StorageService.getReturns ? StorageService.getReturns() : [];
+
+    // KPI updates
+    const totalEl = document.getElementById('kpiFarmerReturnsTotal');
+    const pendingEl = document.getElementById('kpiFarmerReturnsPending');
+    const resolvedEl = document.getElementById('kpiFarmerReturnsResolved');
+
+    const pendingCount = returns.filter(r => r.status === 'In Inspection' || r.status === 'Return Requested').length;
+    const resolvedCount = returns.filter(r => r.status === 'Approved & Refunded' || r.status === 'Resolved' || r.status === 'Replacement Dispatched').length;
+
+    if (totalEl) totalEl.textContent = returns.length;
+    if (pendingEl) pendingEl.textContent = pendingCount;
+    if (resolvedEl) resolvedEl.textContent = resolvedCount;
+
+    if (!tbody) return;
+
+    if (returns.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-500 font-medium">No returned produce claims received. All dispatches in good standing!</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = returns.map(ret => {
+      let statusBg = '#fef3c7';
+      let statusColor = '#92400e';
+
+      if (ret.status === 'Approved & Refunded' || ret.status === 'Resolved') {
+        statusBg = '#dcfce7';
+        statusColor = '#166534';
+      } else if (ret.status === 'Replacement Dispatched') {
+        statusBg = '#dbeafe';
+        statusColor = '#1e40af';
+      } else if (ret.status === 'Claim Rejected') {
+        statusBg = '#fee2e2';
+        statusColor = '#991b1b';
+      }
+
+      return `
+        <tr>
+          <td class="font-mono text-xs font-bold text-rose-700">${ret.id}</td>
+          <td class="font-mono text-xs font-semibold text-slate-700">#${ret.orderId}</td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img src="${ret.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60'}" 
+                   alt="${ret.productName}" 
+                   style="width:36px; height:36px; border-radius:6px; object-fit:cover; border:1px solid #e2e8f0;">
+              <div>
+                <div class="font-semibold text-slate-800 text-sm">${ret.productName}</div>
+                <div class="text-xs text-slate-500">${ret.date || 'Recent'}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="font-semibold text-slate-800 text-sm">${ret.buyerName || 'Verified Buyer'}</div>
+            <div class="text-xs text-slate-500 font-mono">${ret.buyerPhone || ''}</div>
+          </td>
+          <td class="font-semibold text-slate-800">${ret.quantity} ${ret.unit || 'kg'}</td>
+          <td>
+            <span style="display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:600; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; line-height:1.2;">
+              ${ret.reasonLabel || ret.reason || 'Quality Claim'}
+            </span>
+          </td>
+          <td style="max-width:240px;">
+            <p class="text-xs text-slate-600 mb-0" style="margin:0; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="${ret.description || ''}">
+              ${ret.description || 'No additional inspection notes provided.'}
+            </p>
+          </td>
+          <td>
+            <span class="text-xs font-semibold text-slate-700">
+              ${ret.resolution || 'Direct Refund'}
+            </span>
+          </td>
+          <td>
+            <span style="display:inline-block; padding:4px 9px; border-radius:12px; font-size:0.75rem; font-weight:700; background:${statusBg}; color:${statusColor}; white-space:nowrap;">
+              ${ret.status}
+            </span>
+          </td>
+          <td>
+            <select class="form-select text-xs py-1 px-2 border rounded" 
+                    onchange="Dashboard.updateReturnStatus('${ret.id}', this.value)"
+                    style="font-size:0.75rem; padding:4px 8px; border-radius:6px; border:1px solid #cbd5e1; background:#fff; cursor:pointer;">
+              <option value="In Inspection" ${ret.status === 'In Inspection' || ret.status === 'Return Requested' ? 'selected' : ''}>In Inspection</option>
+              <option value="Approved & Refunded" ${ret.status === 'Approved & Refunded' ? 'selected' : ''}>Approve Refund</option>
+              <option value="Replacement Dispatched" ${ret.status === 'Replacement Dispatched' ? 'selected' : ''}>Dispatch Replacement</option>
+              <option value="Claim Rejected" ${ret.status === 'Claim Rejected' ? 'selected' : ''}>Reject Claim</option>
+            </select>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    if (window.lucide) lucide.createIcons();
+  },
+
+  updateReturnStatus(returnId, newStatus) {
+    StorageService.updateReturnStatus(returnId, newStatus);
+    UI.showToast(`Return #${returnId} status set to "${newStatus}"`, 'success');
+    this.renderFarmerReturnsTable();
   },
 
   openAddProductModal(editId = null) {

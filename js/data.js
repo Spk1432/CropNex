@@ -570,6 +570,28 @@ const INITIAL_ORDERS = [
   }
 ];
 
+const INITIAL_RETURNS = [
+  {
+    id: 'RET-2026-881',
+    orderId: 'CNX-2026-1039',
+    productName: 'Potato - Kufri Pukhraj',
+    category: 'Vegetables',
+    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Ramesh Patil',
+    quantity: 40,
+    unit: 'kg',
+    amount: 600,
+    reason: 'transit_damage',
+    reasonLabel: 'Transit Damage / Bruised Tubers',
+    description: 'A 40kg bag had crushed tubers during inter-city unloading. Remaining consignment accepted without issue.',
+    resolution: '100% Refund',
+    requestDate: '2026-09-07 02:30 PM',
+    status: 'In Inspection'
+  }
+];
+
 const INITIAL_MESSAGES = {
   'conv-farmer-1': {
     id: 'conv-farmer-1',

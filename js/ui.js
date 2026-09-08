@@ -22,7 +22,7 @@ const UI = {
     const hash = window.location.hash.replace('#', '');
     const validViews = [
       'marketplace', 'landing', 'forecast', 'logistics', 'tenders',
-      'farmer-dashboard', 'farmer-add-product', 'farmer-products', 'farmer-orders',
+      'farmer-dashboard', 'farmer-add-product', 'farmer-products', 'farmer-orders', 'farmer-returns',
       'buyer-dashboard', 'buyer-orders', 'buyer-tracking', 'buyer-favorites',
       'profile', 'how-it-works'
     ];
@@ -131,6 +131,9 @@ const UI = {
       }
     });
 
+    // Update top navbar based on active view and role
+    this.updateNavbarVisibility(viewName);
+
     // Trigger view-specific renderers
     this.onViewActivated(viewName);
 
@@ -138,6 +141,31 @@ const UI = {
     LanguageService.applyLanguage();
     if (window.lucide) {
       lucide.createIcons();
+    }
+  },
+
+  updateNavbarVisibility(viewName = this.currentView) {
+    const isAuth = StorageService.isAuthenticated();
+    const role = StorageService.getCurrentRole();
+    const isFarmer = (isAuth && role === 'farmer') || (viewName && viewName.startsWith('farmer-'));
+
+    const marketplaceLink = document.getElementById('navMarketplaceLink');
+    const returnOrderBtn = document.getElementById('navReturnOrderBtn');
+    const searchBar = document.getElementById('navSearchBarContainer');
+    const topLeftFilterBtn = document.getElementById('navTopLeftFilterBtn');
+    const homeLink = document.getElementById('navHomeLink');
+
+    if (isFarmer) {
+      if (marketplaceLink) marketplaceLink.style.display = 'none';
+      if (returnOrderBtn) returnOrderBtn.style.display = 'none';
+      if (searchBar) searchBar.style.display = 'none';
+      if (topLeftFilterBtn) topLeftFilterBtn.style.display = 'none';
+      if (homeLink) homeLink.setAttribute('data-navigate', 'farmer-dashboard');
+    } else {
+      if (marketplaceLink) marketplaceLink.style.display = 'inline-flex';
+      if (returnOrderBtn) returnOrderBtn.style.display = 'inline-flex';
+      if (searchBar) searchBar.style.display = 'block';
+      if (homeLink) homeLink.setAttribute('data-navigate', 'marketplace');
     }
   },
 
@@ -157,6 +185,9 @@ const UI = {
         break;
       case 'farmer-orders':
         if (typeof Dashboard !== 'undefined') Dashboard.renderFarmerOrdersTable(StorageService.getOrders());
+        break;
+      case 'farmer-returns':
+        if (typeof Dashboard !== 'undefined') Dashboard.renderFarmerReturnsTable();
         break;
       case 'buyer-dashboard':
         if (typeof Dashboard !== 'undefined') Dashboard.renderBuyerDashboard();
@@ -223,6 +254,8 @@ const UI = {
         profileBtn.style.display = 'none';
       }
     }
+
+    this.updateNavbarVisibility();
   },
 
   // Sidebar Panel (Slide-In from Left)
@@ -293,6 +326,9 @@ const UI = {
         </li>
         <li class="sidebar-item" data-navigate="farmer-orders">
           <i data-lucide="clipboard-list"></i> <span>Orders</span>
+        </li>
+        <li class="sidebar-item" data-navigate="farmer-returns">
+          <i data-lucide="rotate-ccw"></i> <span>Returned Orders</span>
         </li>
         <li class="sidebar-item" data-navigate="forecast">
           <i data-lucide="trending-up"></i> <span>AI Price Prediction</span>
@@ -554,13 +590,58 @@ const UI = {
 
   handleReturnOrderSubmit(event) {
     if (event) event.preventDefault();
-    const orderId = document.getElementById('returnOrderIdSelect')?.value || 'CNX-2026-1048';
+    const orderSelect = document.getElementById('returnOrderIdSelect');
+    const orderId = orderSelect?.value || 'CNX-2026-1048';
+    const reasonSelect = document.getElementById('returnReasonSelect');
+    const reasonVal = reasonSelect?.value || 'quality_spoilage';
+    const reasonLabel = reasonSelect?.options[reasonSelect.selectedIndex]?.text || 'Quality Issue / Spoilage in Transit';
+    const descVal = document.getElementById('returnDescription')?.value?.trim() || 'Produce damaged or spoiled upon unloading.';
+    const resolutionVal = document.querySelector('input[name="returnResolution"]:checked')?.value === 'replacement' 
+      ? 'Replacement Batch Requested' 
+      : 'Direct 100% Account Refund';
+
+    const orders = StorageService.getOrders();
+    const order = orders.find(o => o.id === orderId) || {
+      id: orderId,
+      productName: 'Fresh Produce Consignment',
+      image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60',
+      farmerName: 'Ramesh Patil',
+      quantity: 100,
+      unit: 'kg',
+      buyerName: 'Ajay Traders',
+      buyerPhone: '+91 98220 11223'
+    };
+
+    const buyerProfile = StorageService.getProfile('buyer');
+
+    // Create return record in storage for farmer inspection
+    const newReturn = StorageService.createReturn({
+      orderId: order.id,
+      productName: order.productName,
+      image: order.image,
+      farmerName: order.farmerName || 'Ramesh Patil',
+      quantity: order.quantity,
+      unit: order.unit || 'kg',
+      reason: reasonVal,
+      reasonLabel: reasonLabel,
+      description: descVal,
+      resolution: resolutionVal,
+      buyerName: buyerProfile.name || order.buyerName || 'Ajay Traders',
+      buyerPhone: buyerProfile.phone || '+91 98220 11223'
+    });
 
     // Update status in storage
     StorageService.updateOrderStatus(orderId, 'Return Requested');
 
+    StorageService.addNotification({
+      title: 'Return Request Filed',
+      message: `Return claim #${newReturn.id} registered for Order #${orderId} (${newReturn.productName}). Farmer notified.`,
+      type: 'warning',
+      timestamp: 'Just now'
+    });
+
     this.closeAllModals();
-    this.showToast(`Return request submitted for Order #${orderId}. Farm-gate pickup & verification scheduled.`, 'success');
+    this.showToast(`Return request #${newReturn.id} filed for Order #${orderId}. Farmer notified for farm-gate inspection.`, 'success');
 
     const form = document.getElementById('returnOrderForm');
     if (form) form.reset();
@@ -569,6 +650,8 @@ const UI = {
       Dashboard.renderBuyerOrders();
     } else if (this.currentView === 'farmer-orders' && typeof Dashboard !== 'undefined') {
       Dashboard.renderFarmerOrdersTable(StorageService.getOrders());
+    } else if (this.currentView === 'farmer-returns' && typeof Dashboard !== 'undefined') {
+      Dashboard.renderFarmerReturnsTable();
     }
   },
 
