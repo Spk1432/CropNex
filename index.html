@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CropNex — From Farm to Market, Without Unnecessary Middlemen</title>
-  <meta name="description" content="Smart India Hackathon 2026 (PS ID 26033) - Direct multi-tier marketplace, AI price intelligence, smart logistics and multilingual tender aggregator.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#15803D">
+  <title>CropNex — Direct Agritech Marketplace & Farmer Intelligence</title>
+  <meta name="description" content="Direct multi-tier marketplace, AI price intelligence, smart logistics and multilingual tender aggregator.">
 
   <!-- Google Fonts: Inter & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +16,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=2.3">
+  <link rel="stylesheet" href="css/style.css?v=3.0">
 
   <!-- Lucide Icons & Chart.js via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -784,23 +785,25 @@
               <h4 class="font-bold text-slate-800">Incoming Buyer Orders</h4>
               <span class="text-xs text-slate-500">Status progression automatically updates buyer tracking</span>
             </div>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Buyer</th>
-                  <th>Produce</th>
-                  <th>Quantity</th>
-                  <th>Total</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="farmerOrdersTableBody">
-                <!-- Injected via Dashboard.renderFarmerOrdersTable() -->
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Buyer</th>
+                    <th>Produce</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="farmerOrdersTableBody">
+                  <!-- Injected via Dashboard.renderFarmerOrdersTable() -->
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- My Listed Produce Table -->
@@ -809,22 +812,24 @@
               <h4 class="font-bold text-slate-800">My Listed Produce (Direct Marketplace)</h4>
               <button class="btn btn-xs btn-outline" onclick="Dashboard.openAddProductModal()">+ Add Produce</button>
             </div>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Crop</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Available</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="farmerProductsTableBody">
-                <!-- Injected via Dashboard.renderFarmerProductsTable() -->
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Crop</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Available</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="farmerProductsTableBody">
+                  <!-- Injected via Dashboard.renderFarmerProductsTable() -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -914,22 +919,24 @@
               <h4 class="font-bold text-slate-800">My Orders & Live Dispatches</h4>
               <span class="text-xs text-slate-500">Click "Track" to inspect real-time timeline</span>
             </div>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Produce</th>
-                  <th>Farmer</th>
-                  <th>Total</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="buyerOrdersTableBody">
-                <!-- Injected via Dashboard.renderBuyerOrdersTable() -->
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Produce</th>
+                    <th>Farmer</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="buyerOrdersTableBody">
+                  <!-- Injected via Dashboard.renderBuyerOrdersTable() -->
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Saved Favorites Grid -->
@@ -1556,17 +1563,17 @@
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->
-  <script src="js/data.js?v=2.3"></script>
-  <script src="js/storage.js?v=2.3"></script>
-  <script src="js/language.js?v=2.3"></script>
-  <script src="js/ui.js?v=2.3"></script>
-  <script src="js/marketplace.js?v=2.3"></script>
-  <script src="js/dashboard.js?v=2.3"></script>
-  <script src="js/forecast.js?v=2.3"></script>
-  <script src="js/logistics.js?v=2.3"></script>
-  <script src="js/tenders.js?v=2.3"></script>
-  <script src="js/messages.js?v=2.3"></script>
-  <script src="js/app.js?v=2.3"></script>
+  <script src="js/data.js?v=3.0"></script>
+  <script src="js/storage.js?v=3.0"></script>
+  <script src="js/language.js?v=3.0"></script>
+  <script src="js/ui.js?v=3.0"></script>
+  <script src="js/marketplace.js?v=3.0"></script>
+  <script src="js/dashboard.js?v=3.0"></script>
+  <script src="js/forecast.js?v=3.0"></script>
+  <script src="js/logistics.js?v=3.0"></script>
+  <script src="js/tenders.js?v=3.0"></script>
+  <script src="js/messages.js?v=3.0"></script>
+  <script src="js/app.js?v=3.0"></script>
 
 </body>
 </html>

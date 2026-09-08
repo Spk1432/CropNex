@@ -78,6 +78,20 @@ const UI = {
     window.addEventListener('cropnex:notificationsChanged', () => {
       this.updateNotificationBadge();
     });
+
+    // Responsive window resize listener for responsive maps & charts
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (typeof LogisticsEngine !== 'undefined' && LogisticsEngine.map) {
+          LogisticsEngine.map.invalidateSize();
+        }
+        if (typeof ForecastEngine !== 'undefined' && ForecastEngine.chartInstance) {
+          ForecastEngine.chartInstance.resize();
+        }
+      }, 200);
+    });
   },
 
   routeTo(viewName, updateHash = true) {
