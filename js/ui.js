@@ -22,7 +22,7 @@ const UI = {
     const hash = window.location.hash.replace('#', '');
     const validViews = [
       'marketplace', 'landing', 'forecast', 'logistics', 'tenders',
-      'farmer-dashboard', 'buyer-dashboard', 'buyer-orders', 'buyer-favorites',
+      'farmer-dashboard', 'buyer-dashboard', 'buyer-orders', 'buyer-tracking', 'buyer-favorites',
       'profile', 'how-it-works'
     ];
     // Default homepage is strictly MARKETPLACE unless valid hash is provided
@@ -153,6 +153,9 @@ const UI = {
         break;
       case 'buyer-orders':
         if (typeof Dashboard !== 'undefined') Dashboard.renderBuyerOrdersTable(StorageService.getOrders());
+        break;
+      case 'buyer-tracking':
+        if (typeof Dashboard !== 'undefined') Dashboard.renderBuyerTracking();
         break;
       case 'buyer-favorites':
         if (typeof Dashboard !== 'undefined') Dashboard.renderBuyerFavorites();
@@ -314,7 +317,7 @@ const UI = {
         <li class="sidebar-item" data-navigate="buyer-orders">
           <i data-lucide="package-check"></i> <span>My Orders</span>
         </li>
-        <li class="sidebar-item" data-navigate="buyer-orders">
+        <li class="sidebar-item" data-navigate="buyer-tracking">
           <i data-lucide="map-pin"></i> <span>Track Orders</span>
         </li>
         <li class="sidebar-item" data-navigate="buyer-favorites">
@@ -439,9 +442,12 @@ const UI = {
   trackConfirmedOrder() {
     this.closeAllModals();
     if (this.lastConfirmedOrder) {
-      Dashboard.openOrderTrackingModal(this.lastConfirmedOrder.id);
+      this.routeTo('buyer-tracking');
+      if (typeof Dashboard !== 'undefined') {
+        Dashboard.renderBuyerTracking(this.lastConfirmedOrder.id);
+      }
     } else {
-      this.routeTo('buyer-dashboard');
+      this.routeTo('buyer-tracking');
     }
   },
 

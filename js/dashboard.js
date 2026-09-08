@@ -349,6 +349,20 @@ const Dashboard = {
     const tbody = document.getElementById('buyerOrdersTableBody');
     if (!tbody) return;
 
+    // Update KPI counters on My Orders view if present
+    const totalCountEl = document.getElementById('myOrdersCountTotal');
+    const activeCountEl = document.getElementById('myOrdersCountActive');
+    const deliveredCountEl = document.getElementById('myOrdersCountDelivered');
+    const spentCountEl = document.getElementById('myOrdersCountSpent');
+
+    if (totalCountEl) totalCountEl.textContent = orders.length;
+    if (activeCountEl) activeCountEl.textContent = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled').length;
+    if (deliveredCountEl) deliveredCountEl.textContent = orders.filter(o => o.status === 'Delivered').length;
+    if (spentCountEl) {
+      const totalSpent = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+      spentCountEl.textContent = `₹${totalSpent.toLocaleString('en-IN')}`;
+    }
+
     if (orders.length === 0) {
       tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-muted">You haven't placed any orders yet. Visit Marketplace to buy fresh produce.</td></tr>`;
       return;
@@ -372,8 +386,8 @@ const Dashboard = {
           </span>
         </td>
         <td>
-          <button class="btn btn-xs btn-outline" onclick="Dashboard.openOrderTrackingModal('${order.id}')">
-            <i data-lucide="map-pin"></i> Track
+          <button class="btn btn-xs btn-primary" onclick="Dashboard.trackOrderInView('${order.id}')" style="display:inline-flex; align-items:center; gap:4px;">
+            <i data-lucide="map-pin"></i> <span>Track</span>
           </button>
         </td>
       </tr>
@@ -453,6 +467,187 @@ const Dashboard = {
 
     UI.openModal('orderTrackingModal');
     if (window.lucide) lucide.createIcons();
+  },
+
+  // ==========================================
+  // 2B. LIVE ORDER TRACKING CONTROLLER (Dedicated View)
+  // ==========================================
+  currentTrackedOrderId: null,
+  buyerTrackingMap: null,
+
+  trackOrderInView(orderId) {
+    this.currentTrackedOrderId = orderId;
+    UI.routeTo('buyer-tracking');
+    this.renderBuyerTracking(orderId);
+  },
+
+  switchTrackedOrder(orderId) {
+    this.currentTrackedOrderId = orderId;
+    this.renderBuyerTracking(orderId);
+  },
+
+  searchAndTrackOrder() {
+    const input = document.getElementById('trackOrderSearchInput');
+    const query = input?.value.trim().toUpperCase();
+    if (!query) {
+      UI.showToast('Please enter an Order ID to track.', 'warning');
+      return;
+    }
+
+    const orders = StorageService.getOrders();
+    const found = orders.find(o => o.id.toUpperCase() === query || o.id.toUpperCase().includes(query));
+    if (found) {
+      this.switchTrackedOrder(found.id);
+      const select = document.getElementById('trackingSelectOrder');
+      if (select) select.value = found.id;
+      UI.showToast(`Tracking details loaded for ${found.id}`, 'success');
+    } else {
+      UI.showToast(`No order found matching "${query}".`, 'error');
+    }
+  },
+
+  renderBuyerTracking(orderId) {
+    const orders = StorageService.getOrders();
+    if (!orders || orders.length === 0) return;
+
+    // Populate order selector dropdown
+    const select = document.getElementById('trackingSelectOrder');
+    if (select) {
+      select.innerHTML = orders.map(o => `
+        <option value="${o.id}">${o.id} • ${o.productName} (${o.status})</option>
+      `).join('');
+    }
+
+    // Determine target order
+    let targetOrder = null;
+    if (orderId) {
+      targetOrder = orders.find(o => o.id === orderId);
+    } else if (this.currentTrackedOrderId) {
+      targetOrder = orders.find(o => o.id === this.currentTrackedOrderId);
+    }
+    if (!targetOrder) {
+      // Default to first active order or first order
+      targetOrder = orders.find(o => o.status !== 'Delivered') || orders[0];
+    }
+    this.currentTrackedOrderId = targetOrder.id;
+    if (select) select.value = targetOrder.id;
+
+    // Populate Live Tracking Info
+    const idEl = document.getElementById('liveTrackOrderId');
+    const nameEl = document.getElementById('liveTrackProductName');
+    const qtyFarmerEl = document.getElementById('liveTrackQtyFarmer');
+    const statusBadge = document.getElementById('liveTrackStatusBadge');
+    const destEl = document.getElementById('liveTrackDestination');
+    const totalEl = document.getElementById('liveTrackTotal');
+    const paymentEl = document.getElementById('liveTrackPayment');
+
+    if (idEl) idEl.textContent = targetOrder.id;
+    if (nameEl) nameEl.textContent = targetOrder.productName;
+    if (qtyFarmerEl) qtyFarmerEl.textContent = `${targetOrder.quantity} ${targetOrder.unit} • Farmer: ${targetOrder.farmerName}`;
+    if (destEl) destEl.textContent = targetOrder.deliveryAddress || 'Gala No. 42, Gultekdi Market Yard, Pune';
+    if (totalEl) totalEl.textContent = `₹${(targetOrder.total || 0).toLocaleString('en-IN')}`;
+    if (paymentEl) paymentEl.textContent = targetOrder.paymentMethod || 'Cash on Delivery (Demo)';
+
+    if (statusBadge) {
+      statusBadge.textContent = targetOrder.status;
+      statusBadge.className = `status-badge status-${(targetOrder.status || 'pending').toLowerCase().replace(/\s+/g, '-')}`;
+    }
+
+    // Populate Milestone Progress
+    const timelineEl = document.getElementById('liveTrackingTimeline');
+    if (timelineEl) {
+      const defaultTimeline = [
+        { status: 'Order Placed & Confirmed', time: targetOrder.date || 'Today, 10:30 AM', done: true },
+        { status: 'Accepted & Batch Packed by Farmer', time: '1 hr after placement', done: true },
+        { status: 'Quality Assessed (Grade A Verified)', time: '2 hrs after placement', done: targetOrder.status !== 'Pending' },
+        { status: 'Dispatched via Cold Logistics', time: targetOrder.status === 'Dispatched' ? 'En Route (Live GPS)' : (targetOrder.status === 'Delivered' ? 'Completed' : 'Pending'), done: targetOrder.status === 'Dispatched' || targetOrder.status === 'Delivered' },
+        { status: 'Out for Delivery to Destination Hub', time: targetOrder.status === 'Delivered' ? 'Completed' : 'Pending', done: targetOrder.status === 'Delivered' },
+        { status: 'Delivered & Handover Confirmed', time: targetOrder.status === 'Delivered' ? 'Completed' : 'Pending', done: targetOrder.status === 'Delivered' }
+      ];
+
+      const steps = targetOrder.timeline && targetOrder.timeline.length > 0 ? targetOrder.timeline : defaultTimeline;
+
+      timelineEl.innerHTML = steps.map((step, idx) => `
+        <div class="timeline-step ${step.done ? 'done' : ''}">
+          <div class="timeline-marker">
+            ${step.done ? '<i data-lucide="check"></i>' : (idx + 1)}
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-status">${step.status}</div>
+            <div class="timeline-time">${step.time}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Telemetry and Driver Details
+    const tempEl = document.getElementById('liveTrackTemp');
+    const etaEl = document.getElementById('liveTrackEta');
+    const locEl = document.getElementById('liveTrackLocation');
+
+    if (targetOrder.status === 'Delivered') {
+      if (tempEl) tempEl.textContent = 'Delivered';
+      if (etaEl) etaEl.textContent = 'Completed';
+      if (locEl) locEl.textContent = 'Delivered to Destination Hub';
+    } else {
+      if (tempEl) tempEl.textContent = '4.2 °C';
+      if (etaEl) etaEl.textContent = 'Today, 4:30 PM';
+      if (locEl) locEl.textContent = 'Current: KM 74, Nashik-Pune Tollway';
+    }
+
+    // Render interactive Leaflet Route Map
+    setTimeout(() => {
+      this.initBuyerTrackingMap();
+    }, 120);
+
+    if (window.lucide) lucide.createIcons();
+  },
+
+  initBuyerTrackingMap() {
+    const container = document.getElementById('buyerTrackingMap');
+    if (!container || typeof L === 'undefined') return;
+
+    if (this.buyerTrackingMap) {
+      this.buyerTrackingMap.remove();
+      this.buyerTrackingMap = null;
+    }
+
+    try {
+      const map = L.map('buyerTrackingMap', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([19.25, 73.9], 8);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18
+      }).addTo(map);
+
+      const route = [
+        [19.9975, 73.7898], // Nashik Farm Origin
+        [19.5760, 74.2150], // Sangamner
+        [19.1220, 73.9780], // Narayangaon Checkpoint
+        [18.4985, 73.8682]  // Pune Market Yard
+      ];
+
+      L.polyline(route, { color: '#059669', weight: 4, dashArray: '6, 6' }).addTo(map);
+
+      // Farm origin marker
+      L.circleMarker([19.9975, 73.7898], { radius: 7, color: '#166534', fillColor: '#22c55e', fillOpacity: 1 })
+        .bindPopup('<b>Farm Origin:</b> Ramesh Patil (Nashik)').addTo(map);
+
+      // Current Cold Van Live Marker
+      L.circleMarker([19.1220, 73.9780], { radius: 9, color: '#1e40af', fillColor: '#3b82f6', fillOpacity: 1 })
+        .bindPopup('<b>🚚 Cold Van (MH-15-EG-4921):</b> En Route KM 74').addTo(map).openPopup();
+
+      // Buyer Destination Marker
+      L.circleMarker([18.4985, 73.8682], { radius: 7, color: '#dc2626', fillColor: '#ef4444', fillOpacity: 1 })
+        .bindPopup('<b>Destination:</b> Pune Market Yard').addTo(map);
+
+      map.fitBounds(L.polyline(route).getBounds().pad(0.2));
+      this.buyerTrackingMap = map;
+    } catch (err) {
+      console.warn('Map initialization:', err);
+    }
   },
 
   renderBuyerCharts() {
