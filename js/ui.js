@@ -534,6 +534,47 @@ const UI = {
       toast.classList.add('fade-out');
       setTimeout(() => toast.remove(), 400);
     }, duration);
+  },
+
+  // Return Order Modal Handlers
+  openReturnOrderModal() {
+    const orderSelect = document.getElementById('returnOrderIdSelect');
+    if (orderSelect) {
+      const orders = StorageService.getOrders();
+      if (orders && orders.length > 0) {
+        orderSelect.innerHTML = orders.map(o => 
+          `<option value="${o.id}">#${o.id} - ${o.productName} (${o.quantity} ${o.unit || 'kg'}, ₹${o.total}) [${o.status}]</option>`
+        ).join('');
+      } else {
+        orderSelect.innerHTML = `<option value="CNX-2026-1048">#CNX-2026-1048 - Tomato Hybrid (100 kg, ₹2,544)</option>`;
+      }
+    }
+    this.openModal('returnOrderModal');
+  },
+
+  handleReturnOrderSubmit(event) {
+    if (event) event.preventDefault();
+    const orderId = document.getElementById('returnOrderIdSelect')?.value || 'CNX-2026-1048';
+
+    // Update status in storage
+    StorageService.updateOrderStatus(orderId, 'Return Requested');
+
+    this.closeAllModals();
+    this.showToast(`Return request submitted for Order #${orderId}. Farm-gate pickup & verification scheduled.`, 'success');
+
+    const form = document.getElementById('returnOrderForm');
+    if (form) form.reset();
+
+    if (this.currentView === 'buyer-orders' && typeof Dashboard !== 'undefined') {
+      Dashboard.renderBuyerOrders();
+    } else if (this.currentView === 'farmer-orders' && typeof Dashboard !== 'undefined') {
+      Dashboard.renderFarmerOrdersTable(StorageService.getOrders());
+    }
+  },
+
+  // About Us Modal Handler
+  openAboutModal() {
+    this.openModal('aboutUsModal');
   }
 };
 

@@ -33,19 +33,58 @@
   <!-- Global Application Header -->
   <header class="app-header">
     <div class="header-inner">
-      <!-- Left: Brand Logo and Dashboard Button Under It -->
-      <div class="brand-dashboard-wrapper" style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
-        <!-- Brand Logo -->
-        <div class="brand-logo" data-navigate="marketplace" title="CropNex Marketplace">
-          <img src="assets/cropnex-logo.jpg?v=3.7" alt="CropNex Logo" class="brand-logo-img">
-          <span class="brand-text">Crop<span>Nex</span></span>
+      <!-- Left: Brand Logo, Dashboard Button Under It & Top-Left Filter Button -->
+      <div class="header-left-col" style="display:flex; align-items:center; gap:12px;">
+        <div class="brand-dashboard-wrapper" style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
+          <!-- Brand Logo -->
+          <div class="brand-logo" data-navigate="marketplace" title="CropNex Marketplace">
+            <img src="assets/cropnex-logo.jpg?v=3.8" alt="CropNex Logo" class="brand-logo-img">
+            <span class="brand-text">Crop<span>Nex</span></span>
+          </div>
+
+          <!-- Dashboard button right under CropNex -->
+          <button class="btn btn-primary btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Dashboard" style="padding:4px 10px; font-size:0.78rem; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+            <i data-lucide="layout-dashboard" style="width:14px; height:14px;"></i>
+            <span class="font-semibold" data-i18n="nav_dashboard">Dashboard</span>
+          </button>
         </div>
 
-        <!-- Dashboard button right under CropNex -->
-        <button class="btn btn-primary btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Dashboard" style="padding:4px 10px; font-size:0.78rem; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
-          <i data-lucide="layout-dashboard" style="width:14px; height:14px;"></i>
-          <span class="font-semibold" data-i18n="nav_dashboard">Dashboard</span>
+        <!-- Top-Left Filter Button: Shown when searching or toggled -->
+        <button class="btn nav-top-filter-btn" id="navTopLeftFilterBtn" onclick="Marketplace.openFilterModal()" title="Filter Produce" style="display:none; padding:6px 12px; font-size:0.8rem; border-radius:8px; align-items:center; gap:6px; background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-weight:700; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:all 0.2s;">
+          <i data-lucide="sliders-horizontal" style="width:14px; height:14px; color:#059669;"></i>
+          <span>Filter Produce</span>
+          <span class="filter-count-badge" id="navFilterActiveCount" style="display:none; background:#059669; color:#fff; border-radius:10px; padding:1px 6px; font-size:0.7rem;">0</span>
         </button>
+      </div>
+
+      <!-- Center: Nav Links & Search Bar -->
+      <div class="header-center-col" style="display:flex; align-items:center; gap:14px; flex:1; max-width:700px; margin:0 10px;">
+        <!-- Nav Links: Home, Marketplace, About Us, Return Order -->
+        <nav class="nav-center-menu" style="display:flex; align-items:center; gap:4px;">
+          <a href="javascript:void(0)" class="nav-link" data-navigate="marketplace" title="CropNex Home">
+            <i data-lucide="home" style="width:15px; height:15px;"></i>
+            <span>Home</span>
+          </a>
+          <a href="javascript:void(0)" class="nav-link" data-navigate="marketplace" title="Direct Marketplace">
+            <i data-lucide="store" style="width:15px; height:15px;"></i>
+            <span>Marketplace</span>
+          </a>
+          <a href="javascript:void(0)" class="nav-link" onclick="UI.openAboutModal()" title="About CropNex">
+            <i data-lucide="info" style="width:15px; height:15px;"></i>
+            <span>About Us</span>
+          </a>
+          <button type="button" class="btn btn-outline btn-sm nav-return-btn" onclick="UI.openReturnOrderModal()" title="Request Return for Orders" style="display:inline-flex; align-items:center; gap:5px; padding:5px 9px; font-size:0.78rem; border-radius:6px; border-color:#e2e8f0; color:#475569; font-weight:600; white-space:nowrap;">
+            <i data-lucide="rotate-ccw" style="width:13px; height:13px; color:#e11d48;"></i>
+            <span>Return Order</span>
+          </button>
+        </nav>
+
+        <!-- Navbar Search Bar -->
+        <div class="nav-search-bar" style="position:relative; flex:1; min-width:180px;">
+          <i data-lucide="search" class="nav-search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:#64748b; pointer-events:none;"></i>
+          <input type="text" id="navProduceSearchInput" placeholder="Search farm produce, mandi, crop..." oninput="Marketplace.handleNavbarSearch(this.value)" style="width:100%; padding:7px 30px 7px 34px; border-radius:20px; border:1px solid #cbd5e1; font-size:0.83rem; background:#f8fafc; outline:none; transition:all 0.2s;">
+          <button type="button" class="nav-search-clear" id="navSearchClearBtn" onclick="Marketplace.clearNavbarSearch()" style="display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; font-size:16px; color:#94a3b8; cursor:pointer;" title="Clear">&times;</button>
+        </div>
       </div>
 
       <!-- Header Right Minimal Controls: Language, Cart, Login / Profile -->
@@ -773,12 +812,36 @@
                 <input type="text" id="pageFormCropVariety" required placeholder="e.g. Vaishali S-22 / Red Ruby" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Quality Grade *</label>
-                <select id="pageFormCropGrade" class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
-                  <option value="Export Grade A+">Export Grade A+</option>
-                  <option value="A Grade" selected>A Grade (Standard Wholesale)</option>
-                  <option value="B Grade">B Grade (Commercial/Processing)</option>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Harvesting Date *</label>
+                <input type="date" id="pageFormCropHarvestDate" required class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;" value="2026-09-08" onchange="Dashboard.updateFormBarcodePreview('page')">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Product Shelf Life / Life Span *</label>
+                <select id="pageFormCropLifeSpan" required class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+                  <option value="3-5 days">3-5 Days (Highly Perishable)</option>
+                  <option value="7-10 days" selected>7-10 Days (Fresh Table Produce)</option>
+                  <option value="15-30 days">15-30 Days (Extended Shelf Life)</option>
+                  <option value="3-6 months">3-6 Months (Dry Grains & Spices)</option>
+                  <option value="6-12 months">6-12 Months (Storable Dry Goods)</option>
                 </select>
+              </div>
+              <div style="grid-column: span 2;">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Harvest Traceability Barcode & Batch Code *</label>
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <input type="text" id="pageFormCropBarcode" required readonly value="CRN-HVT-9821" class="form-input font-mono" style="flex:1; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem; font-weight:700; background:#f8fafc; color:#0f172a;">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="Dashboard.generateProduceBarcode('page')" style="white-space:nowrap; display:inline-flex; align-items:center; gap:6px;">
+                    <i data-lucide="refresh-cw" style="width:14px; height:14px;"></i> Generate New Barcode
+                  </button>
+                </div>
+                <div id="pageBarcodeSvgWrap" style="margin-top:10px; padding:12px 16px; background:#fff; border:1px solid #e2e8f0; border-radius:8px; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+                  <div id="pageBarcodeSvgContainer" style="flex:1; min-height:60px;">
+                    <!-- Injected SVG barcode via Dashboard.initBarcodePreviews() -->
+                  </div>
+                  <div style="font-size:0.75rem; color:#64748b; line-height:1.4; text-align:right;">
+                    <strong style="color:#059669; display:block;">✓ Scannable Farm Barcode</strong>
+                    Encodes harvest date, shelf life & farm origin for buyer verification.
+                  </div>
+                </div>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Wholesale Price (₹) *</label>
@@ -879,10 +942,11 @@
                 <tr>
                   <th>Crop</th>
                   <th>Category</th>
+                  <th>Harvest Date</th>
+                  <th>Life Span</th>
                   <th>Price</th>
                   <th>Available</th>
-                  <th>Type</th>
-                  <th>Status</th>
+                  <th>Barcode / Traceability</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -924,7 +988,6 @@
                   <th>Total</th>
                   <th>Date</th>
                   <th>Status</th>
-                  <th>Action</th>
                 </tr>
               </thead>
               <tbody id="farmerOrdersTableBody">
@@ -1324,9 +1387,21 @@
               <input type="text" id="profileInputLocation" class="form-input w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1;">
             </div>
 
+            <!-- Kisan ID (Verified) -->
+            <div id="profileKisanIdContainer">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Kisan ID (PM-Kisan & Agri-Stack Verified) *:</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <input type="text" id="profileInputKisanId" value="KISAN-7821-MH" placeholder="e.g. KISAN-7821-MH" class="form-input font-mono" style="flex:1; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-weight:700; text-transform:uppercase; color:#065f46; background:#f0fdf4;">
+                <span class="badge badge-success" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; background:#dcfce7; color:#15803d; border:1px solid #86efac; border-radius:6px;">
+                  <i data-lucide="badge-check" style="width:14px; height:14px;"></i> Verified
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Official national farmer identity linked with DBT and direct APMC market access.</p>
+            </div>
+
             <div class="flex justify-between items-center mt-4" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
               <button type="button" class="btn btn-outline text-red-600" onclick="Dashboard.resetAllDemoData()">
-                <i data-lucide="refresh-cw"></i> <span data-i18n="btn_reset_data">Reset Demo Data</span>
+                <i data-lucide="refresh-cw"></i> <span>Reset Default Data</span>
               </button>
               <button type="submit" class="btn btn-primary">
                 <i data-lucide="save"></i> <span data-i18n="btn_save_changes">Save Changes</span>
@@ -1393,49 +1468,81 @@
       </div>
       <button class="btn-icon" data-close-modal>&times;</button>
     </div>
-    <div class="modal-body" style="padding: 20px; max-height:70vh; overflow-y:auto; display:flex; flex-direction:column; gap:20px;">
-      <!-- Category -->
+    <div class="modal-body" style="padding: 20px; max-height:70vh; overflow-y:auto; display:flex; flex-direction:column; gap:16px;">
+      <!-- 1. Category -->
       <div class="filter-group" style="margin-bottom:0;">
-        <div class="filter-title" data-i18n="mkt_filter_cat" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">Category</div>
+        <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Category</div>
         <div class="category-nav-list" style="display:flex; flex-wrap:wrap; gap:8px;">
-          <button type="button" class="mkt-cat-btn active" data-category="all" data-i18n="mkt_filter_all">All Categories</button>
-          <button type="button" class="mkt-cat-btn" data-category="vegetables" data-i18n="mkt_cat_veg">Vegetables</button>
-          <button type="button" class="mkt-cat-btn" data-category="fruits" data-i18n="mkt_cat_fruits">Fruits</button>
-          <button type="button" class="mkt-cat-btn" data-category="grains" data-i18n="mkt_cat_grains">Grains</button>
-          <button type="button" class="mkt-cat-btn" data-category="spices" data-i18n="mkt_cat_spices">Spices</button>
-          <button type="button" class="mkt-cat-btn" data-category="oilseeds" data-i18n="mkt_cat_oilseeds">Oilseeds</button>
+          <button type="button" class="mkt-cat-btn active" data-category="all">All Categories</button>
+          <button type="button" class="mkt-cat-btn" data-category="vegetables">Vegetables</button>
+          <button type="button" class="mkt-cat-btn" data-category="fruits">Fruits</button>
+          <button type="button" class="mkt-cat-btn" data-category="grains">Grains</button>
+          <button type="button" class="mkt-cat-btn" data-category="spices">Spices</button>
+          <button type="button" class="mkt-cat-btn" data-category="oilseeds">Oilseeds</button>
         </div>
       </div>
 
-      <!-- Location (Mandi Hub) -->
+      <!-- 2. Harvest Date -->
+      <div class="filter-group" style="margin-bottom:0;">
+        <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Harvest Date</div>
+        <select class="form-select w-full" id="mktHarvestDateFilter" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.9rem;">
+          <option value="all">All Harvest Dates</option>
+          <option value="1">Harvested Today / Yesterday (≤ 48 hrs)</option>
+          <option value="3">Harvested within Last 3 Days</option>
+          <option value="7">Harvested within Last 7 Days (Fresh Batch)</option>
+          <option value="15">Harvested within Last 15 Days</option>
+          <option value="30">Harvested within Last 30 Days</option>
+        </select>
+      </div>
+
+      <!-- 3. Type of Product -->
+      <div class="filter-group" style="margin-bottom:0;">
+        <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Type of Product</div>
+        <select class="form-select w-full" id="mktProductTypeFilter" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.9rem;">
+          <option value="all">All Product Types</option>
+          <option value="organic">100% Certified Organic Farm Produce</option>
+          <option value="conventional">Standard Conventional Produce</option>
+        </select>
+      </div>
+
+      <!-- 4. Life Span -->
+      <div class="filter-group" style="margin-bottom:0;">
+        <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Life Span / Shelf Life</div>
+        <select class="form-select w-full" id="mktLifeSpanFilter" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.9rem;">
+          <option value="all">All Life Spans</option>
+          <option value="short">Short Life Span (3-5 days - Perishables)</option>
+          <option value="medium">Medium Life Span (7-15 days - Table Fresh)</option>
+          <option value="long">Long Life Span (15-30 days - Roots / Alliums)</option>
+          <option value="dry">Extended Storage (3-12 months - Grains & Spices)</option>
+        </select>
+      </div>
+
+      <!-- 5. Location (Mandi Hub) -->
       <div class="filter-group" style="margin-bottom:0;">
         <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Location (Mandi Hub)</div>
         <select class="form-select w-full" id="mktLocationFilter" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.9rem;">
-          <option value="all">All Maharashtra Districts</option>
+          <option value="all">All Maharashtra Districts & Mandis</option>
           <option value="Nashik">Nashik Region</option>
           <option value="Pune">Pune & Ahmednagar</option>
           <option value="Solapur">Solapur & Latur</option>
           <option value="Ratnagiri">Ratnagiri (Konkan)</option>
-          <option value="Jalgaon">Jalgaon</option>
+          <option value="Jalgaon">Jalgaon & Khandesh</option>
         </select>
       </div>
 
-      <!-- Quality Grade -->
+      <!-- 6. Price Range -->
       <div class="filter-group" style="margin-bottom:0;">
-        <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Quality Grade</div>
-        <select class="form-select w-full" id="mktGradeFilter" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.9rem;">
-          <option value="all">All Quality Grades</option>
-          <option value="Grade A">Grade A / Export</option>
-          <option value="Grade B">Grade B / Standard</option>
-        </select>
-      </div>
-
-      <!-- Certified Organic Only -->
-      <div class="filter-group" style="margin-bottom:0;">
-        <label style="display:flex; align-items:center; gap:10px; font-size:0.92rem; font-weight:600; cursor:pointer; padding:10px 14px; background:var(--slate-50); border:1px solid var(--slate-200); border-radius:8px;">
-          <input type="checkbox" id="mktOrganicOnly" style="width:18px; height:18px; accent-color:var(--primary-600);">
-          <span data-i18n="mkt_organic">Certified Organic Only</span>
-        </label>
+        <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Wholesale Price Range (₹)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Min Price (₹):</label>
+            <input type="number" id="mktMinPriceFilter" min="0" placeholder="e.g. 10" class="form-input w-full" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.88rem;">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Max Price (₹):</label>
+            <input type="number" id="mktMaxPriceFilter" min="0" placeholder="e.g. 300" class="form-input w-full" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.88rem;">
+          </div>
+        </div>
       </div>
     </div>
     <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px;">
@@ -1468,7 +1575,8 @@
             <div><strong>Available Stock:</strong> <span id="modalAvailable"></span></div>
             <div><strong>Min Order:</strong> <span id="modalMinOrder"></span></div>
             <div><strong>Harvest Date:</strong> <span id="modalHarvestDate"></span></div>
-            <div><strong>Quality Grade:</strong> <span id="modalGrade"></span></div>
+            <div><strong>Product Life Span:</strong> <span id="modalLifeSpan"></span></div>
+            <div><strong>Traceability Barcode:</strong> <span id="modalBarcode" style="font-family:monospace; font-weight:700; color:var(--primary-700); cursor:pointer; text-decoration:underline;" onclick="Dashboard.showBarcodeModal(Marketplace.selectedProductForModal?.id)" title="Click to inspect farm barcode"></span></div>
             <div><strong>Certification:</strong> <span id="modalOrganic"></span></div>
             <div><strong>Estimated Delivery:</strong> <span id="modalEstimatedDelivery"></span></div>
           </div>
@@ -1533,14 +1641,31 @@
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Variety:</label>
-            <input type="text" id="formCropVariety" placeholder="e.g. Abhinav Grade A" class="form-input w-full" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
+            <input type="text" id="formCropVariety" placeholder="e.g. Abhinav Red" class="form-input w-full" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Quality Grade:</label>
-            <select id="formCropGrade" class="form-select w-full" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
-              <option value="A Grade">A Grade (Export / Premium)</option>
-              <option value="B Grade">B Grade (Standard Table)</option>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Harvesting Date *:</label>
+            <input type="date" id="formCropHarvestDate" required class="form-input w-full" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1;" value="2026-09-08">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Product Life Span *:</label>
+            <select id="formCropLifeSpan" required class="form-select w-full" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
+              <option value="3-5 days">3-5 Days (Highly Perishable)</option>
+              <option value="7-10 days" selected>7-10 Days (Fresh Table)</option>
+              <option value="15-30 days">15-30 Days (Extended Shelf Life)</option>
+              <option value="3-6 months">3-6 Months (Dry Grains & Spices)</option>
+              <option value="6-12 months">6-12 Months (Storable Dry Goods)</option>
             </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Traceability Barcode *:</label>
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="formCropBarcode" required readonly value="CRN-HVT-9821" class="form-input font-mono w-full" style="padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-weight:700;">
+              <button type="button" class="btn btn-outline btn-xs" onclick="Dashboard.generateProduceBarcode('modal')" title="Generate Barcode">🔄</button>
+            </div>
           </div>
         </div>
 
@@ -1841,23 +1966,161 @@
     </div>
   </div>
 
+  <!-- 8. Return Order Request Modal -->
+  <div class="modal-window" id="returnOrderModal" style="max-width:520px;">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i data-lucide="rotate-ccw" style="color:#e11d48; width:20px; height:20px;"></i>
+        <h3 style="margin:0; font-size:1.1rem; font-weight:700;">Request Order Return / Resolution</h3>
+      </div>
+      <button class="btn-icon" data-close-modal>&times;</button>
+    </div>
+    <form id="returnOrderForm" onsubmit="UI.handleReturnOrderSubmit(event)">
+      <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px;">
+        <p class="text-xs text-slate-500" style="margin:0; line-height:1.5;">
+          Direct buyer protection: submit your return or quality claim for delivered wholesale consignments. All requests are reviewed within 4 business hours.
+        </p>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Select Order ID *:</label>
+          <select id="returnOrderIdSelect" required class="form-select w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+            <!-- Populated dynamically via UI.openReturnOrderModal() -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Reason for Return *:</label>
+          <select id="returnReasonSelect" required class="form-select w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+            <option value="quality_spoilage">Quality Issue / Spoilage in Transit</option>
+            <option value="shelf_life_short">Short Shelf Life / Expired Freshness</option>
+            <option value="wrong_item_qty">Incorrect Item or Weight Discrepancy</option>
+            <option value="cold_chain_break">Cold-Chain Temperature Fluctuation</option>
+            <option value="other">Other Commercial Reason</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Detailed Description & Inspection Notes *:</label>
+          <textarea id="returnDescription" required rows="3" placeholder="Describe the physical condition of the produce upon unloading..." class="form-input w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Requested Settlement:</label>
+          <div style="display:flex; gap:16px; margin-top:4px;">
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer;">
+              <input type="radio" name="returnResolution" value="refund" checked style="accent-color:var(--primary-600);"> 100% Direct Account Refund
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer;">
+              <input type="radio" name="returnResolution" value="replacement" style="accent-color:var(--primary-600);"> Immediate Batch Replacement
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px;">
+        <button type="button" class="btn btn-outline btn-sm" data-close-modal>Cancel</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:6px;">
+          <i data-lucide="send"></i> Submit Return Request
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 9. About Us Modal -->
+  <div class="modal-window" id="aboutUsModal" style="max-width:580px;">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="assets/cropnex-logo.jpg?v=3.8" alt="CropNex" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+        <h3 style="margin:0; font-size:1.15rem; font-weight:700;">About CropNex</h3>
+      </div>
+      <button class="btn-icon" data-close-modal>&times;</button>
+    </div>
+    <div class="modal-body" style="padding:22px; max-height:70vh; overflow-y:auto; display:flex; flex-direction:column; gap:16px;">
+      <div>
+        <h4 style="font-size:1.05rem; font-weight:700; color:var(--primary-800); margin-bottom:6px;">Direct Farm-to-Business Agricultural Platform</h4>
+        <p style="font-size:0.88rem; color:var(--slate-600); line-height:1.5;">
+          CropNex is a modern digital agri-marketplace engineered to connect verified farmers directly with wholesale buyers, retailers, institutional buyers, and consumers—bypassing unnecessary middlemen and commissions.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:12px;">
+          <strong style="color:#166534; font-size:0.85rem; display:block; margin-bottom:4px;">🌱 Zero Middlemen</strong>
+          <span style="font-size:0.8rem; color:#15803d;">Direct farm-gate rates giving farmers up to 35% higher real earnings.</span>
+        </div>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px;">
+          <strong style="color:#1e293b; font-size:0.85rem; display:block; margin-bottom:4px;">🏷️ Harvest Traceability</strong>
+          <span style="font-size:0.8rem; color:#475569;">Exact harvest dates, life span ratings, and scannable batch barcodes.</span>
+        </div>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px;">
+          <strong style="color:#1e293b; font-size:0.85rem; display:block; margin-bottom:4px;">🤖 AI Mandi Forecasting</strong>
+          <span style="font-size:0.8rem; color:#475569;">Price forecasting powered by live APMC market data and seasonal models.</span>
+        </div>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px;">
+          <strong style="color:#1e293b; font-size:0.85rem; display:block; margin-bottom:4px;">🚚 Pooled Cold-Chain</strong>
+          <span style="font-size:0.8rem; color:#475569;">Shared vehicle dispatch routes delivering fresh farm produce within 24h.</span>
+        </div>
+      </div>
+
+      <div style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:8px; padding:12px; font-size:0.82rem; color:var(--slate-600); line-height:1.6;">
+        <strong class="text-slate-800">Direct Support & Contact:</strong><br>
+        📞 <strong>Helpline:</strong> 1800-CROPNEX (Toll Free) | 📧 <strong>Email:</strong> support@cropnex.in<br>
+        📍 Agri-Tech Innovation Corridor, Pune - Nashik Express Zone, Maharashtra, India.
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex; justify-content:flex-end;">
+      <button class="btn btn-primary btn-sm" data-close-modal>Close</button>
+    </div>
+  </div>
+
+  <!-- 10. Barcode & Batch Traceability Inspection Modal -->
+  <div class="modal-window" id="barcodeInspectionModal" style="max-width:440px;">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i data-lucide="scan-barcode" style="color:var(--primary-600); width:20px; height:20px;"></i>
+        <h3 style="margin:0; font-size:1.1rem; font-weight:700;">Harvest Traceability Barcode</h3>
+      </div>
+      <button class="btn-icon" data-close-modal>&times;</button>
+    </div>
+    <div class="modal-body" style="text-align:center; padding:24px 20px;">
+      <div id="barcodeModalSvgContainer" style="margin-bottom:16px; display:flex; justify-content:center;">
+        <!-- Injected SVG barcode -->
+      </div>
+      <div style="background:var(--slate-50); border:1px dashed var(--slate-300); border-radius:10px; padding:16px; text-align:left; font-size:0.85rem; display:flex; flex-direction:column; gap:8px;">
+        <div><strong>Produce Item:</strong> <span id="barcodeModalCropName">-</span></div>
+        <div><strong>Batch Barcode:</strong> <span id="barcodeModalCode" style="font-family:monospace; font-weight:bold; color:var(--primary-700);">-</span></div>
+        <div><strong>Harvest Date:</strong> <span id="barcodeModalHarvestDate">-</span></div>
+        <div><strong>Product Life Span:</strong> <span id="barcodeModalLifeSpan">-</span></div>
+        <div><strong>Farm Origin / Mandi:</strong> <span id="barcodeModalOrigin">-</span></div>
+        <div><strong>Producer Kisan ID:</strong> <span id="barcodeModalKisanId" style="font-family:monospace; color:#065f46; font-weight:700;">-</span></div>
+        <div style="margin-top:4px; padding-top:6px; border-top:1px dashed #cbd5e1;">
+          <span style="color:#059669; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+            <i data-lucide="shield-check" style="width:14px; height:14px;"></i> Verified Direct Farm Sourcing
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex; justify-content:flex-end;">
+      <button class="btn btn-primary btn-sm" data-close-modal>Done</button>
+    </div>
+  </div>
+
   <!-- Toast Alerts Container -->
   <div class="toast-container" id="toastContainer"></div>
 
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->
-  <script src="js/data.js?v=3.7"></script>
-  <script src="js/storage.js?v=3.7"></script>
-  <script src="js/language.js?v=3.7"></script>
-  <script src="js/ui.js?v=3.7"></script>
-  <script src="js/marketplace.js?v=3.7"></script>
-  <script src="js/dashboard.js?v=3.7"></script>
-  <script src="js/forecast.js?v=3.7"></script>
-  <script src="js/logistics.js?v=3.7"></script>
-  <script src="js/tenders.js?v=3.7"></script>
-  <script src="js/messages.js?v=3.7"></script>
-  <script src="js/app.js?v=3.7"></script>
+  <script src="js/data.js?v=3.8"></script>
+  <script src="js/storage.js?v=3.8"></script>
+  <script src="js/language.js?v=3.8"></script>
+  <script src="js/ui.js?v=3.8"></script>
+  <script src="js/marketplace.js?v=3.8"></script>
+  <script src="js/dashboard.js?v=3.8"></script>
+  <script src="js/forecast.js?v=3.8"></script>
+  <script src="js/logistics.js?v=3.8"></script>
+  <script src="js/tenders.js?v=3.8"></script>
+  <script src="js/messages.js?v=3.8"></script>
+  <script src="js/app.js?v=3.8"></script>
 
 </body>
 </html>

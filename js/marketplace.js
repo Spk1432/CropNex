@@ -6,9 +6,12 @@
 const Marketplace = {
   activeCategory: 'all',
   searchQuery: '',
+  filterHarvestDate: 'all',
+  filterProductType: 'all',
+  filterLifeSpan: 'all',
   filterLocation: 'all',
-  filterOrganic: false,
-  filterGrade: 'all',
+  filterMinPrice: null,
+  filterMaxPrice: null,
   sortBy: 'recommended',
   selectedProductForModal: null,
 
@@ -24,8 +27,7 @@ const Marketplace = {
     const searchInput = document.getElementById('marketplaceSearchInput');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
-        this.searchQuery = e.target.value.trim().toLowerCase();
-        this.renderProducts();
+        this.handleNavbarSearch(e.target.value);
       });
     }
 
@@ -40,6 +42,36 @@ const Marketplace = {
       });
     });
 
+    // Harvest Date filter
+    const harvestFilter = document.getElementById('mktHarvestDateFilter');
+    if (harvestFilter) {
+      harvestFilter.addEventListener('change', (e) => {
+        this.filterHarvestDate = e.target.value;
+        this.updateFilterBadge();
+        this.renderProducts();
+      });
+    }
+
+    // Product Type filter
+    const typeFilter = document.getElementById('mktProductTypeFilter');
+    if (typeFilter) {
+      typeFilter.addEventListener('change', (e) => {
+        this.filterProductType = e.target.value;
+        this.updateFilterBadge();
+        this.renderProducts();
+      });
+    }
+
+    // Life Span filter
+    const lifeSpanFilter = document.getElementById('mktLifeSpanFilter');
+    if (lifeSpanFilter) {
+      lifeSpanFilter.addEventListener('change', (e) => {
+        this.filterLifeSpan = e.target.value;
+        this.updateFilterBadge();
+        this.renderProducts();
+      });
+    }
+
     // Location filter
     const locFilter = document.getElementById('mktLocationFilter');
     if (locFilter) {
@@ -50,21 +82,22 @@ const Marketplace = {
       });
     }
 
-    // Organic filter
-    const organicCheck = document.getElementById('mktOrganicOnly');
-    if (organicCheck) {
-      organicCheck.addEventListener('change', (e) => {
-        this.filterOrganic = e.target.checked;
+    // Min & Max Price filters
+    const minPriceInput = document.getElementById('mktMinPriceFilter');
+    if (minPriceInput) {
+      minPriceInput.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        this.filterMinPrice = isNaN(val) ? null : val;
         this.updateFilterBadge();
         this.renderProducts();
       });
     }
 
-    // Grade filter
-    const gradeFilter = document.getElementById('mktGradeFilter');
-    if (gradeFilter) {
-      gradeFilter.addEventListener('change', (e) => {
-        this.filterGrade = e.target.value;
+    const maxPriceInput = document.getElementById('mktMaxPriceFilter');
+    if (maxPriceInput) {
+      maxPriceInput.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        this.filterMaxPrice = isNaN(val) ? null : val;
         this.updateFilterBadge();
         this.renderProducts();
       });
@@ -118,58 +151,127 @@ const Marketplace = {
         UI.toggleCart();
       });
     }
+  },
 
-    // Modal Contact Farmer
-    const modalContactFarmerBtn = document.getElementById('modalContactFarmerBtn');
-    if (modalContactFarmerBtn) {
-      modalContactFarmerBtn.addEventListener('click', () => {
-        UI.closeAllModals();
-        UI.routeTo('messages');
-      });
+  // Navbar Live Search & Dynamic Top-Left Filter Toggle
+  handleNavbarSearch(query) {
+    this.searchQuery = (query || '').trim().toLowerCase();
+
+    // Sync input values
+    const navInput = document.getElementById('navProduceSearchInput');
+    const mktInput = document.getElementById('marketplaceSearchInput');
+    if (navInput && navInput.value !== query) navInput.value = query;
+    if (mktInput && mktInput.value !== query) mktInput.value = query;
+
+    // Show or hide clear buttons
+    const clearBtn = document.getElementById('navSearchClearBtn');
+    if (clearBtn) clearBtn.style.display = this.searchQuery ? 'block' : 'none';
+
+    // Requirement: "Search bar should be in Navbar. when user will search then show Filter button in top left side."
+    const filterBtn = document.getElementById('navTopLeftFilterBtn');
+    if (filterBtn) {
+      if (this.searchQuery.length > 0 || this.hasActiveFilters()) {
+        filterBtn.style.display = 'inline-flex';
+      } else {
+        filterBtn.style.display = 'none';
+      }
     }
 
-    // Checkout form submission
-    const checkoutForm = document.getElementById('checkoutForm');
-    if (checkoutForm) {
-      checkoutForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        this.handleCheckoutSubmit();
-      });
+    // If user is searching and not on marketplace, route to marketplace
+    if (window.UI && UI.currentView !== 'marketplace' && this.searchQuery) {
+      UI.routeTo('marketplace');
     }
+
+    this.renderProducts();
+  },
+
+  clearNavbarSearch() {
+    const navInput = document.getElementById('navProduceSearchInput');
+    const mktInput = document.getElementById('marketplaceSearchInput');
+    if (navInput) navInput.value = '';
+    if (mktInput) mktInput.value = '';
+    this.handleNavbarSearch('');
+  },
+
+  openFilterModal() {
+    UI.openModal('marketplaceFilterModal');
+  },
+
+  hasActiveFilters() {
+    return (this.activeCategory !== 'all') ||
+           (this.filterHarvestDate !== 'all') ||
+           (this.filterProductType !== 'all') ||
+           (this.filterLifeSpan !== 'all') ||
+           (this.filterLocation !== 'all') ||
+           (this.filterMinPrice !== null) ||
+           (this.filterMaxPrice !== null);
   },
 
   getFilteredProducts() {
     let products = StorageService.getProducts();
 
-    // Category filter
+    // 1. Category filter
     if (this.activeCategory !== 'all') {
-      products = products.filter(p => p.category.toLowerCase() === this.activeCategory.toLowerCase());
+      products = products.filter(p => (p.category || '').toLowerCase() === this.activeCategory.toLowerCase());
     }
 
-    // Search query
+    // 2. Search query (produce name, variety, farmer, location, category)
     if (this.searchQuery) {
       products = products.filter(p =>
-        p.name.toLowerCase().includes(this.searchQuery) ||
-        p.variety.toLowerCase().includes(this.searchQuery) ||
-        p.farmer.toLowerCase().includes(this.searchQuery) ||
-        p.location.toLowerCase().includes(this.searchQuery) ||
-        p.category.toLowerCase().includes(this.searchQuery)
+        (p.name || '').toLowerCase().includes(this.searchQuery) ||
+        (p.variety || '').toLowerCase().includes(this.searchQuery) ||
+        (p.farmer || '').toLowerCase().includes(this.searchQuery) ||
+        (p.location || '').toLowerCase().includes(this.searchQuery) ||
+        (p.category || '').toLowerCase().includes(this.searchQuery) ||
+        (p.barcode || '').toLowerCase().includes(this.searchQuery)
       );
     }
 
-    // Location filter
-    if (this.filterLocation !== 'all') {
-      products = products.filter(p => p.location.toLowerCase().includes(this.filterLocation.toLowerCase()));
+    // 3. Harvest Date filter
+    if (this.filterHarvestDate !== 'all') {
+      const maxDays = parseInt(this.filterHarvestDate);
+      if (!isNaN(maxDays)) {
+        const now = new Date();
+        products = products.filter(p => {
+          if (!p.harvestDate) return true;
+          const hDate = new Date(p.harvestDate);
+          const diffDays = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
+          return diffDays <= maxDays && diffDays >= 0;
+        });
+      }
     }
 
-    // Organic filter
-    if (this.filterOrganic) {
+    // 4. Product Type filter
+    if (this.filterProductType === 'organic') {
       products = products.filter(p => p.organic === true);
+    } else if (this.filterProductType === 'conventional') {
+      products = products.filter(p => !p.organic);
     }
 
-    // Grade filter
-    if (this.filterGrade !== 'all') {
-      products = products.filter(p => p.qualityGrade.includes(this.filterGrade));
+    // 5. Life Span filter
+    if (this.filterLifeSpan !== 'all') {
+      if (this.filterLifeSpan === 'short') {
+        products = products.filter(p => (p.lifeSpan || '').includes('3-5'));
+      } else if (this.filterLifeSpan === 'medium') {
+        products = products.filter(p => (p.lifeSpan || '').includes('7-10') || (p.lifeSpan || '').includes('7-15'));
+      } else if (this.filterLifeSpan === 'long') {
+        products = products.filter(p => (p.lifeSpan || '').includes('15-30'));
+      } else if (this.filterLifeSpan === 'dry') {
+        products = products.filter(p => (p.lifeSpan || '').includes('month') || (p.lifeSpan || '').includes('year'));
+      }
+    }
+
+    // 6. Location filter
+    if (this.filterLocation !== 'all') {
+      products = products.filter(p => (p.location || '').toLowerCase().includes(this.filterLocation.toLowerCase()));
+    }
+
+    // 7. Price Range filter
+    if (this.filterMinPrice !== null && !isNaN(this.filterMinPrice)) {
+      products = products.filter(p => (p.price || 0) >= this.filterMinPrice);
+    }
+    if (this.filterMaxPrice !== null && !isNaN(this.filterMaxPrice)) {
+      products = products.filter(p => (p.price || 0) <= this.filterMaxPrice);
     }
 
     // Sorting
@@ -178,7 +280,7 @@ const Marketplace = {
     } else if (this.sortBy === 'highest') {
       products.sort((a, b) => b.price - a.price);
     } else if (this.sortBy === 'newest') {
-      products.sort((a, b) => new Date(b.harvestDate) - new Date(a.harvestDate));
+      products.sort((a, b) => new Date(b.harvestDate || '2026-09-01') - new Date(a.harvestDate || '2026-09-01'));
     }
 
     return products;
@@ -197,7 +299,7 @@ const Marketplace = {
         <div class="empty-state col-span-full">
           <i data-lucide="sprout" class="empty-icon"></i>
           <h3>No agricultural produce found</h3>
-          <p>Try adjusting your search criteria, category filters, or location filters.</p>
+          <p>Try adjusting your search criteria, category filters, harvest dates, or location filters.</p>
           <button class="btn btn-outline" onclick="Marketplace.resetFilters()">Reset All Filters</button>
         </div>
       `;
@@ -212,7 +314,9 @@ const Marketplace = {
           <div class="product-card-header">
             <img src="${prod.image}" alt="${prod.name}" loading="lazy" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'">
             <div class="product-badges">
-              <span class="badge-demo">Demo Listing</span>
+              <span class="badge-fresh" style="background:#dcfce7; color:#15803d; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:3px;">
+                <i data-lucide="sprout" style="width:11px; height:11px;"></i> Farm Direct
+              </span>
               ${prod.organic ? '<span class="badge-organic">Organic</span>' : ''}
             </div>
             <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="Marketplace.toggleFavorite('${prod.id}', this)" title="${isFav ? 'Saved to Favorites' : 'Add to Favorites'}">
@@ -237,21 +341,29 @@ const Marketplace = {
 
             <div class="product-specs-grid">
               <div>
-                <span class="spec-label">Available:</span>
-                <span class="spec-val">${prod.availableQty} ${prod.unit}</span>
+                <span class="spec-label">Harvested:</span>
+                <span class="spec-val" style="color:#047857; font-weight:600;">${prod.harvestDate || 'Fresh'}</span>
               </div>
               <div>
-                <span class="spec-label">Grade:</span>
-                <span class="spec-val">${prod.qualityGrade}</span>
+                <span class="spec-label">Life Span:</span>
+                <span class="spec-val">${prod.lifeSpan || '7-10 days'}</span>
               </div>
             </div>
 
-            <div class="product-pricing-row">
+            <!-- Barcode badge -->
+            <div style="margin-top:6px; display:flex; align-items:center; justify-content:space-between;">
+              <button type="button" class="btn btn-xs" style="padding:2px 7px; font-size:0.68rem; background:#f0fdf4; border:1px solid #bbf7d0; color:#065f46; font-family:monospace; font-weight:700; border-radius:4px; display:inline-flex; align-items:center; gap:4px;" onclick="Dashboard.showBarcodeModal('${prod.id}')" title="Scan & Verify Harvest Traceability">
+                <i data-lucide="scan-barcode" style="width:12px; height:12px;"></i> ${prod.barcode || 'CRN-HVT-9821'}
+              </button>
+              <div class="min-order-pill" style="font-size:0.72rem;">Min: ${prod.minOrder} ${prod.unit}</div>
+            </div>
+
+            <div class="product-pricing-row" style="margin-top:8px;">
               <div class="product-price">
                 <span class="price-val">₹${prod.price}</span>
                 <span class="price-unit">/ ${prod.unit}</span>
               </div>
-              <div class="min-order-pill">Min: ${prod.minOrder} ${prod.unit}</div>
+              <span class="text-xs text-slate-500">${prod.availableQty} ${prod.unit} in stock</span>
             </div>
           </div>
 
@@ -276,19 +388,33 @@ const Marketplace = {
   resetFilters() {
     this.activeCategory = 'all';
     this.searchQuery = '';
+    this.filterHarvestDate = 'all';
+    this.filterProductType = 'all';
+    this.filterLifeSpan = 'all';
     this.filterLocation = 'all';
-    this.filterOrganic = false;
-    this.filterGrade = 'all';
+    this.filterMinPrice = null;
+    this.filterMaxPrice = null;
     this.sortBy = 'recommended';
 
     const searchInput = document.getElementById('marketplaceSearchInput');
     if (searchInput) searchInput.value = '';
+    const navSearchInput = document.getElementById('navProduceSearchInput');
+    if (navSearchInput) navSearchInput.value = '';
+    const clearBtn = document.getElementById('navSearchClearBtn');
+    if (clearBtn) clearBtn.style.display = 'none';
+
+    const harvestFilter = document.getElementById('mktHarvestDateFilter');
+    if (harvestFilter) harvestFilter.value = 'all';
+    const typeFilter = document.getElementById('mktProductTypeFilter');
+    if (typeFilter) typeFilter.value = 'all';
+    const lifeSpanFilter = document.getElementById('mktLifeSpanFilter');
+    if (lifeSpanFilter) lifeSpanFilter.value = 'all';
     const locFilter = document.getElementById('mktLocationFilter');
     if (locFilter) locFilter.value = 'all';
-    const organicCheck = document.getElementById('mktOrganicOnly');
-    if (organicCheck) organicCheck.checked = false;
-    const gradeFilter = document.getElementById('mktGradeFilter');
-    if (gradeFilter) gradeFilter.value = 'all';
+    const minPriceInput = document.getElementById('mktMinPriceFilter');
+    if (minPriceInput) minPriceInput.value = '';
+    const maxPriceInput = document.getElementById('mktMaxPriceFilter');
+    if (maxPriceInput) maxPriceInput.value = '';
     const sortSelect = document.getElementById('mktSortBy');
     if (sortSelect) sortSelect.value = 'recommended';
 
@@ -297,6 +423,9 @@ const Marketplace = {
       else b.classList.remove('active');
     });
 
+    const filterBtn = document.getElementById('navTopLeftFilterBtn');
+    if (filterBtn) filterBtn.style.display = 'none';
+
     this.updateFilterBadge();
     this.renderProducts();
   },
@@ -304,34 +433,28 @@ const Marketplace = {
   updateFilterBadge() {
     let count = 0;
     if (this.activeCategory && this.activeCategory !== 'all') count++;
+    if (this.filterHarvestDate && this.filterHarvestDate !== 'all') count++;
+    if (this.filterProductType && this.filterProductType !== 'all') count++;
+    if (this.filterLifeSpan && this.filterLifeSpan !== 'all') count++;
     if (this.filterLocation && this.filterLocation !== 'all') count++;
-    if (this.filterGrade && this.filterGrade !== 'all') count++;
-    if (this.filterOrganic) count++;
+    if (this.filterMinPrice !== null) count++;
+    if (this.filterMaxPrice !== null) count++;
 
     const badge = document.getElementById('activeFiltersBadge');
     if (badge) {
       badge.textContent = count;
       badge.style.display = count > 0 ? 'inline-block' : 'none';
     }
-  },
 
-  toggleFilters(forceState) {
-    const layout = document.querySelector('.marketplace-layout');
-    const filterPanel = document.getElementById('marketplaceFilterPanel');
-    const toggleBtn = document.getElementById('btnToggleFilters');
-    if (!layout || !filterPanel) return;
+    const navCountBadge = document.getElementById('navFilterActiveCount');
+    if (navCountBadge) {
+      navCountBadge.textContent = count;
+      navCountBadge.style.display = count > 0 ? 'inline-block' : 'none';
+    }
 
-    const isVisible = filterPanel.classList.contains('open');
-    const shouldOpen = forceState !== undefined ? forceState : !isVisible;
-
-    if (shouldOpen) {
-      filterPanel.classList.add('open');
-      layout.classList.add('has-open-filters');
-      if (toggleBtn) toggleBtn.classList.add('active');
-    } else {
-      filterPanel.classList.remove('open');
-      layout.classList.remove('has-open-filters');
-      if (toggleBtn) toggleBtn.classList.remove('active');
+    const navFilterBtn = document.getElementById('navTopLeftFilterBtn');
+    if (navFilterBtn && (count > 0 || this.searchQuery)) {
+      navFilterBtn.style.display = 'inline-flex';
     }
   },
 
@@ -351,9 +474,14 @@ const Marketplace = {
     document.getElementById('modalPrice').textContent = `₹${prod.price} / ${prod.unit}`;
     document.getElementById('modalAvailable').textContent = `${prod.availableQty} ${prod.unit}`;
     document.getElementById('modalMinOrder').textContent = `${prod.minOrder} ${prod.unit}`;
-    document.getElementById('modalHarvestDate').textContent = prod.harvestDate;
-    document.getElementById('modalGrade').textContent = prod.qualityGrade;
-    document.getElementById('modalOrganic').textContent = prod.organic ? 'Certified Organic' : 'Conventional Safe Practice';
+    document.getElementById('modalHarvestDate').textContent = prod.harvestDate || '2026-09-08';
+    if (document.getElementById('modalLifeSpan')) {
+      document.getElementById('modalLifeSpan').textContent = prod.lifeSpan || '7-10 days';
+    }
+    if (document.getElementById('modalBarcode')) {
+      document.getElementById('modalBarcode').textContent = prod.barcode || 'CRN-HVT-9821';
+    }
+    document.getElementById('modalOrganic').textContent = prod.organic ? 'Certified 100% Organic' : 'Conventional Safe Farm Produce';
     document.getElementById('modalEstimatedDelivery').textContent = prod.estimatedDelivery;
     document.getElementById('modalDescription').textContent = prod.description;
     document.getElementById('modalRating').textContent = `${prod.rating} ★ (${prod.reviewsCount} wholesale reviews)`;

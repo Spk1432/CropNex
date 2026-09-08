@@ -12,6 +12,11 @@ const Dashboard = {
 
   init() {
     this.bindEvents();
+    this.initBarcodePreviews();
+  },
+
+  initBarcodePreviews() {
+    this.updateFormBarcodePreview('page');
   },
 
   bindEvents() {
@@ -89,7 +94,9 @@ const Dashboard = {
     const unit = document.getElementById('pageFormCropUnit').value;
     const availableQty = parseFloat(document.getElementById('pageFormCropQuantity').value) || 0;
     const minOrder = parseFloat(document.getElementById('pageFormCropMinOrder').value) || 1;
-    const qualityGrade = document.getElementById('pageFormCropGrade').value;
+    const harvestDate = document.getElementById('pageFormCropHarvestDate')?.value || new Date().toISOString().split('T')[0];
+    const lifeSpan = document.getElementById('pageFormCropLifeSpan')?.value || '7-10 days';
+    const barcode = document.getElementById('pageFormCropBarcode')?.value || ('CRN-HVT-' + Date.now().toString().slice(-4));
     const organic = document.getElementById('pageFormCropOrganic').checked;
     const location = document.getElementById('pageFormCropLocation').value || 'Nashik, Maharashtra';
     const description = document.getElementById('pageFormCropDescription').value;
@@ -108,16 +115,19 @@ const Dashboard = {
       unit,
       availableQty,
       minOrder,
-      qualityGrade,
+      qualityGrade: 'Farm Fresh',
       organic,
-      harvestDate: new Date().toISOString().split('T')[0],
+      harvestDate,
+      lifeSpan,
+      barcode,
+      kisanId: farmerProfile.kisanId || 'KISAN-7821-MH',
       estimatedDelivery: '1-2 days',
       image,
       description
     };
 
     StorageService.addProduct(productPayload);
-    UI.showToast(`Published "${name}" directly to Marketplace!`, 'success');
+    UI.showToast(`Published "${name}" (Batch ${barcode}) directly to Marketplace!`, 'success');
 
     // Route to My Products
     UI.routeTo('farmer-products');
@@ -128,7 +138,7 @@ const Dashboard = {
     if (!tbody) return;
 
     if (products.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-muted">No produce listed yet. Click "Add New Product" to list.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-muted">No produce listed yet. Click "+ Add New Produce" to list.</td></tr>`;
       return;
     }
 
@@ -144,14 +154,15 @@ const Dashboard = {
           </div>
         </td>
         <td><span class="category-pill">${prod.category}</span></td>
+        <td><span class="font-semibold text-emerald-700">${prod.harvestDate || '2026-09-08'}</span></td>
+        <td><span class="badge badge-neutral">${prod.lifeSpan || '7-10 days'}</span></td>
         <td><span class="font-medium">₹${prod.price}</span> / ${prod.unit}</td>
         <td>${prod.availableQty} ${prod.unit}</td>
         <td>
-          <span class="badge ${prod.organic ? 'badge-organic' : 'badge-neutral'}">
-            ${prod.organic ? 'Organic' : 'Standard'}
-          </span>
+          <button type="button" class="btn btn-xs btn-outline" style="font-family:monospace; font-weight:700; display:inline-flex; align-items:center; gap:4px; padding:3px 8px; color:#065f46; border-color:#a7f3d0; background:#f0fdf4;" onclick="Dashboard.showBarcodeModal('${prod.id}')" title="Inspect Harvest Barcode & Traceability">
+            <i data-lucide="scan-barcode" style="width:13px; height:13px;"></i> ${prod.barcode || 'CRN-HVT-9821'}
+          </button>
         </td>
-        <td><span class="badge badge-success">Active</span></td>
         <td>
           <div class="table-actions">
             <button class="btn-icon" onclick="Dashboard.editProduct('${prod.id}')" title="Edit Listing">
@@ -173,7 +184,7 @@ const Dashboard = {
     if (!tbody) return;
 
     if (orders.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-muted">No orders received yet.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-muted">No orders received yet.</td></tr>`;
       return;
     }
 
@@ -192,19 +203,6 @@ const Dashboard = {
           <span class="status-badge status-${(order.status || 'pending').toLowerCase().replace(/\s+/g, '-')}">
             ${order.status}
           </span>
-        </td>
-        <td>
-          <div class="table-status-select-wrap">
-            <select class="form-select form-select-sm" onchange="Dashboard.updateFarmerOrderStatus('${order.id}', this.value)">
-              <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
-              <option value="Accepted" ${order.status === 'Accepted' ? 'selected' : ''}>Accepted</option>
-              <option value="Preparing" ${order.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
-              <option value="Dispatched" ${order.status === 'Dispatched' ? 'selected' : ''}>Dispatched</option>
-              <option value="Out for Delivery" ${order.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
-              <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-              <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-            </select>
-          </div>
         </td>
       </tr>
     `).join('');
@@ -237,7 +235,9 @@ const Dashboard = {
         document.getElementById('formCropUnit').value = prod.unit;
         document.getElementById('formCropQuantity').value = prod.availableQty;
         document.getElementById('formCropMinOrder').value = prod.minOrder;
-        document.getElementById('formCropGrade').value = prod.qualityGrade;
+        if (document.getElementById('formCropHarvestDate')) document.getElementById('formCropHarvestDate').value = prod.harvestDate || new Date().toISOString().split('T')[0];
+        if (document.getElementById('formCropLifeSpan')) document.getElementById('formCropLifeSpan').value = prod.lifeSpan || '7-10 days';
+        if (document.getElementById('formCropBarcode')) document.getElementById('formCropBarcode').value = prod.barcode || ('CRN-HVT-' + Date.now().toString().slice(-4));
         document.getElementById('formCropOrganic').checked = prod.organic;
         document.getElementById('formCropLocation').value = prod.location;
         document.getElementById('formCropDescription').value = prod.description;
@@ -246,6 +246,9 @@ const Dashboard = {
     } else {
       modalTitle.textContent = 'Add New Produce Listing';
       document.getElementById('formEditProductId').value = '';
+      if (document.getElementById('formCropHarvestDate')) document.getElementById('formCropHarvestDate').value = new Date().toISOString().split('T')[0];
+      if (document.getElementById('formCropLifeSpan')) document.getElementById('formCropLifeSpan').value = '7-10 days';
+      if (document.getElementById('formCropBarcode')) document.getElementById('formCropBarcode').value = 'CRN-HVT-' + Date.now().toString().slice(-4);
       document.getElementById('formCropLocation').value = 'Nashik, Maharashtra';
       document.getElementById('formCropImageUrl').value = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80';
     }
@@ -275,7 +278,9 @@ const Dashboard = {
     const unit = document.getElementById('formCropUnit').value;
     const availableQty = parseFloat(document.getElementById('formCropQuantity').value) || 0;
     const minOrder = parseFloat(document.getElementById('formCropMinOrder').value) || 1;
-    const qualityGrade = document.getElementById('formCropGrade').value;
+    const harvestDate = document.getElementById('formCropHarvestDate')?.value || new Date().toISOString().split('T')[0];
+    const lifeSpan = document.getElementById('formCropLifeSpan')?.value || '7-10 days';
+    const barcode = document.getElementById('formCropBarcode')?.value || ('CRN-HVT-' + Date.now().toString().slice(-4));
     const organic = document.getElementById('formCropOrganic').checked;
     const location = document.getElementById('formCropLocation').value || 'Nashik, Maharashtra';
     const description = document.getElementById('formCropDescription').value;
@@ -294,9 +299,12 @@ const Dashboard = {
       unit,
       availableQty,
       minOrder,
-      qualityGrade,
+      qualityGrade: 'Farm Fresh',
       organic,
-      harvestDate: new Date().toISOString().split('T')[0],
+      harvestDate,
+      lifeSpan,
+      barcode,
+      kisanId: farmerProfile.kisanId || 'KISAN-7821-MH',
       estimatedDelivery: '1-2 days',
       image,
       description
@@ -307,11 +315,90 @@ const Dashboard = {
       UI.showToast(`Updated "${name}" successfully!`, 'success');
     } else {
       StorageService.addProduct(productPayload);
-      UI.showToast(`Published "${name}" directly to Marketplace!`, 'success');
+      UI.showToast(`Added new listing for "${name}" with Barcode ${barcode}!`, 'success');
     }
 
     UI.closeAllModals();
+    this.renderFarmerProductsTable(StorageService.getProducts());
     this.renderFarmerDashboard();
+  },
+
+  // ==========================================
+  // HARVEST TRACEABILITY BARCODE HELPERS
+  // ==========================================
+  generateSvgBarcode(code) {
+    const cleanCode = (code || 'CRN-HVT-9821').toUpperCase();
+    let bars = '';
+    let x = 12;
+    for (let i = 0; i < cleanCode.length; i++) {
+      const c = cleanCode.charCodeAt(i);
+      const w1 = (c % 3) + 1.6;
+      const w2 = ((c >> 1) % 2) + 1.2;
+      const gap = (c % 2) + 1.8;
+      bars += `<rect x="${x}" y="4" width="${w1}" height="42" fill="#0f172a"/>`;
+      x += w1 + gap;
+      bars += `<rect x="${x}" y="4" width="${w2}" height="42" fill="#0f172a"/>`;
+      x += w2 + gap + 1;
+    }
+    const totalW = Math.max(x + 14, 210);
+    return `
+      <svg viewBox="0 0 ${totalW} 62" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:240px; height:56px; background:#ffffff; border-radius:4px; display:block; margin:0 auto;">
+        ${bars}
+        <text x="${totalW / 2}" y="56" font-family="monospace" font-size="10" font-weight="700" fill="#334155" text-anchor="middle" letter-spacing="1.5">${cleanCode}</text>
+      </svg>
+    `;
+  },
+
+  generateProduceBarcode(target = 'page') {
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const dateStr = new Date().toISOString().slice(2, 10).replace(/-/g, '');
+    const code = `CRN-HVT-${dateStr}-${randomSuffix}`;
+
+    if (target === 'page') {
+      const input = document.getElementById('pageFormCropBarcode');
+      if (input) input.value = code;
+      this.updateFormBarcodePreview('page');
+    } else if (target === 'modal') {
+      const input = document.getElementById('formCropBarcode');
+      if (input) input.value = code;
+    }
+    UI.showToast(`New Traceability Barcode Generated: ${code}`, 'info');
+  },
+
+  updateFormBarcodePreview(target = 'page') {
+    if (target === 'page') {
+      const input = document.getElementById('pageFormCropBarcode');
+      const container = document.getElementById('pageBarcodeSvgContainer');
+      if (container && input) {
+        container.innerHTML = this.generateSvgBarcode(input.value);
+      }
+    }
+  },
+
+  showBarcodeModal(productId) {
+    const prod = StorageService.getProductById(productId);
+    if (!prod) return;
+
+    const svgContainer = document.getElementById('barcodeModalSvgContainer');
+    const nameEl = document.getElementById('barcodeModalCropName');
+    const codeEl = document.getElementById('barcodeModalCode');
+    const hDateEl = document.getElementById('barcodeModalHarvestDate');
+    const lifeSpanEl = document.getElementById('barcodeModalLifeSpan');
+    const originEl = document.getElementById('barcodeModalOrigin');
+    const kisanIdEl = document.getElementById('barcodeModalKisanId');
+
+    const barcode = prod.barcode || `CRN-HVT-${prod.id.replace(/\D/g, '') || '9821'}`;
+
+    if (svgContainer) svgContainer.innerHTML = this.generateSvgBarcode(barcode);
+    if (nameEl) nameEl.textContent = `${prod.name} (${prod.variety || ''})`;
+    if (codeEl) codeEl.textContent = barcode;
+    if (hDateEl) hDateEl.textContent = prod.harvestDate || '2026-09-08';
+    if (lifeSpanEl) lifeSpanEl.textContent = prod.lifeSpan || '7-10 days';
+    if (originEl) originEl.textContent = prod.location || 'Nashik, Maharashtra';
+    if (kisanIdEl) kisanIdEl.textContent = prod.kisanId || 'KISAN-7821-MH';
+
+    UI.openModal('barcodeInspectionModal');
+    if (window.lucide) lucide.createIcons();
   },
 
   renderFarmerCharts() {
@@ -813,6 +900,11 @@ const Dashboard = {
     document.getElementById('profileInputPhone').value = profile.phone || '';
     document.getElementById('profileInputEmail').value = profile.email || '';
     document.getElementById('profileInputLocation').value = profile.location || `${profile.village || ''}, ${profile.district || ''}, ${profile.state || ''}`.replace(/^, /, '');
+
+    const kisanIdInput = document.getElementById('profileInputKisanId');
+    if (kisanIdInput) {
+      kisanIdInput.value = profile.kisanId || (role === 'farmer' ? 'KISAN-7821-MH' : '');
+    }
   },
 
   handleProfileSave() {
@@ -826,6 +918,11 @@ const Dashboard = {
     const payload = { name, phone, email, location };
     if (role === 'farmer') payload.farmName = org;
     if (role === 'buyer') payload.businessName = org;
+
+    const kisanIdInput = document.getElementById('profileInputKisanId');
+    if (kisanIdInput && kisanIdInput.value.trim()) {
+      payload.kisanId = kisanIdInput.value.trim().toUpperCase();
+    }
 
     StorageService.updateProfile(role, payload);
     UI.showToast('Profile information saved successfully!', 'success');

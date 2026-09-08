@@ -2602,3 +2602,86 @@ button, input, select, textarea {
 .auth-btn-profile:hover {
   background: var(--slate-200);
 }
+
+/* Navbar Search Bar & Navigation Links (v3.8) */
+.nav-center-menu {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-center-menu .nav-link {
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+}
+
+.nav-return-btn {
+  transition: all 0.2s ease;
+}
+
+.nav-return-btn:hover {
+  background: #fff1f2 !important;
+  border-color: #f43f5e !important;
+  color: #be123c !important;
+}
+
+.nav-top-filter-btn {
+  transition: all 0.2s ease;
+}
+
+.nav-top-filter-btn:hover {
+  background: #d1fae5 !important;
+  border-color: #059669 !important;
+  color: #064e3b !important;
+  transform: translateY(-1px);
+}
+
+.nav-search-bar input:focus {
+  background: #ffffff !important;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Mobile & Tablet Responsiveness for Header */
+@media (max-width: 992px) {
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-center-col {
+    order: 3;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 6px 0 0 0 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    padding: 8px 12px;
+  }
+  .brand-text {
+    font-size: 1.2rem;
+  }
+  .brand-logo-img {
+    width: 32px;
+    height: 32px;
+  }
+  .btn-dashboard-toggle {
+    padding: 3px 8px !important;
+    font-size: 0.72rem !important;
+  }
+  .nav-center-menu .nav-link span {
+    display: none;
+  }
+  .nav-return-btn span {
+    display: none;
+  }
+  .nav-top-filter-btn span:first-of-type {
+    display: none;
+  }
+  .nav-top-filter-btn {
+    padding: 5px 8px !important;
+  }
+}
