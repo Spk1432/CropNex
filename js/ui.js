@@ -22,8 +22,8 @@ const UI = {
     const hash = window.location.hash.replace('#', '');
     const validViews = [
       'marketplace', 'landing', 'forecast', 'logistics', 'tenders',
-      'farmer-dashboard', 'buyer-dashboard', 'admin-dashboard',
-      'messages', 'profile', 'about', 'how-it-works'
+      'farmer-dashboard', 'buyer-dashboard', 'buyer-orders', 'buyer-favorites',
+      'profile', 'how-it-works'
     ];
     // Default homepage is strictly MARKETPLACE unless valid hash is provided
     return validViews.includes(hash) ? hash : 'marketplace';
@@ -150,6 +150,12 @@ const UI = {
         break;
       case 'buyer-dashboard':
         if (typeof Dashboard !== 'undefined') Dashboard.renderBuyerDashboard();
+        break;
+      case 'buyer-orders':
+        if (typeof Dashboard !== 'undefined') Dashboard.renderBuyerOrdersTable(StorageService.getOrders());
+        break;
+      case 'buyer-favorites':
+        if (typeof Dashboard !== 'undefined') Dashboard.renderBuyerFavorites();
         break;
       case 'admin-dashboard':
         if (typeof Dashboard !== 'undefined') Dashboard.renderAdminDashboard();
@@ -305,17 +311,14 @@ const UI = {
         <li class="sidebar-item" data-navigate="marketplace">
           <i data-lucide="shopping-bag"></i> <span>Marketplace</span>
         </li>
-        <li class="sidebar-item" data-navigate="buyer-dashboard" onclick="setTimeout(() => { document.getElementById('buyerOrdersTableBody')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+        <li class="sidebar-item" data-navigate="buyer-orders">
           <i data-lucide="package-check"></i> <span>My Orders</span>
         </li>
-        <li class="sidebar-item" data-navigate="buyer-dashboard" onclick="setTimeout(() => { document.getElementById('buyerOrdersTableBody')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+        <li class="sidebar-item" data-navigate="buyer-orders">
           <i data-lucide="map-pin"></i> <span>Track Orders</span>
         </li>
-        <li class="sidebar-item" data-navigate="buyer-dashboard" onclick="setTimeout(() => { document.getElementById('buyerFavoritesGrid')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+        <li class="sidebar-item" data-navigate="buyer-favorites">
           <i data-lucide="heart"></i> <span>Favorites</span>
-        </li>
-        <li class="sidebar-item" data-navigate="messages">
-          <i data-lucide="message-square"></i> <span>Messages</span>
         </li>
         <li class="sidebar-item" data-navigate="profile">
           <i data-lucide="user"></i> <span>Profile</span>
@@ -395,7 +398,7 @@ const UI = {
     if (cart.length > 0) {
       Marketplace.openCheckoutModal();
     } else {
-      this.routeTo('buyer-dashboard');
+      this.routeTo('marketplace');
     }
   },
 

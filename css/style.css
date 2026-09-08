@@ -638,19 +638,13 @@ button, input, select, textarea {
   max-width: 1360px;
   margin: 0 auto;
   padding: 32px 24px;
-  display: block; /* Full width when filters are hidden */
-  transition: all 0.3s ease;
-}
-
-.marketplace-layout.has-open-filters {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 260px 1fr;
   gap: 32px;
 }
 
-/* Hidden by default: user clicks 'Filters' button to view */
 .marketplace-sidebar {
-  display: none;
+  display: block;
   background: var(--white);
   border: 1px solid var(--slate-200);
   border-radius: var(--radius-lg);
@@ -658,12 +652,6 @@ button, input, select, textarea {
   height: fit-content;
   position: sticky;
   top: 90px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  animation: fadeIn 0.25s ease-in-out;
-}
-
-.marketplace-sidebar.open {
-  display: block;
 }
 
 .btn-filter-toggle {
@@ -1873,7 +1861,7 @@ button, input, select, textarea {
   .hero-content p { margin: 0 auto 32px; }
   .hero-cta-group { justify-content: center; }
   
-  .marketplace-layout.has-open-filters {
+  .marketplace-layout {
     grid-template-columns: 240px 1fr;
     gap: 20px;
   }
@@ -1921,11 +1909,8 @@ button, input, select, textarea {
 
   /* Marketplace on Tablet */
   .marketplace-layout {
-    padding: 20px 16px;
-  }
-
-  .marketplace-layout.has-open-filters {
     grid-template-columns: 1fr;
+    padding: 20px 16px;
   }
 
   .marketplace-sidebar {

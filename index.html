@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=3.0">
+  <link rel="stylesheet" href="css/style.css?v=3.1">
 
   <!-- Lucide Icons & Chart.js via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -385,16 +385,8 @@
          ========================================== -->
     <section class="app-view active" id="view-marketplace">
       <div class="marketplace-layout">
-        <!-- Filter Sidebar (Hidden by default, opens on clicking 'Filters' button) -->
-        <aside class="marketplace-sidebar" id="marketplaceFilterPanel">
-          <div class="filter-panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #e2e8f0;">
-            <h4 class="font-bold text-slate-800 flex items-center gap-2" style="font-size:0.95rem; margin:0;">
-              <i data-lucide="sliders-horizontal" class="text-emerald-700" style="width:16px; height:16px;"></i>
-              <span>Filters</span>
-            </h4>
-            <button class="btn-icon" onclick="Marketplace.toggleFilters(false)" title="Close Filters" style="font-size:1.25rem; line-height:1; cursor:pointer;">&times;</button>
-          </div>
-
+        <!-- Filter Sidebar (Original Demo Layout) -->
+        <aside class="marketplace-sidebar">
           <div class="filter-group">
             <div class="filter-title" data-i18n="mkt_filter_cat">Category</div>
             <div class="category-nav-list">
@@ -435,26 +427,15 @@
             </label>
           </div>
 
-          <div style="display:flex; gap:8px; margin-top:8px;">
-            <button class="btn btn-sm btn-outline" onclick="Marketplace.resetFilters()" style="flex:1;">
-              Reset
-            </button>
-            <button class="btn btn-sm btn-primary" onclick="Marketplace.toggleFilters(false)" style="flex:1;">
-              Done
-            </button>
-          </div>
+          <button class="btn btn-sm btn-outline w-full" onclick="Marketplace.resetFilters()" style="width:100%;">
+            Reset Filters
+          </button>
         </aside>
 
         <!-- Marketplace Main Content -->
         <div class="marketplace-content">
-          <!-- Top Bar with Search, Filter Button, and Sort -->
+          <!-- Top Bar with Search and Sort -->
           <div class="marketplace-top-controls">
-            <!-- Sleek Toggle Filters Button -->
-            <button class="btn btn-outline btn-sm btn-filter-toggle" id="btnToggleFilters" onclick="Marketplace.toggleFilters()" title="Open Filters">
-              <i data-lucide="sliders-horizontal" style="width:15px; height:15px;"></i>
-              <span>Filters</span>
-            </button>
-
             <div class="search-input-wrap">
               <i data-lucide="search" class="search-icon-fixed"></i>
               <input type="text" id="marketplaceSearchInput" placeholder="Search crops, varieties or farmers..." data-i18n-ph="mkt_search_ph">
@@ -837,116 +818,121 @@
 
 
     <!-- ==========================================
-         VIEW 7: BUYER DASHBOARD
+         VIEW 7: BUYER DASHBOARD (Overview - KPIs & Charts)
          ========================================== -->
     <section class="app-view" id="view-buyer-dashboard">
-      <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="dashboard-sidebar">
-          <div class="dash-user-card">
-            <span class="user-role-badge role-buyer">BUYER PORTAL</span>
-            <div class="dash-user-name mt-2" style="margin-top:8px;">Ajay Traders</div>
-            <div class="text-xs text-slate-500">Wholesale Procurement • Pune</div>
-          </div>
-          <ul class="dash-menu">
-            <li class="dash-menu-item active" data-navigate="buyer-dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</li>
-            <li class="dash-menu-item" data-navigate="marketplace"><i data-lucide="shopping-bag"></i> Marketplace</li>
-            <li class="dash-menu-item" data-navigate="messages"><i data-lucide="message-square"></i> Messages</li>
-            <li class="dash-menu-item" data-navigate="profile"><i data-lucide="user"></i> Business Profile</li>
-            <li class="dash-menu-item text-red-600" onclick="UI.handleLogout()"><i data-lucide="log-out"></i> Logout</li>
-          </ul>
-        </aside>
+      <div class="page-container" style="max-width:1360px;">
+        <div class="page-header-block mb-6" style="margin-bottom:24px;">
+          <span class="user-role-badge role-buyer" style="margin-bottom:8px; display:inline-block;">BUYER DASHBOARD</span>
+          <h2 class="text-2xl font-bold text-slate-900" data-i18n="dash_buyer_title">Buyer Procurement Dashboard</h2>
+          <p class="text-sm text-slate-500">Real-time overview of your direct farm procurement, dispatch status, and spending metrics.</p>
+        </div>
 
-        <!-- Main Buyer Dashboard -->
-        <div class="dashboard-main">
-          <div class="flex justify-between items-center mb-6" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-            <div>
-              <h2 class="text-2xl font-bold text-slate-900" data-i18n="dash_buyer_title">Buyer Procurement Dashboard</h2>
-              <p class="text-sm text-slate-500">Track incoming farm dispatches, view saved crops, and manage procurement history.</p>
-            </div>
-            <button class="btn btn-primary" data-navigate="marketplace">
-              <i data-lucide="shopping-bag"></i> <span data-i18n="btn_explore_mkt">Explore Marketplace</span>
-            </button>
+        <!-- KPI Cards -->
+        <div class="kpi-cards-grid mb-6" style="margin-bottom:24px;">
+          <div class="kpi-card" data-navigate="buyer-orders" style="cursor:pointer;" title="View Active Orders">
+            <span class="kpi-label">Active Dispatches</span>
+            <div class="kpi-value text-blue-700" id="buyerKpiActiveOrders">0</div>
+            <span class="text-xs text-slate-500">In transit from farms</span>
           </div>
+          <div class="kpi-card" data-navigate="buyer-orders" style="cursor:pointer;" title="View Completed Orders">
+            <span class="kpi-label" data-i18n="kpi_completed_orders">Completed Orders</span>
+            <div class="kpi-value" id="buyerKpiCompletedOrders">0</div>
+            <span class="text-xs text-slate-500">Verified deliveries</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label" data-i18n="kpi_total_spent">Total Purchases</span>
+            <div class="kpi-value text-emerald-700" id="buyerKpiTotalPurchases">₹0</div>
+            <span class="text-xs text-slate-500">Direct savings ~25%</span>
+          </div>
+          <div class="kpi-card" data-navigate="buyer-favorites" style="cursor:pointer;" title="View Saved Crops">
+            <span class="kpi-label" data-i18n="kpi_saved_prods">Saved Crops</span>
+            <div class="kpi-value text-amber-600" id="buyerKpiSavedProducts">0</div>
+            <span class="text-xs text-slate-500">Favorite producers</span>
+          </div>
+        </div>
 
-          <!-- KPI Cards -->
-          <div class="kpi-cards-grid">
-            <div class="kpi-card">
-              <span class="kpi-label">Active Dispatches</span>
-              <div class="kpi-value text-blue-700" id="buyerKpiActiveOrders">0</div>
-              <span class="text-xs text-slate-500">In transit from farms</span>
+        <!-- Charts Grid -->
+        <div class="charts-grid-2">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h4>Monthly Procurement Spending (₹)</h4>
             </div>
-            <div class="kpi-card">
-              <span class="kpi-label" data-i18n="kpi_completed_orders">Completed Orders</span>
-              <div class="kpi-value" id="buyerKpiCompletedOrders">0</div>
-              <span class="text-xs text-slate-500">Verified deliveries</span>
-            </div>
-            <div class="kpi-card">
-              <span class="kpi-label" data-i18n="kpi_total_spent">Total Purchases</span>
-              <div class="kpi-value" id="buyerKpiTotalPurchases">₹0</div>
-              <span class="text-xs text-slate-500">Direct savings ~25%</span>
-            </div>
-            <div class="kpi-card">
-              <span class="kpi-label" data-i18n="kpi_saved_prods">Saved Crops</span>
-              <div class="kpi-value text-amber-600" id="buyerKpiSavedProducts">0</div>
-              <span class="text-xs text-slate-500">Favorite producers</span>
+            <div class="chart-wrapper">
+              <canvas id="buyerPurchasesChartCanvas"></canvas>
             </div>
           </div>
-
-          <!-- Charts Grid -->
-          <div class="charts-grid-2">
-            <div class="chart-card">
-              <div class="chart-card-header">
-                <h4>Monthly Procurement Spending (₹)</h4>
-              </div>
-              <div class="chart-wrapper">
-                <canvas id="buyerPurchasesChartCanvas"></canvas>
-              </div>
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h4>Category Breakdown</h4>
             </div>
-            <div class="chart-card">
-              <div class="chart-card-header">
-                <h4>Category Breakdown</h4>
-              </div>
-              <div class="chart-wrapper">
-                <canvas id="buyerCategoryChartCanvas"></canvas>
-              </div>
+            <div class="chart-wrapper">
+              <canvas id="buyerCategoryChartCanvas"></canvas>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- My Orders Table -->
-          <div class="data-table-card">
-            <div class="table-header-row">
-              <h4 class="font-bold text-slate-800">My Orders & Live Dispatches</h4>
-              <span class="text-xs text-slate-500">Click "Track" to inspect real-time timeline</span>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Order ID</th>
-                    <th>Produce</th>
-                    <th>Farmer</th>
-                    <th>Total</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="buyerOrdersTableBody">
-                  <!-- Injected via Dashboard.renderBuyerOrdersTable() -->
-                </tbody>
-              </table>
-            </div>
+
+    <!-- ==========================================
+         VIEW 7B: BUYER ORDERS (My Orders & Live Dispatches)
+         ========================================== -->
+    <section class="app-view" id="view-buyer-orders">
+      <div class="page-container" style="max-width:1360px;">
+        <div class="page-header-block mb-6" style="margin-bottom:24px;">
+          <span class="user-role-badge role-buyer" style="margin-bottom:8px; display:inline-block;">PROCUREMENT ORDERS</span>
+          <h2 class="text-2xl font-bold text-slate-900">My Orders & Live Dispatches</h2>
+          <p class="text-sm text-slate-500">View real-time status of all your farm-direct orders and track delivery progression.</p>
+        </div>
+
+        <!-- My Orders Table -->
+        <div class="data-table-card">
+          <div class="table-header-row">
+            <h4 class="font-bold text-slate-800">Farm Orders History</h4>
+            <span class="text-xs text-slate-500">Click "Track" to inspect real-time progression</span>
           </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Produce</th>
+                  <th>Farmer</th>
+                  <th>Total</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="buyerOrdersTableBody">
+                <!-- Injected via Dashboard.renderBuyerOrdersTable() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Saved Favorites Grid -->
-          <div class="data-table-card">
-            <div class="table-header-row">
-              <h4 class="font-bold text-slate-800">Saved Crops for Quick Re-Ordering</h4>
-            </div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;" id="buyerFavoritesGrid">
-              <!-- Injected via Dashboard.renderBuyerFavorites() -->
-            </div>
+
+    <!-- ==========================================
+         VIEW 7C: BUYER FAVORITES (Saved Crops)
+         ========================================== -->
+    <section class="app-view" id="view-buyer-favorites">
+      <div class="page-container" style="max-width:1360px;">
+        <div class="page-header-block mb-6" style="margin-bottom:24px;">
+          <span class="user-role-badge role-buyer" style="margin-bottom:8px; display:inline-block;">FAVORITES</span>
+          <h2 class="text-2xl font-bold text-slate-900">Saved Crops & Producers</h2>
+          <p class="text-sm text-slate-500">Quickly re-order produce from your preferred verified farmers.</p>
+        </div>
+
+        <!-- Saved Favorites Grid -->
+        <div class="data-table-card">
+          <div class="table-header-row">
+            <h4 class="font-bold text-slate-800">Bookmarked Produce</h4>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;" id="buyerFavoritesGrid">
+            <!-- Injected via Dashboard.renderBuyerFavorites() -->
           </div>
         </div>
       </div>
@@ -1563,17 +1549,17 @@
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->
-  <script src="js/data.js?v=3.0"></script>
-  <script src="js/storage.js?v=3.0"></script>
-  <script src="js/language.js?v=3.0"></script>
-  <script src="js/ui.js?v=3.0"></script>
-  <script src="js/marketplace.js?v=3.0"></script>
-  <script src="js/dashboard.js?v=3.0"></script>
-  <script src="js/forecast.js?v=3.0"></script>
-  <script src="js/logistics.js?v=3.0"></script>
-  <script src="js/tenders.js?v=3.0"></script>
-  <script src="js/messages.js?v=3.0"></script>
-  <script src="js/app.js?v=3.0"></script>
+  <script src="js/data.js?v=3.1"></script>
+  <script src="js/storage.js?v=3.1"></script>
+  <script src="js/language.js?v=3.1"></script>
+  <script src="js/ui.js?v=3.1"></script>
+  <script src="js/marketplace.js?v=3.1"></script>
+  <script src="js/dashboard.js?v=3.1"></script>
+  <script src="js/forecast.js?v=3.1"></script>
+  <script src="js/logistics.js?v=3.1"></script>
+  <script src="js/tenders.js?v=3.1"></script>
+  <script src="js/messages.js?v=3.1"></script>
+  <script src="js/app.js?v=3.1"></script>
 
 </body>
 </html>
