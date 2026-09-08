@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=3.1">
+  <link rel="stylesheet" href="css/style.css?v=3.2">
 
   <!-- Lucide Icons & Chart.js via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -385,63 +385,22 @@
          ========================================== -->
     <section class="app-view active" id="view-marketplace">
       <div class="marketplace-layout">
-        <!-- Filter Sidebar (Original Demo Layout) -->
-        <aside class="marketplace-sidebar">
-          <div class="filter-group">
-            <div class="filter-title" data-i18n="mkt_filter_cat">Category</div>
-            <div class="category-nav-list">
-              <button class="mkt-cat-btn active" data-category="all" data-i18n="mkt_filter_all">All Categories</button>
-              <button class="mkt-cat-btn" data-category="vegetables" data-i18n="mkt_cat_veg">Vegetables</button>
-              <button class="mkt-cat-btn" data-category="fruits" data-i18n="mkt_cat_fruits">Fruits</button>
-              <button class="mkt-cat-btn" data-category="grains" data-i18n="mkt_cat_grains">Grains</button>
-              <button class="mkt-cat-btn" data-category="spices" data-i18n="mkt_cat_spices">Spices</button>
-              <button class="mkt-cat-btn" data-category="oilseeds" data-i18n="mkt_cat_oilseeds">Oilseeds</button>
-            </div>
-          </div>
-
-          <div class="filter-group">
-            <div class="filter-title">Location (Mandi Hub)</div>
-            <select class="form-select w-full" id="mktLocationFilter" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
-              <option value="all">All Maharashtra Districts</option>
-              <option value="Nashik">Nashik Region</option>
-              <option value="Pune">Pune & Ahmednagar</option>
-              <option value="Solapur">Solapur & Latur</option>
-              <option value="Ratnagiri">Ratnagiri (Konkan)</option>
-              <option value="Jalgaon">Jalgaon</option>
-            </select>
-          </div>
-
-          <div class="filter-group">
-            <div class="filter-title">Quality Grade</div>
-            <select class="form-select w-full" id="mktGradeFilter" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
-              <option value="all">All Quality Grades</option>
-              <option value="Grade A">Grade A / Export</option>
-              <option value="Grade B">Grade B / Standard</option>
-            </select>
-          </div>
-
-          <div class="filter-group">
-            <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; font-weight:600; cursor:pointer;">
-              <input type="checkbox" id="mktOrganicOnly">
-              <span data-i18n="mkt_organic">Certified Organic Only</span>
-            </label>
-          </div>
-
-          <button class="btn btn-sm btn-outline w-full" onclick="Marketplace.resetFilters()" style="width:100%;">
-            Reset Filters
-          </button>
-        </aside>
-
-        <!-- Marketplace Main Content -->
+        <!-- Marketplace Main Content (Clean Full-Width Browsing) -->
         <div class="marketplace-content">
-          <!-- Top Bar with Search and Sort -->
+          <!-- Top Bar with Search, Filters and Sort -->
           <div class="marketplace-top-controls">
             <div class="search-input-wrap">
               <i data-lucide="search" class="search-icon-fixed"></i>
               <input type="text" id="marketplaceSearchInput" placeholder="Search crops, varieties or farmers..." data-i18n-ph="mkt_search_ph">
             </div>
 
-            <div style="display:flex; gap:12px; align-items:center;">
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <button type="button" class="btn btn-outline btn-sm btn-filter-modal-trigger" onclick="UI.openModal('marketplaceFilterModal')" style="display:inline-flex; align-items:center; gap:7px; font-weight:600; padding:8px 14px; border-color:var(--slate-300); background:var(--white);">
+                <i data-lucide="sliders-horizontal" style="width:16px; height:16px; color:var(--primary-700);"></i>
+                <span>Filters</span>
+                <span class="badge-filter-count" id="activeFiltersBadge" style="display:none; background:var(--primary-600); color:#fff; border-radius:10px; padding:1px 7px; font-size:0.75rem; font-weight:700;">0</span>
+              </button>
+
               <select class="form-select" id="mktSortBy" style="padding:8px 12px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.85rem;">
                 <option value="recommended" data-i18n="mkt_sort_rec">Sort: Recommended</option>
                 <option value="lowest" data-i18n="mkt_sort_low">Lowest Price</option>
@@ -1150,6 +1109,70 @@
   <!-- Modal Backdrop -->
   <div class="modal-backdrop" id="modalBackdrop" data-close-modal></div>
 
+  <!-- 0. Marketplace Filters Modal -->
+  <div class="modal-window" id="marketplaceFilterModal" style="max-width:520px;">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i data-lucide="sliders-horizontal" style="color:var(--primary-600); width:20px; height:20px;"></i>
+        <h3 style="margin:0; font-size:1.1rem; font-weight:700;">Filter Marketplace Produce</h3>
+      </div>
+      <button class="btn-icon" data-close-modal>&times;</button>
+    </div>
+    <div class="modal-body" style="padding: 20px; max-height:70vh; overflow-y:auto; display:flex; flex-direction:column; gap:20px;">
+      <!-- Category -->
+      <div class="filter-group" style="margin-bottom:0;">
+        <div class="filter-title" data-i18n="mkt_filter_cat" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;">Category</div>
+        <div class="category-nav-list" style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button type="button" class="mkt-cat-btn active" data-category="all" data-i18n="mkt_filter_all">All Categories</button>
+          <button type="button" class="mkt-cat-btn" data-category="vegetables" data-i18n="mkt_cat_veg">Vegetables</button>
+          <button type="button" class="mkt-cat-btn" data-category="fruits" data-i18n="mkt_cat_fruits">Fruits</button>
+          <button type="button" class="mkt-cat-btn" data-category="grains" data-i18n="mkt_cat_grains">Grains</button>
+          <button type="button" class="mkt-cat-btn" data-category="spices" data-i18n="mkt_cat_spices">Spices</button>
+          <button type="button" class="mkt-cat-btn" data-category="oilseeds" data-i18n="mkt_cat_oilseeds">Oilseeds</button>
+        </div>
+      </div>
+
+      <!-- Location (Mandi Hub) -->
+      <div class="filter-group" style="margin-bottom:0;">
+        <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Location (Mandi Hub)</div>
+        <select class="form-select w-full" id="mktLocationFilter" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.9rem;">
+          <option value="all">All Maharashtra Districts</option>
+          <option value="Nashik">Nashik Region</option>
+          <option value="Pune">Pune & Ahmednagar</option>
+          <option value="Solapur">Solapur & Latur</option>
+          <option value="Ratnagiri">Ratnagiri (Konkan)</option>
+          <option value="Jalgaon">Jalgaon</option>
+        </select>
+      </div>
+
+      <!-- Quality Grade -->
+      <div class="filter-group" style="margin-bottom:0;">
+        <div class="filter-title" style="font-size:0.85rem; font-weight:700; color:var(--slate-800); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Quality Grade</div>
+        <select class="form-select w-full" id="mktGradeFilter" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.9rem;">
+          <option value="all">All Quality Grades</option>
+          <option value="Grade A">Grade A / Export</option>
+          <option value="Grade B">Grade B / Standard</option>
+        </select>
+      </div>
+
+      <!-- Certified Organic Only -->
+      <div class="filter-group" style="margin-bottom:0;">
+        <label style="display:flex; align-items:center; gap:10px; font-size:0.92rem; font-weight:600; cursor:pointer; padding:10px 14px; background:var(--slate-50); border:1px solid var(--slate-200); border-radius:8px;">
+          <input type="checkbox" id="mktOrganicOnly" style="width:18px; height:18px; accent-color:var(--primary-600);">
+          <span data-i18n="mkt_organic">Certified Organic Only</span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px;">
+      <button type="button" class="btn btn-outline btn-sm" onclick="Marketplace.resetFilters()">
+        Reset Filters
+      </button>
+      <button type="button" class="btn btn-primary btn-sm" data-close-modal>
+        Apply Filters
+      </button>
+    </div>
+  </div>
+
   <!-- 1. Product Details Modal -->
   <div class="modal-window" id="productDetailsModal">
     <div class="modal-header">
@@ -1549,17 +1572,17 @@
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->
-  <script src="js/data.js?v=3.1"></script>
-  <script src="js/storage.js?v=3.1"></script>
-  <script src="js/language.js?v=3.1"></script>
-  <script src="js/ui.js?v=3.1"></script>
-  <script src="js/marketplace.js?v=3.1"></script>
-  <script src="js/dashboard.js?v=3.1"></script>
-  <script src="js/forecast.js?v=3.1"></script>
-  <script src="js/logistics.js?v=3.1"></script>
-  <script src="js/tenders.js?v=3.1"></script>
-  <script src="js/messages.js?v=3.1"></script>
-  <script src="js/app.js?v=3.1"></script>
+  <script src="js/data.js?v=3.2"></script>
+  <script src="js/storage.js?v=3.2"></script>
+  <script src="js/language.js?v=3.2"></script>
+  <script src="js/ui.js?v=3.2"></script>
+  <script src="js/marketplace.js?v=3.2"></script>
+  <script src="js/dashboard.js?v=3.2"></script>
+  <script src="js/forecast.js?v=3.2"></script>
+  <script src="js/logistics.js?v=3.2"></script>
+  <script src="js/tenders.js?v=3.2"></script>
+  <script src="js/messages.js?v=3.2"></script>
+  <script src="js/app.js?v=3.2"></script>
 
 </body>
 </html>

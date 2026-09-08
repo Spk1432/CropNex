@@ -14,6 +14,7 @@ const Marketplace = {
 
   init() {
     this.bindEvents();
+    this.updateFilterBadge();
     this.renderProducts();
     this.renderCartDrawer();
   },
@@ -34,6 +35,7 @@ const Marketplace = {
         document.querySelectorAll('.mkt-cat-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.activeCategory = btn.getAttribute('data-category');
+        this.updateFilterBadge();
         this.renderProducts();
       });
     });
@@ -43,6 +45,7 @@ const Marketplace = {
     if (locFilter) {
       locFilter.addEventListener('change', (e) => {
         this.filterLocation = e.target.value;
+        this.updateFilterBadge();
         this.renderProducts();
       });
     }
@@ -52,6 +55,7 @@ const Marketplace = {
     if (organicCheck) {
       organicCheck.addEventListener('change', (e) => {
         this.filterOrganic = e.target.checked;
+        this.updateFilterBadge();
         this.renderProducts();
       });
     }
@@ -61,6 +65,7 @@ const Marketplace = {
     if (gradeFilter) {
       gradeFilter.addEventListener('change', (e) => {
         this.filterGrade = e.target.value;
+        this.updateFilterBadge();
         this.renderProducts();
       });
     }
@@ -292,7 +297,22 @@ const Marketplace = {
       else b.classList.remove('active');
     });
 
+    this.updateFilterBadge();
     this.renderProducts();
+  },
+
+  updateFilterBadge() {
+    let count = 0;
+    if (this.activeCategory && this.activeCategory !== 'all') count++;
+    if (this.filterLocation && this.filterLocation !== 'all') count++;
+    if (this.filterGrade && this.filterGrade !== 'all') count++;
+    if (this.filterOrganic) count++;
+
+    const badge = document.getElementById('activeFiltersBadge');
+    if (badge) {
+      badge.textContent = count;
+      badge.style.display = count > 0 ? 'inline-block' : 'none';
+    }
   },
 
   toggleFilters(forceState) {
