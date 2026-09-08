@@ -237,9 +237,6 @@ const UI = {
         <li class="sidebar-item" onclick="UI.toggleSidebar(false); UI.toggleCart();">
           <i data-lucide="shopping-cart"></i> <span>Shopping Cart</span>
         </li>
-        <li class="sidebar-item" data-navigate="landing">
-          <i data-lucide="info"></i> <span>About CropNex (SIH 2026)</span>
-        </li>
         <li class="sidebar-divider"></li>
         <li class="sidebar-item font-bold text-emerald-700" onclick="UI.toggleSidebar(false); UI.openLoginModal('user');">
           <i data-lucide="log-in"></i> <span>User Login</span>
@@ -249,7 +246,7 @@ const UI = {
         </li>
       `;
     } else if (role === 'farmer') {
-      // 2. FARMER SIDEBAR (NO MARKETPLACE AS REQUIRED)
+      // 2. FARMER SIDEBAR (NO MARKETPLACE & NO MESSAGES AS REQUIRED)
       if (nameEl) nameEl.textContent = profile.name || 'Ramesh Patil';
       if (roleEl) roleEl.textContent = 'Farmer Portal • Kisan ID';
       if (avatarEl) avatarEl.textContent = '👨‍🌾';
@@ -275,9 +272,6 @@ const UI = {
         </li>
         <li class="sidebar-item" data-navigate="logistics">
           <i data-lucide="truck"></i> <span>Logistics</span>
-        </li>
-        <li class="sidebar-item" data-navigate="messages">
-          <i data-lucide="message-square"></i> <span>Messages</span>
         </li>
         <li class="sidebar-item" data-navigate="profile">
           <i data-lucide="user"></i> <span>Profile & Farm Settings</span>

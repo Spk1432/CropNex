@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=2.0">
+  <link rel="stylesheet" href="css/style.css?v=2.1">
 
   <!-- Lucide Icons & Chart.js via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -24,28 +24,11 @@
 </head>
 <body>
 
-  <!-- Top Prototype Status Bar -->
-  <div class="proto-top-bar">
-    <div class="flex items-center gap-2">
-      <span class="proto-tag">SIH 2026 • PS ID 26033</span>
-      <span data-i18n="proto_badge">CROPNEX • INTERACTIVE PROTOTYPE</span>
-    </div>
-    <div class="flex items-center gap-3">
-      <span class="hidden md:inline" style="opacity: 0.85;" data-i18n="proto_disclaimer">Demonstration prototype — No real money processed</span>
-    </div>
-  </div>
-
   <!-- Global Application Header -->
   <header class="app-header">
     <div class="header-inner">
-      <!-- Left: Dashboard Slide-Panel Trigger & Brand Logo -->
-      <div class="flex items-center gap-3">
-        <!-- Dashboard button on LEFT to open Sidebar Panel -->
-        <button class="btn btn-primary btn-sm btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Dashboard">
-          <i data-lucide="layout-dashboard"></i>
-          <span class="font-semibold" data-i18n="nav_dashboard">Dashboard</span>
-        </button>
-
+      <!-- Left: Brand Logo and Dashboard Button Under It -->
+      <div class="brand-dashboard-wrapper" style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
         <!-- Brand Logo -->
         <div class="brand-logo" data-navigate="marketplace" title="CropNex Marketplace">
           <svg class="logo-icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,6 +43,12 @@
           </svg>
           <span class="brand-text">Crop<span>Nex</span></span>
         </div>
+
+        <!-- Dashboard button right under CropNex -->
+        <button class="btn btn-primary btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Dashboard" style="padding:4px 10px; font-size:0.78rem; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+          <i data-lucide="layout-dashboard" style="width:14px; height:14px;"></i>
+          <span class="font-semibold" data-i18n="nav_dashboard">Dashboard</span>
+        </button>
       </div>
 
       <!-- Header Right Minimal Controls: Language, Cart, Login / Profile -->
@@ -704,7 +693,6 @@
             <li class="dash-menu-item" data-navigate="forecast"><i data-lucide="trending-up"></i> Price Forecast</li>
             <li class="dash-menu-item" data-navigate="logistics"><i data-lucide="truck"></i> Logistics</li>
             <li class="dash-menu-item" data-navigate="tenders"><i data-lucide="file-text"></i> Tenders</li>
-            <li class="dash-menu-item" data-navigate="messages"><i data-lucide="message-square"></i> Messages</li>
             <li class="dash-menu-item" data-navigate="profile"><i data-lucide="user"></i> Farm Profile</li>
             <li class="dash-menu-item text-red-600" onclick="UI.handleLogout()"><i data-lucide="log-out"></i> Logout</li>
           </ul>
@@ -1140,36 +1128,6 @@
     </section>
 
 
-    <!-- ==========================================
-         VIEW 12: ABOUT CROPNEX & SIH CONTEXT
-         ========================================== -->
-    <section class="app-view" id="view-about">
-      <div class="page-container" style="max-width: 860px;">
-        <div class="page-header-block">
-          <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">SIH 2026</span>
-          <h2>About CropNex</h2>
-          <p>Smart India Hackathon 2026 — Problem Statement ID 26033</p>
-        </div>
-
-        <div class="comparison-card mb-6" style="margin-bottom: 24px;">
-          <h3 class="text-lg font-bold text-slate-900 mb-2">Problem Statement:</h3>
-          <blockquote style="border-left: 4px solid var(--primary-600); padding-left: 16px; font-style: italic; color: var(--slate-700); margin-bottom: 20px;">
-            “Multiple intermediaries reduce farmers earnings and increase consumer prices.”
-          </blockquote>
-
-          <h3 class="text-lg font-bold text-slate-900 mb-2">Our Proposed Solution:</h3>
-          <p class="text-sm text-slate-600 mb-4">
-            CropNex is an integrated digital platform that connects farmers directly with consumers and bulk institutional buyers. By leveraging AI price forecasting, smart route clustering, and multilingual tender aggregation, CropNex eliminates unnecessary middlemen while maximizing farmer realizations and lowering buyer procurement costs.
-          </p>
-
-          <div style="background:var(--primary-50); border:1px solid var(--primary-100); border-radius:var(--radius-md); padding:16px;">
-            <h4 class="font-bold text-primary-900 text-sm mb-1">Team CropNex — SIH 2026</h4>
-            <p class="text-xs text-slate-600">Built strictly with HTML5, CSS3, and Vanilla JavaScript for high-performance zero-build deployment.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
 
@@ -1579,17 +1537,17 @@
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->
-  <script src="js/data.js?v=2.0"></script>
-  <script src="js/storage.js?v=2.0"></script>
-  <script src="js/language.js?v=2.0"></script>
-  <script src="js/ui.js?v=2.0"></script>
-  <script src="js/marketplace.js?v=2.0"></script>
-  <script src="js/dashboard.js?v=2.0"></script>
-  <script src="js/forecast.js?v=2.0"></script>
-  <script src="js/logistics.js?v=2.0"></script>
-  <script src="js/tenders.js?v=2.0"></script>
-  <script src="js/messages.js?v=2.0"></script>
-  <script src="js/app.js?v=2.0"></script>
+  <script src="js/data.js?v=2.1"></script>
+  <script src="js/storage.js?v=2.1"></script>
+  <script src="js/language.js?v=2.1"></script>
+  <script src="js/ui.js?v=2.1"></script>
+  <script src="js/marketplace.js?v=2.1"></script>
+  <script src="js/dashboard.js?v=2.1"></script>
+  <script src="js/forecast.js?v=2.1"></script>
+  <script src="js/logistics.js?v=2.1"></script>
+  <script src="js/tenders.js?v=2.1"></script>
+  <script src="js/messages.js?v=2.1"></script>
+  <script src="js/app.js?v=2.1"></script>
 
 </body>
 </html>

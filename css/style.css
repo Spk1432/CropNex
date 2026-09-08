@@ -77,18 +77,7 @@ button, input, select, textarea {
 
 /* Top Prototype Status Bar */
 .proto-top-bar {
-  background: var(--primary-900);
-  color: #a7f3d0;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  padding: 6px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  z-index: 1010;
+  display: none !important;
 }
 
 .proto-top-bar .proto-tag {
@@ -1848,13 +1837,20 @@ button, input, select, textarea {
    ROLE-AWARE SLIDING SIDEBAR PANEL (LEFT)
    ========================================================================== */
 
+.brand-dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
 .btn-dashboard-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
+  gap: 6px;
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(21, 128, 61, 0.2);
