@@ -368,30 +368,37 @@ const Dashboard = {
       return;
     }
 
-    tbody.innerHTML = orders.map(order => `
+    tbody.innerHTML = orders.map(order => {
+      const fallbackImg = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400';
+      const orderImg = order.image || fallbackImg;
+      return `
       <tr>
+        <td>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="${orderImg}" alt="${order.productName}" style="width:46px; height:46px; border-radius:8px; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
+            <div>
+              <div class="font-bold text-slate-800" style="font-size:0.92rem;">${order.productName}</div>
+              <div class="text-xs text-muted">${order.category || 'Produce'}</div>
+            </div>
+          </div>
+        </td>
         <td class="font-mono text-xs font-bold text-emerald-700">${order.id}</td>
         <td>
-          <div class="font-semibold text-slate-800">${order.productName}</div>
-          <div class="text-xs text-muted">${order.quantity} ${order.unit}</div>
+          <div class="font-semibold text-slate-800">${order.quantity} ${order.unit}</div>
         </td>
         <td>
           <div class="text-slate-800">${order.farmerName}</div>
         </td>
-        <td class="font-semibold">₹${(order.total || 0).toLocaleString('en-IN')}</td>
+        <td class="font-semibold text-emerald-800">₹${(order.total || 0).toLocaleString('en-IN')}</td>
         <td class="text-xs text-muted">${order.date}</td>
         <td>
           <span class="status-badge status-${(order.status || 'pending').toLowerCase().replace(/\s+/g, '-')}">
             ${order.status}
           </span>
         </td>
-        <td>
-          <button class="btn btn-xs btn-primary" onclick="Dashboard.trackOrderInView('${order.id}')" style="display:inline-flex; align-items:center; gap:4px;">
-            <i data-lucide="map-pin"></i> <span>Track</span>
-          </button>
-        </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
 
     if (window.lucide) lucide.createIcons();
   },
@@ -542,7 +549,9 @@ const Dashboard = {
     const destEl = document.getElementById('liveTrackDestination');
     const totalEl = document.getElementById('liveTrackTotal');
     const paymentEl = document.getElementById('liveTrackPayment');
+    const imgEl = document.getElementById('liveTrackProductImg');
 
+    if (imgEl) imgEl.src = targetOrder.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400';
     if (idEl) idEl.textContent = targetOrder.id;
     if (nameEl) nameEl.textContent = targetOrder.productName;
     if (qtyFarmerEl) qtyFarmerEl.textContent = `${targetOrder.quantity} ${targetOrder.unit} • Farmer: ${targetOrder.farmerName}`;
@@ -562,7 +571,7 @@ const Dashboard = {
         { status: 'Order Placed & Confirmed', time: targetOrder.date || 'Today, 10:30 AM', done: true },
         { status: 'Accepted & Batch Packed by Farmer', time: '1 hr after placement', done: true },
         { status: 'Quality Assessed (Grade A Verified)', time: '2 hrs after placement', done: targetOrder.status !== 'Pending' },
-        { status: 'Dispatched via Cold Logistics', time: targetOrder.status === 'Dispatched' ? 'En Route (Live GPS)' : (targetOrder.status === 'Delivered' ? 'Completed' : 'Pending'), done: targetOrder.status === 'Dispatched' || targetOrder.status === 'Delivered' },
+        { status: 'Dispatched via Cold Logistics', time: targetOrder.status === 'Dispatched' ? 'En Route' : (targetOrder.status === 'Delivered' ? 'Completed' : 'Pending'), done: targetOrder.status === 'Dispatched' || targetOrder.status === 'Delivered' },
         { status: 'Out for Delivery to Destination Hub', time: targetOrder.status === 'Delivered' ? 'Completed' : 'Pending', done: targetOrder.status === 'Delivered' },
         { status: 'Delivered & Handover Confirmed', time: targetOrder.status === 'Delivered' ? 'Completed' : 'Pending', done: targetOrder.status === 'Delivered' }
       ];
@@ -581,26 +590,6 @@ const Dashboard = {
         </div>
       `).join('');
     }
-
-    // Telemetry and Driver Details
-    const tempEl = document.getElementById('liveTrackTemp');
-    const etaEl = document.getElementById('liveTrackEta');
-    const locEl = document.getElementById('liveTrackLocation');
-
-    if (targetOrder.status === 'Delivered') {
-      if (tempEl) tempEl.textContent = 'Delivered';
-      if (etaEl) etaEl.textContent = 'Completed';
-      if (locEl) locEl.textContent = 'Delivered to Destination Hub';
-    } else {
-      if (tempEl) tempEl.textContent = '4.2 °C';
-      if (etaEl) etaEl.textContent = 'Today, 4:30 PM';
-      if (locEl) locEl.textContent = 'Current: KM 74, Nashik-Pune Tollway';
-    }
-
-    // Render interactive Leaflet Route Map
-    setTimeout(() => {
-      this.initBuyerTrackingMap();
-    }, 120);
 
     if (window.lucide) lucide.createIcons();
   },

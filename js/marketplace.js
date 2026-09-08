@@ -499,6 +499,7 @@ const Marketplace = {
       farmerPhone: '+91 94220 88712',
       productName: primaryItem.product?.name || 'Assorted Produce',
       category: primaryItem.product?.category || 'Vegetables',
+      image: primaryItem.product?.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400',
       quantity: primaryItem.quantity,
       unit: primaryItem.unit,
       pricePerUnit: primaryItem.price,
