@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=2.2">
+  <link rel="stylesheet" href="css/style.css?v=2.3">
 
   <!-- Lucide Icons & Chart.js via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -384,8 +384,16 @@
          ========================================== -->
     <section class="app-view active" id="view-marketplace">
       <div class="marketplace-layout">
-        <!-- Filter Sidebar -->
-        <aside class="marketplace-sidebar">
+        <!-- Filter Sidebar (Hidden by default, opens on clicking 'Filters' button) -->
+        <aside class="marketplace-sidebar" id="marketplaceFilterPanel">
+          <div class="filter-panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #e2e8f0;">
+            <h4 class="font-bold text-slate-800 flex items-center gap-2" style="font-size:0.95rem; margin:0;">
+              <i data-lucide="sliders-horizontal" class="text-emerald-700" style="width:16px; height:16px;"></i>
+              <span>Filters</span>
+            </h4>
+            <button class="btn-icon" onclick="Marketplace.toggleFilters(false)" title="Close Filters" style="font-size:1.25rem; line-height:1; cursor:pointer;">&times;</button>
+          </div>
+
           <div class="filter-group">
             <div class="filter-title" data-i18n="mkt_filter_cat">Category</div>
             <div class="category-nav-list">
@@ -426,15 +434,26 @@
             </label>
           </div>
 
-          <button class="btn btn-sm btn-outline w-full" onclick="Marketplace.resetFilters()" style="width:100%;">
-            Reset Filters
-          </button>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn btn-sm btn-outline" onclick="Marketplace.resetFilters()" style="flex:1;">
+              Reset
+            </button>
+            <button class="btn btn-sm btn-primary" onclick="Marketplace.toggleFilters(false)" style="flex:1;">
+              Done
+            </button>
+          </div>
         </aside>
 
         <!-- Marketplace Main Content -->
         <div class="marketplace-content">
-          <!-- Top Bar -->
+          <!-- Top Bar with Search, Filter Button, and Sort -->
           <div class="marketplace-top-controls">
+            <!-- Sleek Toggle Filters Button -->
+            <button class="btn btn-outline btn-sm btn-filter-toggle" id="btnToggleFilters" onclick="Marketplace.toggleFilters()" title="Open Filters">
+              <i data-lucide="sliders-horizontal" style="width:15px; height:15px;"></i>
+              <span>Filters</span>
+            </button>
+
             <div class="search-input-wrap">
               <i data-lucide="search" class="search-icon-fixed"></i>
               <input type="text" id="marketplaceSearchInput" placeholder="Search crops, varieties or farmers..." data-i18n-ph="mkt_search_ph">
@@ -1537,17 +1556,17 @@
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->
-  <script src="js/data.js?v=2.2"></script>
-  <script src="js/storage.js?v=2.2"></script>
-  <script src="js/language.js?v=2.2"></script>
-  <script src="js/ui.js?v=2.2"></script>
-  <script src="js/marketplace.js?v=2.2"></script>
-  <script src="js/dashboard.js?v=2.2"></script>
-  <script src="js/forecast.js?v=2.2"></script>
-  <script src="js/logistics.js?v=2.2"></script>
-  <script src="js/tenders.js?v=2.2"></script>
-  <script src="js/messages.js?v=2.2"></script>
-  <script src="js/app.js?v=2.2"></script>
+  <script src="js/data.js?v=2.3"></script>
+  <script src="js/storage.js?v=2.3"></script>
+  <script src="js/language.js?v=2.3"></script>
+  <script src="js/ui.js?v=2.3"></script>
+  <script src="js/marketplace.js?v=2.3"></script>
+  <script src="js/dashboard.js?v=2.3"></script>
+  <script src="js/forecast.js?v=2.3"></script>
+  <script src="js/logistics.js?v=2.3"></script>
+  <script src="js/tenders.js?v=2.3"></script>
+  <script src="js/messages.js?v=2.3"></script>
+  <script src="js/app.js?v=2.3"></script>
 
 </body>
 </html>

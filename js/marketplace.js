@@ -295,6 +295,26 @@ const Marketplace = {
     this.renderProducts();
   },
 
+  toggleFilters(forceState) {
+    const layout = document.querySelector('.marketplace-layout');
+    const filterPanel = document.getElementById('marketplaceFilterPanel');
+    const toggleBtn = document.getElementById('btnToggleFilters');
+    if (!layout || !filterPanel) return;
+
+    const isVisible = filterPanel.classList.contains('open');
+    const shouldOpen = forceState !== undefined ? forceState : !isVisible;
+
+    if (shouldOpen) {
+      filterPanel.classList.add('open');
+      layout.classList.add('has-open-filters');
+      if (toggleBtn) toggleBtn.classList.add('active');
+    } else {
+      filterPanel.classList.remove('open');
+      layout.classList.remove('has-open-filters');
+      if (toggleBtn) toggleBtn.classList.remove('active');
+    }
+  },
+
   openProductModal(productId) {
     const prod = StorageService.getProductById(productId);
     if (!prod) return;
