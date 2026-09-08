@@ -239,10 +239,7 @@ const UI = {
         </li>
         <li class="sidebar-divider"></li>
         <li class="sidebar-item font-bold text-emerald-700" onclick="UI.toggleSidebar(false); UI.openLoginModal('user');">
-          <i data-lucide="log-in"></i> <span>User Login</span>
-        </li>
-        <li class="sidebar-item font-bold text-emerald-800" onclick="UI.toggleSidebar(false); UI.openLoginModal('farmer');">
-          <i data-lucide="sprout"></i> <span>Farmer Login (Kisan ID)</span>
+          <i data-lucide="log-in"></i> <span>Login</span>
         </li>
       `;
     } else if (role === 'farmer') {
