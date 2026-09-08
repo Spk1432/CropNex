@@ -2690,6 +2690,22 @@ button, input, select, textarea {
 body.is-farmer #navMarketplaceLink,
 body.is-farmer #navReturnOrderBtn,
 body.is-farmer #navSearchBarContainer,
-body.is-farmer #navTopLeftFilterBtn {
+body.is-farmer #navTopLeftFilterBtn,
+body.is-farmer .nav-buyer-only,
+html.is-farmer .nav-buyer-only,
+body[data-view="farmer-dashboard"] .nav-buyer-only,
+body[data-view="farmer-add-product"] .nav-buyer-only,
+body[data-view="farmer-products"] .nav-buyer-only,
+body[data-view="farmer-orders"] .nav-buyer-only,
+body[data-view="farmer-returns"] .nav-buyer-only,
+body[data-view^="farmer-"] .nav-buyer-only,
+body:has(#view-farmer-dashboard.active) .nav-buyer-only,
+body:has(#view-farmer-dashboard.active) #navMarketplaceLink,
+body:has(#view-farmer-dashboard.active) #navSearchBarContainer,
+body:has(#view-farmer-dashboard.active) #navTopLeftFilterBtn,
+body:has(#view-farmer-add-product.active) .nav-buyer-only,
+body:has(#view-farmer-products.active) .nav-buyer-only,
+body:has(#view-farmer-orders.active) .nav-buyer-only,
+body:has(#view-farmer-returns.active) .nav-buyer-only {
   display: none !important;
 }

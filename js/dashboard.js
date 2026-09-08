@@ -43,6 +43,17 @@ const Dashboard = {
   // 1. FARMER DASHBOARD
   // ==========================================
   renderFarmerDashboard() {
+    // Hide Marketplace, Searchbar and Filter button from navbar immediately
+    if (typeof UI !== 'undefined' && UI.updateNavbarVisibility) {
+      UI.updateNavbarVisibility('farmer-dashboard');
+    }
+    const mktLink = document.getElementById('navMarketplaceLink');
+    const searchBar = document.getElementById('navSearchBarContainer');
+    const filterBtn = document.getElementById('navTopLeftFilterBtn');
+    if (mktLink) mktLink.style.setProperty('display', 'none', 'important');
+    if (searchBar) searchBar.style.setProperty('display', 'none', 'important');
+    if (filterBtn) filterBtn.style.setProperty('display', 'none', 'important');
+
     const products = StorageService.getProducts();
     const orders = StorageService.getOrders();
 

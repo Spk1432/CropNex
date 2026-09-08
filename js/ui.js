@@ -110,6 +110,14 @@ const UI = {
       window.location.hash = viewName;
     }
 
+    // Set view attributes immediately on document
+    if (document.documentElement) {
+      document.documentElement.setAttribute('data-view', viewName);
+    }
+    if (document.body) {
+      document.body.setAttribute('data-view', viewName);
+    }
+
     // Hide all view containers
     document.querySelectorAll('.app-view').forEach(view => {
       view.classList.remove('active');
@@ -149,10 +157,19 @@ const UI = {
     const isFarmer = role === 'farmer' || (viewName && viewName.startsWith('farmer-'));
 
     if (document.body) {
+      document.body.setAttribute('data-view', viewName || 'marketplace');
       if (isFarmer) {
         document.body.classList.add('is-farmer');
       } else {
         document.body.classList.remove('is-farmer');
+      }
+    }
+    if (document.documentElement) {
+      document.documentElement.setAttribute('data-view', viewName || 'marketplace');
+      if (isFarmer) {
+        document.documentElement.classList.add('is-farmer');
+      } else {
+        document.documentElement.classList.remove('is-farmer');
       }
     }
 
@@ -161,18 +178,24 @@ const UI = {
     const searchBar = document.getElementById('navSearchBarContainer');
     const topLeftFilterBtn = document.getElementById('navTopLeftFilterBtn');
     const homeLink = document.getElementById('navHomeLink');
+    const brandLogo = document.getElementById('brandLogoLink');
+    const cartBtn = document.querySelector('.cart-icon-btn');
 
     if (isFarmer) {
       if (marketplaceLink) marketplaceLink.style.setProperty('display', 'none', 'important');
       if (returnOrderBtn) returnOrderBtn.style.setProperty('display', 'none', 'important');
       if (searchBar) searchBar.style.setProperty('display', 'none', 'important');
       if (topLeftFilterBtn) topLeftFilterBtn.style.setProperty('display', 'none', 'important');
+      if (cartBtn) cartBtn.style.setProperty('display', 'none', 'important');
       if (homeLink) homeLink.setAttribute('data-navigate', 'farmer-dashboard');
+      if (brandLogo) brandLogo.setAttribute('data-navigate', 'farmer-dashboard');
     } else {
       if (marketplaceLink) marketplaceLink.style.display = 'inline-flex';
       if (returnOrderBtn) returnOrderBtn.style.display = 'none'; // Return order belongs in Dashboard Orders section!
       if (searchBar) searchBar.style.display = 'block';
+      if (cartBtn) cartBtn.style.display = 'inline-flex';
       if (homeLink) homeLink.setAttribute('data-navigate', 'marketplace');
+      if (brandLogo) brandLogo.setAttribute('data-navigate', 'marketplace');
     }
   },
 
@@ -262,6 +285,18 @@ const UI = {
       }
     }
 
+    this.updateNavbarVisibility();
+  },
+
+  switchRole(role) {
+    StorageService.setCurrentRole(role);
+    if (role === 'farmer') {
+      StorageService.login('farmer', { identifier: 'KISAN-7821-MH' });
+    } else {
+      StorageService.login('buyer', { identifier: 'ajay.traders@example.com' });
+    }
+    this.syncAuthStateUI();
+    this.renderSidebarMenu();
     this.updateNavbarVisibility();
   },
 

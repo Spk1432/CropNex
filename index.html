@@ -37,7 +37,7 @@
       <div class="header-left-col" style="display:flex; align-items:center; gap:12px;">
         <div class="brand-dashboard-wrapper" style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
           <!-- Brand Logo -->
-          <div class="brand-logo" data-navigate="marketplace" title="CropNex Marketplace">
+          <div class="brand-logo" id="brandLogoLink" data-navigate="marketplace" title="CropNex">
             <img src="assets/cropnex-logo.jpg?v=3.8" alt="CropNex Logo" class="brand-logo-img">
             <span class="brand-text">Crop<span>Nex</span></span>
           </div>
@@ -49,8 +49,8 @@
           </button>
         </div>
 
-        <!-- Top-Left Filter Button: Shown when searching or toggled -->
-        <button class="btn nav-top-filter-btn" id="navTopLeftFilterBtn" onclick="Marketplace.openFilterModal()" title="Filter Produce" style="display:none; padding:6px 12px; font-size:0.8rem; border-radius:8px; align-items:center; gap:6px; background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-weight:700; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:all 0.2s;">
+        <!-- Top-Left Filter Button: Shown when searching or toggled (Buyer Only) -->
+        <button class="btn nav-top-filter-btn nav-buyer-only" id="navTopLeftFilterBtn" onclick="Marketplace.openFilterModal()" title="Filter Produce" style="display:none; padding:6px 12px; font-size:0.8rem; border-radius:8px; align-items:center; gap:6px; background:#ecfdf5; border:1px solid #10b981; color:#065f46; font-weight:700; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:all 0.2s;">
           <i data-lucide="sliders-horizontal" style="width:14px; height:14px; color:#059669;"></i>
           <span>Filter Produce</span>
           <span class="filter-count-badge" id="navFilterActiveCount" style="display:none; background:#059669; color:#fff; border-radius:10px; padding:1px 6px; font-size:0.7rem;">0</span>
@@ -59,13 +59,13 @@
 
       <!-- Center: Nav Links & Search Bar -->
       <div class="header-center-col" style="display:flex; align-items:center; gap:14px; flex:1; max-width:700px; margin:0 10px;">
-        <!-- Nav Links: Home, Marketplace, About Us -->
+        <!-- Nav Links: Home, Marketplace (Buyer Only), About Us -->
         <nav class="nav-center-menu" id="navCenterMenu" style="display:flex; align-items:center; gap:4px;">
           <a href="javascript:void(0)" class="nav-link" id="navHomeLink" data-navigate="marketplace" title="CropNex Home">
             <i data-lucide="home" style="width:15px; height:15px;"></i>
             <span>Home</span>
           </a>
-          <a href="javascript:void(0)" class="nav-link" id="navMarketplaceLink" data-navigate="marketplace" title="Direct Marketplace">
+          <a href="javascript:void(0)" class="nav-link nav-buyer-only" id="navMarketplaceLink" data-navigate="marketplace" title="Direct Marketplace">
             <i data-lucide="store" style="width:15px; height:15px;"></i>
             <span>Marketplace</span>
           </a>
@@ -75,8 +75,8 @@
           </a>
         </nav>
 
-        <!-- Navbar Search Bar -->
-        <div class="nav-search-bar" id="navSearchBarContainer" style="position:relative; flex:1; min-width:180px;">
+        <!-- Navbar Search Bar (Buyer Only) -->
+        <div class="nav-search-bar nav-buyer-only" id="navSearchBarContainer" style="position:relative; flex:1; min-width:180px;">
           <i data-lucide="search" class="nav-search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:#64748b; pointer-events:none;"></i>
           <input type="text" id="navProduceSearchInput" placeholder="Search farm produce, mandi, crop..." oninput="Marketplace.handleNavbarSearch(this.value)" style="width:100%; padding:7px 30px 7px 34px; border-radius:20px; border:1px solid #cbd5e1; font-size:0.83rem; background:#f8fafc; outline:none; transition:all 0.2s;">
           <button type="button" class="nav-search-clear" id="navSearchClearBtn" onclick="Marketplace.clearNavbarSearch()" style="display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; font-size:16px; color:#94a3b8; cursor:pointer;" title="Clear">&times;</button>
