@@ -620,18 +620,21 @@ const UI = {
 
   // Return Order Modal Handlers
   openReturnOrderModal(preselectedOrderId = null) {
+    const orders = StorageService.getOrders();
+    const deliveredOrders = orders.filter(o => o.status === 'Delivered');
+
+    if (deliveredOrders.length === 0) {
+      this.showToast('Return Order is only available for Delivered items. You have no delivered orders yet.', 'warning', 4000);
+      return;
+    }
+
     const orderSelect = document.getElementById('returnOrderIdSelect');
     if (orderSelect) {
-      const orders = StorageService.getOrders();
-      if (orders && orders.length > 0) {
-        orderSelect.innerHTML = orders.map(o => 
-          `<option value="${o.id}" ${preselectedOrderId === o.id ? 'selected' : ''}>#${o.id} - ${o.productName} (${o.quantity} ${o.unit || 'kg'}, ₹${o.total}) [${o.status}]</option>`
-        ).join('');
-        if (preselectedOrderId) {
-          orderSelect.value = preselectedOrderId;
-        }
-      } else {
-        orderSelect.innerHTML = `<option value="CNX-2026-1048">#CNX-2026-1048 - Tomato Hybrid (100 kg, ₹2,544)</option>`;
+      orderSelect.innerHTML = deliveredOrders.map(o => 
+        `<option value="${o.id}" ${preselectedOrderId === o.id ? 'selected' : ''}>#${o.id} - ${o.productName} (${o.quantity} ${o.unit || 'kg'}, ₹${(o.total || 0).toLocaleString('en-IN')}) [Delivered]</option>`
+      ).join('');
+      if (preselectedOrderId && deliveredOrders.some(o => o.id === preselectedOrderId)) {
+        orderSelect.value = preselectedOrderId;
       }
     }
     this.openModal('returnOrderModal');
@@ -640,7 +643,19 @@ const UI = {
   handleReturnOrderSubmit(event) {
     if (event) event.preventDefault();
     const orderSelect = document.getElementById('returnOrderIdSelect');
-    const orderId = orderSelect?.value || 'CNX-2026-1048';
+    const orderId = orderSelect?.value;
+    if (!orderId) {
+      this.showToast('Please select an eligible delivered order.', 'warning');
+      return;
+    }
+
+    const orders = StorageService.getOrders();
+    const order = orders.find(o => o.id === orderId);
+    if (!order || order.status !== 'Delivered') {
+      this.showToast('Only delivered items are eligible for return inspection.', 'error');
+      return;
+    }
+
     const reasonSelect = document.getElementById('returnReasonSelect');
     const reasonVal = reasonSelect?.value || 'quality_spoilage';
     const reasonLabel = reasonSelect?.options[reasonSelect.selectedIndex]?.text || 'Quality Issue / Spoilage in Transit';
@@ -648,18 +663,6 @@ const UI = {
     const resolutionVal = document.querySelector('input[name="returnResolution"]:checked')?.value === 'replacement' 
       ? 'Replacement Batch Requested' 
       : 'Direct 100% Account Refund';
-
-    const orders = StorageService.getOrders();
-    const order = orders.find(o => o.id === orderId) || {
-      id: orderId,
-      productName: 'Fresh Produce Consignment',
-      image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60',
-      farmerName: 'Ramesh Patil',
-      quantity: 100,
-      unit: 'kg',
-      buyerName: 'Ajay Traders',
-      buyerPhone: '+91 98220 11223'
-    };
 
     const buyerProfile = StorageService.getProfile('buyer');
 

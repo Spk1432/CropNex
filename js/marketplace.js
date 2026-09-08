@@ -602,24 +602,15 @@ const Marketplace = {
     const totalFormatted = `₹${totals.total.toLocaleString('en-IN')}`;
     const summaryTotalEl = document.getElementById('checkoutSummaryTotal');
     const summaryItemsEl = document.getElementById('checkoutSummaryItems');
-    const upiDisplayEl = document.getElementById('upiDisplayAmount');
     const buyerNameInput = document.getElementById('checkoutBuyerName');
     const buyerPhoneInput = document.getElementById('checkoutBuyerPhone');
     const addressInput = document.getElementById('checkoutAddress');
 
     if (summaryTotalEl) summaryTotalEl.textContent = totalFormatted;
     if (summaryItemsEl) summaryItemsEl.textContent = `${totals.itemCount} items`;
-    if (upiDisplayEl) upiDisplayEl.textContent = totalFormatted;
     if (buyerNameInput) buyerNameInput.value = buyerProfile.name || 'Ajay Traders';
     if (buyerPhoneInput) buyerPhoneInput.value = buyerProfile.phone || '+91 98231 44521';
     if (addressInput) addressInput.value = buyerProfile.location || 'Gala No. 42, Gultekdi Market Yard, Pune - 411037';
-
-    // Update dynamic UPI QR Code image
-    const qrImg = document.getElementById('checkoutUpiQrImg');
-    if (qrImg) {
-      const upiUrl = encodeURIComponent(`upi://pay?pa=cropnex.escrow@icici&pn=CropNex%20Agri%20Platform&am=${totals.total}&cu=INR&tn=CropNex%20Wholesale%20Order`);
-      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${upiUrl}`;
-    }
 
     // Default to UPI payment method
     this.togglePaymentMethodUI('upi');
@@ -628,14 +619,13 @@ const Marketplace = {
   },
 
   togglePaymentMethodUI(method) {
-    const qrContainer = document.getElementById('checkoutUpiQrContainer');
     const labelUpi = document.getElementById('labelPayUpi');
     const labelCod = document.getElementById('labelPayCod');
     const radioUpi = document.getElementById('payMethodUpi');
     const radioCod = document.getElementById('payMethodCod');
+    const submitBtn = document.getElementById('btnCheckoutSubmit');
 
     if (method === 'upi') {
-      if (qrContainer) qrContainer.style.display = 'block';
       if (radioUpi) radioUpi.checked = true;
       if (labelUpi) {
         labelUpi.style.borderColor = '#10b981';
@@ -645,8 +635,10 @@ const Marketplace = {
         labelCod.style.borderColor = '#e2e8f0';
         labelCod.style.backgroundColor = '#ffffff';
       }
+      if (submitBtn) {
+        submitBtn.innerHTML = `<span>Place Order & Pay via UPI</span> <i data-lucide="arrow-right" style="width:15px; height:15px; margin-left:4px;"></i>`;
+      }
     } else {
-      if (qrContainer) qrContainer.style.display = 'none';
       if (radioCod) radioCod.checked = true;
       if (labelCod) {
         labelCod.style.borderColor = '#10b981';
@@ -656,7 +648,11 @@ const Marketplace = {
         labelUpi.style.borderColor = '#e2e8f0';
         labelUpi.style.backgroundColor = '#ffffff';
       }
+      if (submitBtn) {
+        submitBtn.innerHTML = `<span>Place Order (Cash on Delivery)</span>`;
+      }
     }
+    if (window.lucide) lucide.createIcons();
   },
 
   copyUpiId() {
@@ -672,42 +668,138 @@ const Marketplace = {
     }
   },
 
-  handleCheckoutSubmit() {
+  pendingCheckoutData: null,
+
+  handleCheckoutSubmit(event) {
+    if (event) event.preventDefault();
+
     const cart = StorageService.getCart();
-    if (cart.length === 0) return;
+    if (!cart || cart.length === 0) {
+      UI.showToast('Your cart is empty.', 'warning');
+      return;
+    }
 
     const totals = StorageService.getCartTotals();
-    const buyerName = document.getElementById('checkoutBuyerName')?.value || 'Ajay Traders';
-    const buyerPhone = document.getElementById('checkoutBuyerPhone')?.value || '+91 98231 44521';
-    const deliveryAddress = document.getElementById('checkoutAddress')?.value || 'Market Yard, Pune';
-    const paymentMethod = document.querySelector('input[name="checkoutPayment"]:checked')?.value || 'UPI / QR Code';
+    const buyerName = document.getElementById('checkoutBuyerName')?.value?.trim() || 'Ajay Traders';
+    const buyerPhone = document.getElementById('checkoutBuyerPhone')?.value?.trim() || '+91 98231 44521';
+    const deliveryAddress = document.getElementById('checkoutAddress')?.value?.trim() || 'Market Yard, Pune';
+    const selectedMethod = document.querySelector('input[name="checkoutPayment"]:checked')?.value || 'Pay with UPI';
 
-    // Build order records for cart items
-    const primaryItem = cart[0];
-    const newOrder = StorageService.createOrder({
+    if (!buyerName || !buyerPhone || !deliveryAddress) {
+      UI.showToast('Please fill all required delivery details.', 'warning');
+      return;
+    }
+
+    // Two-step UPI flow: Display QR screen first; DO NOT confirm order until user pays!
+    if (selectedMethod === 'Pay with UPI') {
+      this.pendingCheckoutData = {
+        buyerName,
+        buyerPhone,
+        deliveryAddress,
+        paymentMethod: 'UPI / Escrow (Verified)',
+        totals,
+        cart: [...cart]
+      };
+
+      // Close checkout form modal and open dedicated UPI payment verification modal
+      UI.closeAllModals();
+      this.openUpiPaymentModal(this.pendingCheckoutData);
+      return;
+    }
+
+    // Cash on Delivery flow: direct confirmation
+    this.finalizeOrder({
       buyerName,
       buyerPhone,
+      deliveryAddress,
+      paymentMethod: 'Cash on Delivery',
+      totals,
+      cart
+    });
+  },
+
+  openUpiPaymentModal(payload) {
+    const amountFormatted = `₹${(payload.totals.total || 0).toLocaleString('en-IN')}`;
+    const amountEl = document.getElementById('upiModalPayableAmount');
+    const detailsEl = document.getElementById('upiModalOrderDetails');
+    const qrImg = document.getElementById('upiPaymentModalQrImg');
+    const confirmBtn = document.getElementById('btnConfirmUpiPayment');
+
+    if (amountEl) amountEl.textContent = amountFormatted;
+    if (detailsEl && payload.cart && payload.cart.length > 0) {
+      const firstItem = payload.cart[0];
+      const extraCount = payload.cart.length - 1;
+      detailsEl.textContent = `${firstItem.product?.name || 'Produce'} (${firstItem.quantity} ${firstItem.unit || 'kg'})${extraCount > 0 ? ` + ${extraCount} more items` : ''}`;
+    }
+
+    if (qrImg) {
+      const upiUrl = encodeURIComponent(`upi://pay?pa=cropnex.escrow@icici&pn=CropNex%20Agri%20Mandi&am=${payload.totals.total}&cu=INR&tn=CropNex%20Wholesale%20Order`);
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${upiUrl}`;
+    }
+
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.innerHTML = `<i data-lucide="shield-check" style="width:16px; height:16px;"></i> <span>I Have Made the Payment</span>`;
+    }
+
+    UI.openModal('upiPaymentModal');
+    if (window.lucide) lucide.createIcons();
+  },
+
+  cancelUpiPayment() {
+    this.pendingCheckoutData = null;
+    UI.closeAllModals();
+    UI.showToast('Payment cancelled. Order was not placed.', 'info');
+  },
+
+  confirmUpiPayment() {
+    if (!this.pendingCheckoutData) {
+      UI.showToast('No pending payment found to confirm.', 'error');
+      UI.closeAllModals();
+      return;
+    }
+
+    const confirmBtn = document.getElementById('btnConfirmUpiPayment');
+    if (confirmBtn) {
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = `<i data-lucide="loader-2" class="animate-spin" style="width:16px; height:16px;"></i> <span>Verifying with Escrow Gateway...</span>`;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Verify payment with banking gateway simulation
+    setTimeout(() => {
+      const payload = this.pendingCheckoutData;
+      this.pendingCheckoutData = null;
+      this.finalizeOrder(payload);
+    }, 1400);
+  },
+
+  finalizeOrder(payload) {
+    const primaryItem = payload.cart[0];
+    const newOrder = StorageService.createOrder({
+      buyerName: payload.buyerName,
+      buyerPhone: payload.buyerPhone,
       farmerName: primaryItem.product?.farmer || 'Ramesh Patil',
-      farmerPhone: '+91 94220 88712',
+      farmerPhone: primaryItem.product?.farmerPhone || '+91 94220 88712',
       productName: primaryItem.product?.name || 'Assorted Produce',
       category: primaryItem.product?.category || 'Vegetables',
       image: primaryItem.product?.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400',
       quantity: primaryItem.quantity,
       unit: primaryItem.unit,
       pricePerUnit: primaryItem.price,
-      subtotal: totals.subtotal,
-      logisticsCost: totals.estimatedLogistics,
-      total: totals.total,
-      paymentMethod,
-      deliveryAddress
+      subtotal: payload.totals.subtotal,
+      logisticsCost: payload.totals.estimatedLogistics,
+      total: payload.totals.total,
+      paymentMethod: payload.paymentMethod,
+      deliveryAddress: payload.deliveryAddress
     });
 
-    // Clear cart
+    // Clear cart and close modal
     StorageService.clearCart();
     UI.closeAllModals();
 
-    // Directly redirect to My Orders page as requested
-    UI.showToast(`Payment registered & Order #${newOrder.id} confirmed! Redirecting to My Orders...`, 'success');
+    // Directly redirect to My Orders page with success toast
+    UI.showToast(`Payment verified & Order #${newOrder.id} confirmed! Redirecting to My Orders...`, 'success', 3500);
     UI.routeTo('buyer-orders');
 
     // Ensure the table in buyer-orders is rendered immediately with the new order

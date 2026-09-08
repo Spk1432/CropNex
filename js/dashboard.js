@@ -659,15 +659,23 @@ const Dashboard = {
           </span>
         </td>
         <td>
-          ${order.status === 'Return Requested' || order.status === 'Returned' ? `
+          ${order.status === 'Return Requested' ? `
             <span style="display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; white-space:nowrap;">
               <i data-lucide="clock" style="width:12px; height:12px;"></i> In Review
             </span>
-          ` : `
-            <button type="button" class="btn btn-outline btn-sm text-red-600" onclick="UI.openReturnOrderModal('${order.id}')" title="Request return or refund for Order #${order.id}" style="display:inline-flex; align-items:center; gap:5px; padding:5px 10px; font-size:0.75rem; font-weight:700; border-radius:6px; border-color:#fca5a5; background:#fff1f2; color:#be123c; cursor:pointer; white-space:nowrap;">
+          ` : order.status === 'Returned' ? `
+            <span style="display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; background:#fef3c7; color:#92400e; border:1px solid #fde68a; white-space:nowrap;">
+              <i data-lucide="check-circle" style="width:12px; height:12px;"></i> Returned
+            </span>
+          ` : order.status === 'Delivered' ? `
+            <button type="button" class="btn btn-outline btn-sm text-red-600" onclick="UI.openReturnOrderModal('${order.id}')" title="Request return or refund for Delivered Order #${order.id}" style="display:inline-flex; align-items:center; gap:5px; padding:5px 10px; font-size:0.75rem; font-weight:700; border-radius:6px; border-color:#fca5a5; background:#fff1f2; color:#be123c; cursor:pointer; white-space:nowrap;">
               <i data-lucide="rotate-ccw" style="width:12px; height:12px; color:#e11d48;"></i>
               <span>Return Order</span>
             </button>
+          ` : `
+            <span style="display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border-radius:6px; font-size:0.72rem; font-weight:600; background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0; white-space:nowrap;">
+              <i data-lucide="package" style="width:12px; height:12px;"></i> In Fulfillment
+            </span>
           `}
         </td>
       </tr>

@@ -501,7 +501,7 @@ const INITIAL_ORDERS = [
     total: 2580,
     date: '2026-08-27 10:30 AM',
     status: 'Accepted',
-    paymentMethod: 'Cash on Delivery (Demo)',
+    paymentMethod: 'Cash on Delivery',
     deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
     timeline: [
       { status: 'Order Placed', time: '27 Aug, 10:30 AM', done: true },
@@ -529,7 +529,7 @@ const INITIAL_ORDERS = [
     total: 4820,
     date: '2026-08-26 04:15 PM',
     status: 'Dispatched',
-    paymentMethod: 'Demo UPI Transfer',
+    paymentMethod: 'UPI / Escrow',
     deliveryAddress: 'Central Hub, MIDC Bhosari, Pune - 411026',
     timeline: [
       { status: 'Order Placed', time: '26 Aug, 04:15 PM', done: true },
@@ -557,7 +557,7 @@ const INITIAL_ORDERS = [
     total: 4780,
     date: '2026-08-24 11:00 AM',
     status: 'Delivered',
-    paymentMethod: 'Demo Payment Gateway',
+    paymentMethod: 'UPI / Escrow',
     deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
     timeline: [
       { status: 'Order Placed', time: '24 Aug, 11:00 AM', done: true },
