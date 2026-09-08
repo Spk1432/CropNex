@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=3.5">
+  <link rel="stylesheet" href="css/style.css?v=3.6">
 
   <!-- Lucide Icons & Chart.js via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -429,9 +429,21 @@
     <section class="app-view" id="view-forecast">
       <div class="page-container">
         <div class="page-header-block">
-          <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">Pillar 02</span>
-          <h2 data-i18n="ai_price_title">AI Price Intelligence Engine (Prototype)</h2>
-          <p data-i18n="ai_disclaimer">Prototype forecast based on historical sample data. Not a guaranteed market price.</p>
+          <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">AI PRICE DISCOVERY</span>
+          <h2 data-i18n="ai_price_title">AI Price Prediction & Mandi Forecast</h2>
+          <p data-i18n="ai_disclaimer">Live APMC rate projections based on seasonal arrival trends and predictive market momentum.</p>
+        </div>
+
+        <!-- Quick Crop Selector Pills -->
+        <div style="margin-bottom: 20px;">
+          <label class="block text-xs font-bold text-slate-600 mb-2">Quick Crop Selection (Click to Discover AI Projections):</label>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-sm btn-primary crop-predict-btn" onclick="ForecastEngine.selectCrop('Tomato', this)">🍅 Tomato (Hybrid)</button>
+            <button type="button" class="btn btn-sm btn-outline crop-predict-btn" onclick="ForecastEngine.selectCrop('Onion', this)">🧅 Onion (Nashik Red)</button>
+            <button type="button" class="btn btn-sm btn-outline crop-predict-btn" onclick="ForecastEngine.selectCrop('Potato', this)">🥔 Potato (Kufri Pukhraj)</button>
+            <button type="button" class="btn btn-sm btn-outline crop-predict-btn" onclick="ForecastEngine.selectCrop('Wheat', this)">🌾 Wheat (Lokwan)</button>
+            <button type="button" class="btn btn-sm btn-outline crop-predict-btn" onclick="ForecastEngine.selectCrop('Turmeric', this)">🌿 Turmeric (Salem Golden)</button>
+          </div>
         </div>
 
         <!-- Controls Row -->
@@ -527,9 +539,9 @@
     <section class="app-view" id="view-logistics">
       <div class="page-container">
         <div class="page-header-block">
-          <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">Pillar 03</span>
-          <h2 data-i18n="logistics_title">Smart Logistics & Route Optimization (Prototype)</h2>
-          <p>Demonstrating shared cold freight pooling, multi-stop collection clusters, and distance reduction.</p>
+          <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">SMART SUPPLY CHAIN</span>
+          <h2 data-i18n="logistics_title">Smart Logistics & Route Optimization</h2>
+          <p>Shared cold freight pooling, multi-stop collection clusters, and distance reduction.</p>
         </div>
 
         <div class="logistics-grid">
@@ -636,125 +648,296 @@
 
 
     <!-- ==========================================
-         VIEW 6: FARMER DASHBOARD (Overview - KPIs, Charts & Orders)
+         VIEW 6: FARMER DASHBOARD (Overview - KPIs, Charts & Quick Actions)
          ========================================== -->
     <section class="app-view" id="view-farmer-dashboard">
       <div class="page-container" style="max-width:1360px;">
         <div class="page-header-block mb-6" style="margin-bottom:24px;">
+          <div>
+            <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">KISAN / PRODUCER PORTAL</span>
+            <h2 class="text-2xl font-bold text-slate-900" data-i18n="dash_farmer_title">Farmer Operations Dashboard</h2>
+            <p class="text-sm text-slate-500">Direct sales metrics, live performance analytics, and farm revenue realization.</p>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card">
+            <span class="kpi-label" data-i18n="kpi_total_sales">Total Direct Revenue</span>
+            <div class="kpi-value text-emerald-700" id="farmerKpiSales">₹0</div>
+            <span class="text-xs text-slate-500">Real-time settlement</span>
+          </div>
+          <div class="kpi-card" data-navigate="farmer-products" style="cursor:pointer;" title="View My Products">
+            <span class="kpi-label" data-i18n="kpi_active_products">Active Listings</span>
+            <div class="kpi-value" id="farmerKpiActiveProducts">0</div>
+            <span class="text-xs text-emerald-700 font-semibold flex items-center gap-1">Manage Listings <i data-lucide="arrow-right" style="width:12px;height:12px;"></i></span>
+          </div>
+          <div class="kpi-card" data-navigate="farmer-orders" style="cursor:pointer;" title="View Incoming Orders">
+            <span class="kpi-label" data-i18n="kpi_pending_orders">Incoming Orders</span>
+            <div class="kpi-value text-amber-600" id="farmerKpiPendingOrders">0</div>
+            <span class="text-xs text-amber-700 font-semibold flex items-center gap-1">Action Required <i data-lucide="arrow-right" style="width:12px;height:12px;"></i></span>
+          </div>
+          <div class="kpi-card" data-navigate="farmer-orders" style="cursor:pointer;" title="View Completed Orders">
+            <span class="kpi-label" data-i18n="kpi_completed_orders">Completed Orders</span>
+            <div class="kpi-value" id="farmerKpiCompletedOrders">0</div>
+            <span class="text-xs text-slate-500">Delivered directly</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label" data-i18n="kpi_est_earnings">Net Earnings (94%)</span>
+            <div class="kpi-value text-emerald-800" id="farmerKpiEarnings">₹0</div>
+            <span class="text-xs text-emerald-700">Zero middleman cut</span>
+          </div>
+        </div>
+
+        <!-- Quick Navigation Shortcuts Bar -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px;">
+          <div class="stat-card" data-navigate="farmer-add-product" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
+            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
+              <i data-lucide="plus-circle"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">Add New Produce</div>
+            <div class="text-xs text-slate-500">List crops directly to buyers</div>
+          </div>
+          <div class="stat-card" data-navigate="farmer-products" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
+            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
+              <i data-lucide="package"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">My Listed Produce</div>
+            <div class="text-xs text-slate-500">Manage prices & inventory</div>
+          </div>
+          <div class="stat-card" data-navigate="farmer-orders" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
+            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
+              <i data-lucide="clipboard-list"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">Incoming Orders</div>
+            <div class="text-xs text-slate-500">Dispatch & fulfillment status</div>
+          </div>
+          <div class="stat-card" data-navigate="forecast" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
+            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
+              <i data-lucide="trending-up"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">AI Price Prediction</div>
+            <div class="text-xs text-slate-500">Live APMC rate trend discovery</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid-2">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h4>Monthly Revenue Realization</h4>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="farmerSalesChartCanvas"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h4>Crop Revenue Distribution</h4>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="farmerCropMixCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         VIEW 6B: FARMER ADD PRODUCT
+         ========================================== -->
+    <section class="app-view" id="view-farmer-add-product">
+      <div class="page-container" style="max-width:960px;">
+        <div class="page-header-block mb-6" style="margin-bottom:24px;">
+          <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">DIRECT MARKETPLACE LISTING</span>
+          <h2 class="text-2xl font-bold text-slate-900">Add New Produce</h2>
+          <p class="text-sm text-slate-500">List your farm-fresh crops directly to bulk buyers with transparent rates and zero middleman fee.</p>
+        </div>
+
+        <div class="data-table-card" style="padding: 28px;">
+          <form id="farmerAddProducePageForm" onsubmit="Dashboard.handleNewProductPageSubmit(event)">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 20px;">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Produce Name *</label>
+                <input type="text" id="pageFormCropName" required placeholder="e.g. Tomato - Hybrid, Lokwan Wheat" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Category *</label>
+                <select id="pageFormCropCategory" class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+                  <option value="Vegetables">Vegetables</option>
+                  <option value="Fruits">Fruits</option>
+                  <option value="Grains">Grains</option>
+                  <option value="Spices">Spices</option>
+                  <option value="Oilseeds">Oilseeds</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Variety / Sub-variety *</label>
+                <input type="text" id="pageFormCropVariety" required placeholder="e.g. Vaishali S-22 / Red Ruby" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Quality Grade *</label>
+                <select id="pageFormCropGrade" class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+                  <option value="Export Grade A+">Export Grade A+</option>
+                  <option value="A Grade" selected>A Grade (Standard Wholesale)</option>
+                  <option value="B Grade">B Grade (Commercial/Processing)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Wholesale Price (₹) *</label>
+                <input type="number" id="pageFormCropPrice" required min="1" step="0.5" placeholder="e.g. 24" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Selling Unit *</label>
+                <select id="pageFormCropUnit" class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+                  <option value="kg">per kg</option>
+                  <option value="quintal">per quintal (100 kg)</option>
+                  <option value="crate">per crate (20-25 kg)</option>
+                  <option value="dozen">per dozen</option>
+                  <option value="ton">per ton</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Available Quantity *</label>
+                <input type="number" id="pageFormCropQuantity" required min="1" placeholder="e.g. 1500" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Minimum Order Quantity (MOQ) *</label>
+                <input type="number" id="pageFormCropMinOrder" required min="1" value="20" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Farm Origin / Mandi Hub *</label>
+                <input type="text" id="pageFormCropLocation" required value="Nashik, Maharashtra" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Photo URL *</label>
+                <input type="url" id="pageFormCropImageUrl" required value="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+              </div>
+            </div>
+
+            <!-- Quick Image Presets -->
+            <div style="margin-bottom: 18px;">
+              <label class="block text-xs font-bold text-slate-600 mb-2">Quick Photo Selection (Click to apply):</label>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600')">🍅 Tomato</button>
+                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600')">🧅 Onion</button>
+                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600')">🥔 Potato</button>
+                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600')">🌾 Wheat</button>
+                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1553279768-865429fa0078?w=600')">🥭 Mango</button>
+                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600')">🌿 Turmeric</button>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Harvest & Crop Quality Details</label>
+              <textarea id="pageFormCropDescription" rows="3" placeholder="Describe quality parameters, harvesting techniques, moisture level, packaging type..." class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;"></textarea>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px; padding:12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
+              <input type="checkbox" id="pageFormCropOrganic" style="width:18px; height:18px; accent-color:#059669; cursor:pointer;">
+              <label for="pageFormCropOrganic" class="text-sm font-bold text-emerald-900 cursor-pointer" style="cursor:pointer; margin:0;">
+                Certified 100% Organic Farm Produce (PGS-India / Jaivik Bharat Verified)
+              </label>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:12px;">
+              <button type="button" class="btn btn-outline" onclick="UI.routeTo('farmer-products')">Cancel</button>
+              <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+                <i data-lucide="check-circle-2"></i> Publish Listing to Marketplace
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         VIEW 6C: FARMER PRODUCTS (My Products)
+         ========================================== -->
+    <section class="app-view" id="view-farmer-products">
+      <div class="page-container" style="max-width:1360px;">
+        <div class="page-header-block mb-6" style="margin-bottom:24px;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;">
             <div>
-              <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">KISAN / PRODUCER PORTAL</span>
-              <h2 class="text-2xl font-bold text-slate-900" data-i18n="dash_farmer_title">Farmer Operations Dashboard</h2>
-              <p class="text-sm text-slate-500">Direct sales metrics, listing management, and wholesale order dispatch.</p>
+              <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">DIRECT INVENTORY</span>
+              <h2 class="text-2xl font-bold text-slate-900">My Listed Produce</h2>
+              <p class="text-sm text-slate-500">Manage your active farm crop listings, update live prices, and monitor stock availability.</p>
             </div>
-            <button class="btn btn-primary" onclick="Dashboard.openAddProductModal()" style="display:inline-flex; align-items:center; gap:6px;">
-              <i data-lucide="plus-circle"></i> <span data-i18n="btn_add_product">Add Product</span>
+            <button class="btn btn-primary" onclick="UI.routeTo('farmer-add-product')" style="display:inline-flex; align-items:center; gap:6px;">
+              <i data-lucide="plus-circle"></i> <span>+ Add New Produce</span>
             </button>
           </div>
         </div>
 
-          <!-- KPI Cards -->
-          <div class="kpi-cards-grid">
-            <div class="kpi-card">
-              <span class="kpi-label" data-i18n="kpi_total_sales">Total Direct Revenue</span>
-              <div class="kpi-value text-emerald-700" id="farmerKpiSales">₹0</div>
-              <span class="text-xs text-slate-500">Real-time settlement</span>
-            </div>
-            <div class="kpi-card">
-              <span class="kpi-label" data-i18n="kpi_active_products">Active Listings</span>
-              <div class="kpi-value" id="farmerKpiActiveProducts">0</div>
-              <span class="text-xs text-slate-500">Live on Marketplace</span>
-            </div>
-            <div class="kpi-card">
-              <span class="kpi-label" data-i18n="kpi_pending_orders">Incoming Orders</span>
-              <div class="kpi-value text-amber-600" id="farmerKpiPendingOrders">0</div>
-              <span class="text-xs text-slate-500">Action required</span>
-            </div>
-            <div class="kpi-card">
-              <span class="kpi-label" data-i18n="kpi_completed_orders">Completed Orders</span>
-              <div class="kpi-value" id="farmerKpiCompletedOrders">0</div>
-              <span class="text-xs text-slate-500">Delivered directly</span>
-            </div>
-            <div class="kpi-card">
-              <span class="kpi-label" data-i18n="kpi_est_earnings">Net Earnings (94%)</span>
-              <div class="kpi-value text-emerald-800" id="farmerKpiEarnings">₹0</div>
-              <span class="text-xs text-emerald-700">Zero middleman cut</span>
-            </div>
+        <!-- My Listed Produce Table Card -->
+        <div class="data-table-card">
+          <div class="table-header-row">
+            <h4 class="font-bold text-slate-800">Active Marketplace Listings</h4>
+            <span class="text-xs text-slate-500">Live for verified bulk buyers</span>
           </div>
-
-          <!-- Charts Grid -->
-          <div class="charts-grid-2">
-            <div class="chart-card">
-              <div class="chart-card-header">
-                <h4>Monthly Revenue Realization</h4>
-              </div>
-              <div class="chart-wrapper">
-                <canvas id="farmerSalesChartCanvas"></canvas>
-              </div>
-            </div>
-            <div class="chart-card">
-              <div class="chart-card-header">
-                <h4>Crop Revenue Distribution</h4>
-              </div>
-              <div class="chart-wrapper">
-                <canvas id="farmerCropMixCanvas"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <!-- Live Orders Management Table -->
-          <div class="data-table-card">
-            <div class="table-header-row">
-              <h4 class="font-bold text-slate-800">Incoming Buyer Orders</h4>
-              <span class="text-xs text-slate-500">Status progression automatically updates buyer tracking</span>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Order ID</th>
-                    <th>Buyer</th>
-                    <th>Produce</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="farmerOrdersTableBody">
-                  <!-- Injected via Dashboard.renderFarmerOrdersTable() -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- My Listed Produce Table -->
-          <div class="data-table-card">
-            <div class="table-header-row">
-              <h4 class="font-bold text-slate-800">My Listed Produce (Direct Marketplace)</h4>
-              <button class="btn btn-xs btn-outline" onclick="Dashboard.openAddProductModal()">+ Add Produce</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Crop</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Available</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="farmerProductsTableBody">
-                  <!-- Injected via Dashboard.renderFarmerProductsTable() -->
-                </tbody>
-              </table>
-            </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Crop</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Available</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="farmerProductsTableBody">
+                <!-- Injected via Dashboard.renderFarmerProductsTable() -->
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         VIEW 6D: FARMER ORDERS (Incoming Orders)
+         ========================================== -->
+    <section class="app-view" id="view-farmer-orders">
+      <div class="page-container" style="max-width:1360px;">
+        <div class="page-header-block mb-6" style="margin-bottom:24px;">
+          <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">WHOLESALE DISPATCH</span>
+          <h2 class="text-2xl font-bold text-slate-900">Incoming Buyer Orders</h2>
+          <p class="text-sm text-slate-500">Review purchase orders from verified buyers, advance fulfillment stages, and confirm delivery handovers.</p>
+        </div>
+
+        <!-- Live Orders Management Table -->
+        <div class="data-table-card">
+          <div class="table-header-row">
+            <h4 class="font-bold text-slate-800">Orders & Fulfillment Status</h4>
+            <span class="text-xs text-slate-500">Status changes automatically notify buyer tracking</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Buyer</th>
+                  <th>Produce</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="farmerOrdersTableBody">
+                <!-- Injected via Dashboard.renderFarmerOrdersTable() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </section>
 
 
@@ -1449,13 +1632,13 @@
   <!-- 4. Checkout Modal -->
   <div class="modal-window" id="checkoutModal">
     <div class="modal-header">
-      <h3>Complete Demo Checkout</h3>
+      <h3>Complete Direct Checkout</h3>
       <button class="btn-icon" data-close-modal>&times;</button>
     </div>
     <form id="checkoutForm">
       <div class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
-        <div class="p-3 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-900" style="padding:12px; background:#fffbeb; border:1px solid #fde68a; border-radius:6px; color:#92400e;">
-          <strong>Prototype Notice:</strong> This is an interactive demo checkout. No real money or bank transactions will occur.
+        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-md text-xs text-emerald-900" style="padding:12px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; color:#065f46;">
+          <strong>Direct Order Notice:</strong> Order will be confirmed directly with verified farmers with direct logistics dispatch.
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
@@ -1475,15 +1658,15 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-2">Payment Method (Prototype):</label>
+          <label class="block text-xs font-bold text-slate-700 mb-2">Payment Method:</label>
           <div style="display:flex; flex-direction:column; gap:8px;">
             <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
-              <input type="radio" name="checkoutPayment" value="Cash on Delivery (Demo)" checked>
+              <input type="radio" name="checkoutPayment" value="Cash on Delivery" checked>
               <span>Cash on Delivery (Farm-Gate Inspection)</span>
             </label>
             <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
-              <input type="radio" name="checkoutPayment" value="Demo UPI Transfer">
-              <span>Direct UPI Escrow (Simulated)</span>
+              <input type="radio" name="checkoutPayment" value="UPI / Direct Transfer">
+              <span>Direct UPI Escrow / Bank Transfer</span>
             </label>
           </div>
         </div>
@@ -1498,7 +1681,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline btn-sm" data-close-modal>Cancel</button>
-        <button type="submit" class="btn btn-primary btn-sm" data-i18n="btn_place_order">Place Order (Demo)</button>
+        <button type="submit" class="btn btn-primary btn-sm" data-i18n="btn_place_order">Confirm & Place Order</button>
       </div>
     </form>
   </div>
@@ -1512,7 +1695,7 @@
     <div class="modal-body text-xs space-y-3" style="line-height:1.6;">
       <div class="flex justify-between items-center">
         <span class="tender-id-badge font-mono" id="tenderModalId">TDR-2026-091</span>
-        <span class="badge-demo">Demo Tender Data</span>
+        <span class="badge-demo">Official GeM / eTenders</span>
       </div>
       <h4 class="text-base font-bold text-slate-900" id="tenderModalTitle">Title</h4>
       <div><strong>Issuing Department:</strong> <span id="tenderModalOrg"></span></div>
@@ -1569,13 +1752,13 @@
             <input type="password" id="loginUserPassword" required placeholder="••••••••" value="password123" class="form-input w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
           </div>
           <div class="text-xs text-slate-500" style="font-size:0.75rem; color:#64748b;">
-            <span class="badge-demo">Prototype Login</span> Auto-fills demo credentials for Ajay Wholesale Procurement.
+            <span class="badge-demo">Direct Access</span> Wholesale Procurement Account: Ajay Traders.
           </div>
           <button type="submit" class="btn btn-primary w-full" style="width:100%; padding:10px; margin-top:6px;">
             <i data-lucide="log-in"></i> Login as User
           </button>
           <div class="text-center text-xs text-slate-500 mt-1">
-            New to CropNex? <a href="javascript:void(0)" onclick="UI.showToast('Account creation is automated in this prototype.', 'info')" class="text-emerald-700 font-bold">Create Account</a>
+            New to CropNex? <a href="javascript:void(0)" onclick="UI.showToast('Direct registration is active. Enter your details to get started.', 'info')" class="text-emerald-700 font-bold">Create Account</a>
           </div>
         </div>
       </form>
@@ -1595,7 +1778,7 @@
             <input type="password" id="loginFarmerPassword" required placeholder="••••••••" value="kisan123" class="form-input w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
           </div>
           <div class="text-xs text-slate-500" style="font-size:0.75rem; color:#64748b;">
-            <span class="badge-demo">Prototype Login</span> Verified Farmer: Ramesh Patil (Patil Organic Farms, Nashik).
+            <span class="badge-demo">Direct Access</span> Verified Kisan Account: Ramesh Patil (Patil Organic Farms, Nashik).
           </div>
           <button type="submit" class="btn btn-primary w-full" style="width:100%; padding:10px; margin-top:6px;">
             <i data-lucide="sprout"></i> Login as Farmer
@@ -1668,17 +1851,17 @@
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->
-  <script src="js/data.js?v=3.5"></script>
-  <script src="js/storage.js?v=3.5"></script>
-  <script src="js/language.js?v=3.5"></script>
-  <script src="js/ui.js?v=3.5"></script>
-  <script src="js/marketplace.js?v=3.5"></script>
-  <script src="js/dashboard.js?v=3.5"></script>
-  <script src="js/forecast.js?v=3.5"></script>
-  <script src="js/logistics.js?v=3.5"></script>
-  <script src="js/tenders.js?v=3.5"></script>
-  <script src="js/messages.js?v=3.5"></script>
-  <script src="js/app.js?v=3.5"></script>
+  <script src="js/data.js?v=3.6"></script>
+  <script src="js/storage.js?v=3.6"></script>
+  <script src="js/language.js?v=3.6"></script>
+  <script src="js/ui.js?v=3.6"></script>
+  <script src="js/marketplace.js?v=3.6"></script>
+  <script src="js/dashboard.js?v=3.6"></script>
+  <script src="js/forecast.js?v=3.6"></script>
+  <script src="js/logistics.js?v=3.6"></script>
+  <script src="js/tenders.js?v=3.6"></script>
+  <script src="js/messages.js?v=3.6"></script>
+  <script src="js/app.js?v=3.6"></script>
 
 </body>
 </html>

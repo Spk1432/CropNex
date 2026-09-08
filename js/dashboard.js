@@ -40,7 +40,6 @@ const Dashboard = {
   renderFarmerDashboard() {
     const products = StorageService.getProducts();
     const orders = StorageService.getOrders();
-    const farmerProfile = StorageService.getProfile('farmer');
 
     // Calculate metrics
     const pendingOrders = orders.filter(o => o.status === 'Pending' || o.status === 'Accepted');
@@ -48,21 +47,80 @@ const Dashboard = {
     const totalSales = orders.reduce((sum, o) => sum + (o.total || 0), 0);
     const activeProductsCount = products.length;
 
-    // Update KPI UI
-    document.getElementById('farmerKpiSales').textContent = `₹${totalSales.toLocaleString('en-IN')}`;
-    document.getElementById('farmerKpiActiveProducts').textContent = activeProductsCount;
-    document.getElementById('farmerKpiPendingOrders').textContent = pendingOrders.length;
-    document.getElementById('farmerKpiCompletedOrders').textContent = completedOrders.length;
-    document.getElementById('farmerKpiEarnings').textContent = `₹${Math.round(totalSales * 0.94).toLocaleString('en-IN')}`;
+    // Update KPI UI safely
+    const salesEl = document.getElementById('farmerKpiSales');
+    const activeEl = document.getElementById('farmerKpiActiveProducts');
+    const pendingEl = document.getElementById('farmerKpiPendingOrders');
+    const completedEl = document.getElementById('farmerKpiCompletedOrders');
+    const earningsEl = document.getElementById('farmerKpiEarnings');
 
-    // Render Farmer Products Table
-    this.renderFarmerProductsTable(products);
-
-    // Render Farmer Orders Table
-    this.renderFarmerOrdersTable(orders);
+    if (salesEl) salesEl.textContent = `₹${totalSales.toLocaleString('en-IN')}`;
+    if (activeEl) activeEl.textContent = activeProductsCount;
+    if (pendingEl) pendingEl.textContent = pendingOrders.length;
+    if (completedEl) completedEl.textContent = completedOrders.length;
+    if (earningsEl) earningsEl.textContent = `₹${Math.round(totalSales * 0.94).toLocaleString('en-IN')}`;
 
     // Render Charts
-    this.renderFarmerCharts();
+    setTimeout(() => {
+      this.renderFarmerCharts();
+    }, 60);
+  },
+
+  initFarmerAddProductView() {
+    const form = document.getElementById('farmerAddProducePageForm');
+    if (form) form.reset();
+  },
+
+  setProduceFormImage(url) {
+    const input = document.getElementById('pageFormCropImageUrl');
+    if (input) {
+      input.value = url;
+      UI.showToast('Selected crop photo applied!', 'info');
+    }
+  },
+
+  handleNewProductPageSubmit(e) {
+    if (e) e.preventDefault();
+
+    const name = document.getElementById('pageFormCropName').value;
+    const category = document.getElementById('pageFormCropCategory').value;
+    const variety = document.getElementById('pageFormCropVariety').value;
+    const price = parseFloat(document.getElementById('pageFormCropPrice').value) || 0;
+    const unit = document.getElementById('pageFormCropUnit').value;
+    const availableQty = parseFloat(document.getElementById('pageFormCropQuantity').value) || 0;
+    const minOrder = parseFloat(document.getElementById('pageFormCropMinOrder').value) || 1;
+    const qualityGrade = document.getElementById('pageFormCropGrade').value;
+    const organic = document.getElementById('pageFormCropOrganic').checked;
+    const location = document.getElementById('pageFormCropLocation').value || 'Nashik, Maharashtra';
+    const description = document.getElementById('pageFormCropDescription').value;
+    const image = document.getElementById('pageFormCropImageUrl').value || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600';
+
+    const farmerProfile = StorageService.getProfile('farmer');
+
+    const productPayload = {
+      name,
+      category,
+      variety,
+      farmer: farmerProfile.name || 'Ramesh Patil',
+      farmName: farmerProfile.farmName || 'Patil Organic Farms',
+      location,
+      price,
+      unit,
+      availableQty,
+      minOrder,
+      qualityGrade,
+      organic,
+      harvestDate: new Date().toISOString().split('T')[0],
+      estimatedDelivery: '1-2 days',
+      image,
+      description
+    };
+
+    StorageService.addProduct(productPayload);
+    UI.showToast(`Published "${name}" directly to Marketplace!`, 'success');
+
+    // Route to My Products
+    UI.routeTo('farmer-products');
   },
 
   renderFarmerProductsTable(products) {
@@ -157,6 +215,7 @@ const Dashboard = {
   updateFarmerOrderStatus(orderId, newStatus) {
     StorageService.updateOrderStatus(orderId, newStatus);
     UI.showToast(`Order #${orderId} status updated to "${newStatus}"`, 'success');
+    this.renderFarmerOrdersTable(StorageService.getOrders());
     this.renderFarmerDashboard();
   },
 
@@ -202,6 +261,7 @@ const Dashboard = {
     if (confirm('Are you sure you want to remove this product listing?')) {
       StorageService.deleteProduct(id);
       UI.showToast('Product listing deleted.', 'info');
+      this.renderFarmerProductsTable(StorageService.getProducts());
       this.renderFarmerDashboard();
     }
   },
@@ -773,9 +833,9 @@ const Dashboard = {
   },
 
   resetAllDemoData() {
-    if (confirm('Are you sure you want to reset all prototype data back to initial state?')) {
+    if (confirm('Are you sure you want to reset all platform data back to default state?')) {
       StorageService.resetToDefaults();
-      UI.showToast('Prototype data reset to initial default state.', 'info');
+      UI.showToast('Platform data reset to initial default state.', 'info');
       setTimeout(() => {
         window.location.reload();
       }, 600);

@@ -22,7 +22,8 @@ const UI = {
     const hash = window.location.hash.replace('#', '');
     const validViews = [
       'marketplace', 'landing', 'forecast', 'logistics', 'tenders',
-      'farmer-dashboard', 'buyer-dashboard', 'buyer-orders', 'buyer-tracking', 'buyer-favorites',
+      'farmer-dashboard', 'farmer-add-product', 'farmer-products', 'farmer-orders',
+      'buyer-dashboard', 'buyer-orders', 'buyer-tracking', 'buyer-favorites',
       'profile', 'how-it-works'
     ];
     // Default homepage is strictly MARKETPLACE unless valid hash is provided
@@ -147,6 +148,15 @@ const UI = {
         break;
       case 'farmer-dashboard':
         if (typeof Dashboard !== 'undefined') Dashboard.renderFarmerDashboard();
+        break;
+      case 'farmer-add-product':
+        if (typeof Dashboard !== 'undefined') Dashboard.initFarmerAddProductView();
+        break;
+      case 'farmer-products':
+        if (typeof Dashboard !== 'undefined') Dashboard.renderFarmerProductsTable(StorageService.getProducts());
+        break;
+      case 'farmer-orders':
+        if (typeof Dashboard !== 'undefined') Dashboard.renderFarmerOrdersTable(StorageService.getOrders());
         break;
       case 'buyer-dashboard':
         if (typeof Dashboard !== 'undefined') Dashboard.renderBuyerDashboard();
@@ -275,17 +285,17 @@ const UI = {
         <li class="sidebar-item" data-navigate="farmer-dashboard">
           <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
         </li>
-        <li class="sidebar-item" onclick="UI.toggleSidebar(false); Dashboard.openAddProductModal();">
+        <li class="sidebar-item" data-navigate="farmer-add-product">
           <i data-lucide="plus-circle"></i> <span>Add Product</span>
         </li>
-        <li class="sidebar-item" data-navigate="farmer-dashboard" onclick="setTimeout(() => { document.getElementById('farmerProductsTableBody')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+        <li class="sidebar-item" data-navigate="farmer-products">
           <i data-lucide="package"></i> <span>My Products</span>
         </li>
-        <li class="sidebar-item" data-navigate="farmer-dashboard" onclick="setTimeout(() => { document.getElementById('farmerOrdersTableBody')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+        <li class="sidebar-item" data-navigate="farmer-orders">
           <i data-lucide="clipboard-list"></i> <span>Orders</span>
         </li>
         <li class="sidebar-item" data-navigate="forecast">
-          <i data-lucide="trending-up"></i> <span>AI Forecast</span>
+          <i data-lucide="trending-up"></i> <span>AI Price Prediction</span>
         </li>
         <li class="sidebar-item" data-navigate="tenders">
           <i data-lucide="file-text"></i> <span>Tenders</span>

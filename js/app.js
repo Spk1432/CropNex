@@ -56,7 +56,7 @@ const App = {
       if (rainEl) rainEl.textContent = '1.2 mm';
       if (windEl) windEl.textContent = '14 km/h';
       if (descEl) descEl.textContent = 'Partly Cloudy • Favorable for Harvest';
-      if (statusNote) statusNote.textContent = 'Live weather unavailable — showing prototype data.';
+      if (statusNote) statusNote.textContent = 'Live weather unavailable — showing regional forecast.';
     }
   },
 

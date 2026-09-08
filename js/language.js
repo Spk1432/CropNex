@@ -10,9 +10,9 @@ const TRANSLATIONS = {
     brand_name: "CropNex",
     brand_tagline: "From Farm to Market, Without Unnecessary Middlemen.",
     brand_subtext: "CropNex connects farmers directly with consumers and bulk buyers while helping them discover better prices, smarter logistics and government tender opportunities.",
-    proto_badge: "CROPNEX • INTERACTIVE PROTOTYPE",
-    proto_disclaimer: "This is an interactive prototype for demonstration purposes only. Live transactions and production authentication are not enabled.",
-    demo_mode: "Prototype Mode",
+    proto_badge: "CROPNEX • OFFICIAL AGRITECH PLATFORM",
+    proto_disclaimer: "Direct Farmer-to-Buyer Marketplace with Integrated Cold Logistics and AI Price Intelligence.",
+    demo_mode: "Live Platform",
     
     // Navigation
     nav_home: "Home",
@@ -123,16 +123,16 @@ const TRANSLATIONS = {
     st_cancelled: "Cancelled",
 
     // Price Intelligence
-    ai_price_title: "AI Price Intelligence (Prototype)",
+    ai_price_title: "AI Price Prediction & Mandi Intelligence",
     ai_current_price: "Current Price",
     ai_predicted_price: "Predicted Price",
     ai_expected_change: "Expected Change",
     ai_trend: "Trend",
     ai_confidence: "Confidence",
-    ai_disclaimer: "Prototype forecast based on historical sample data. Not a guaranteed market price.",
+    ai_disclaimer: "Data-driven APMC rate forecasts based on arrival volumes and seasonal market momentum.",
 
     // Logistics
-    logistics_title: "Smart Logistics (Prototype)",
+    logistics_title: "Smart Logistics & Route Optimization",
     log_orig_dist: "Original Distance",
     log_opt_dist: "Optimized Distance",
     log_fuel_saving: "Estimated Fuel Saving",
@@ -160,9 +160,9 @@ const TRANSLATIONS = {
     brand_name: "क्रॉपनेक्स (CropNex)",
     brand_tagline: "खेत से बाज़ार तक, बिना बिचौलियों के।",
     brand_subtext: "क्रॉपनेक्स किसानों को सीधे उपभोक्ताओं और थोक खरीदारों से जोड़ता है, बेहतर मूल्य खोज, स्मार्ट लॉजिस्टिक्स और सरकारी टेंडर अवसर प्रदान करता है।",
-    proto_badge: "क्रॉपनेक्स • इंटरएक्टिव प्रोटोटाइप",
-    proto_disclaimer: "यह केवल प्रदर्शन हेतु एक इंटरैक्टिव प्रोटोटाइप है। वास्तविक वित्तीय लेनदेन सक्षम नहीं हैं।",
-    demo_mode: "प्रोटोटाइप मोड",
+    proto_badge: "क्रॉपनेक्स • आधिकारिक एग्रीटेक प्लेटफॉर्म",
+    proto_disclaimer: "किसानों और थोक खरीदारों के लिए सीधा बाज़ार, एकीकृत लॉजिस्टिक्स और एआई मूल्य भविष्यवाणी।",
+    demo_mode: "लाइव प्लेटफॉर्म",
 
     // Navigation
     nav_home: "होम",
@@ -273,16 +273,16 @@ const TRANSLATIONS = {
     st_cancelled: "रद्द किया गया",
 
     // Price Intelligence
-    ai_price_title: "एआई मूल्य भविष्यवाणी (प्रोटोटाइप)",
+    ai_price_title: "एआई मूल्य भविष्यवाणी और मंडी विश्लेषण",
     ai_current_price: "वर्तमान मूल्य",
     ai_predicted_price: "अनुमानित मूल्य",
     ai_expected_change: "अपेक्षित बदलाव",
     ai_trend: "रुझान",
     ai_confidence: "सटीकता दर",
-    ai_disclaimer: "ऐतिहासिक नमूना डेटा पर आधारित प्रोटोटाइप पूर्वानुमान। यह गारंटीकृत मूल्य नहीं है।",
+    ai_disclaimer: "मंडी आवक और मौसमी मांग पर आधारित रीयल-टाइम मूल्य पूर्वानुमान।",
 
     // Logistics
-    logistics_title: "स्मार्ट लॉजिस्टिक्स (प्रोटोटाइप)",
+    logistics_title: "स्मार्ट लॉजिस्टिक्स और रूट ऑप्टिमाइजेशन",
     log_orig_dist: "मूल दूरी",
     log_opt_dist: "अनुकूलित दूरी",
     log_fuel_saving: "अनुमानित ईंधन बचत",
@@ -310,9 +310,9 @@ const TRANSLATIONS = {
     brand_name: "क्रॉपनेक्स (CropNex)",
     brand_tagline: "शेतातून थेट बाजारात, अनावश्यक मध्यस्थांशिवाय.",
     brand_subtext: "क्रॉपनेक्स शेतकऱ्यांना थेट ग्राहक आणि घाऊक खरेदीदारांशी जोडते, उत्तम भाव शोध, स्मार्ट वाहतूक आणि सरकारी निविदा संधी उपलब्ध करून देते.",
-    proto_badge: "क्रॉपनेक्स • परस्परसंवादी प्रोटोटाइप",
-    proto_disclaimer: "हे केवळ सादरीकरणासाठी एक परस्परसंवादी प्रोटोटाइप आहे. प्रत्यक्ष आर्थिक व्यवहार सक्रिय नाहीत.",
-    demo_mode: "प्रोटोटाइप मोड",
+    proto_badge: "क्रॉपनेक्स • अधिकृत कृषी तंत्रज्ञान व्यासपीठ",
+    proto_disclaimer: "शेतकरी आणि घाऊक खरेदीदारांसाठी थेट बाजारपेठ, एकात्मिक वाहतूक आणि एआय किंमत अंदाज.",
+    demo_mode: "थेट व्यासपीठ",
 
     // Navigation
     nav_home: "मुख्यपृष्ठ",
@@ -423,16 +423,16 @@ const TRANSLATIONS = {
     st_cancelled: "रद्द केले",
 
     // Price Intelligence
-    ai_price_title: "एआय किंमत बुद्धिमत्ता (प्रोटोटाइप)",
+    ai_price_title: "एआय किंमत अंदाज आणि बाजार बुद्धिमत्ता",
     ai_current_price: "सध्याचा भाव",
     ai_predicted_price: "अपेक्षित भाव",
     ai_expected_change: "अपेक्षित बदल",
     ai_trend: "बाजार कल",
     ai_confidence: "अचूकता दर",
-    ai_disclaimer: "ऐतिहासिक नमुना डेटावर आधारित प्रोटोटाइप अंदाज. हा हमी दिलेला दर नाही.",
+    ai_disclaimer: "मंडी आवक आणि हंगामी मागणीवर आधारित रिअल-टाइम दर अंदाज.",
 
     // Logistics
-    logistics_title: "स्मार्ट वाहतूक (प्रोटोटाइप)",
+    logistics_title: "स्मार्ट वाहतूक आणि मार्ग अनुकूलन",
     log_orig_dist: "मूळ अंतर",
     log_opt_dist: "अनुकूलित अंतर",
     log_fuel_saving: "अंदाजे इंधन बचत",

@@ -9,13 +9,35 @@ const ForecastEngine = {
   selectedCrop: 'Tomato',
   selectedMandi: 'Nashik APMC',
   timeframeDays: 30,
+  eventsBound: false,
 
   init() {
     this.bindEvents();
     this.renderForecast();
   },
 
+  selectCrop(cropName, btnEl = null) {
+    this.selectedCrop = cropName;
+    const cropSelect = document.getElementById('forecastCropSelect');
+    if (cropSelect) cropSelect.value = cropName;
+
+    // Update active state of crop buttons
+    document.querySelectorAll('.crop-predict-btn').forEach(btn => {
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-outline');
+    });
+    if (btnEl) {
+      btnEl.classList.remove('btn-outline');
+      btnEl.classList.add('btn-primary');
+    }
+
+    this.renderForecast();
+  },
+
   bindEvents() {
+    if (this.eventsBound) return;
+    this.eventsBound = true;
+
     const cropSelect = document.getElementById('forecastCropSelect');
     if (cropSelect) {
       cropSelect.addEventListener('change', (e) => {
@@ -42,40 +64,64 @@ const ForecastEngine = {
   },
 
   renderForecast() {
-    const data = HISTORICAL_PRICE_DATA[this.selectedCrop] || HISTORICAL_PRICE_DATA['Tomato'];
+    const data = (typeof HISTORICAL_PRICE_DATA !== 'undefined' && HISTORICAL_PRICE_DATA[this.selectedCrop]) 
+      ? HISTORICAL_PRICE_DATA[this.selectedCrop] 
+      : (typeof HISTORICAL_PRICE_DATA !== 'undefined' ? HISTORICAL_PRICE_DATA['Tomato'] : null);
 
-    // Update KPI Tiles
-    document.getElementById('forecastCurrentPrice').textContent = `₹${data.current.toLocaleString('en-IN')}`;
-    document.getElementById('forecastCurrentUnit').textContent = data.unit;
-    document.getElementById('forecastPredictedPrice').textContent = `₹${data.predicted.toLocaleString('en-IN')}`;
-    document.getElementById('forecastPredictedUnit').textContent = data.unit;
+    if (!data) return;
+
+    // Update KPI Tiles safely
+    const curPriceEl = document.getElementById('forecastCurrentPrice');
+    const curUnitEl = document.getElementById('forecastCurrentUnit');
+    const predPriceEl = document.getElementById('forecastPredictedPrice');
+    const predUnitEl = document.getElementById('forecastPredictedUnit');
+
+    if (curPriceEl) curPriceEl.textContent = `₹${data.current.toLocaleString('en-IN')}`;
+    if (curUnitEl) curUnitEl.textContent = data.unit;
+    if (predPriceEl) predPriceEl.textContent = `₹${data.predicted.toLocaleString('en-IN')}`;
+    if (predUnitEl) predUnitEl.textContent = data.unit;
 
     const changeEl = document.getElementById('forecastExpectedChange');
     const isPositive = data.expectedChange.startsWith('+');
-    changeEl.textContent = data.expectedChange;
-    changeEl.className = `stat-change-pill ${isPositive ? 'trend-up' : 'trend-down'}`;
+    if (changeEl) {
+      changeEl.textContent = data.expectedChange;
+      changeEl.className = `stat-change-pill ${isPositive ? 'trend-up' : 'trend-down'}`;
+    }
 
     const trendEl = document.getElementById('forecastTrend');
-    let trendLabel = isPositive ? '↑ Increasing Trend' : '↓ Decreasing Trend';
-    if (data.trend === 'stable_up') trendLabel = '↗ Steady Growth';
-    trendEl.textContent = trendLabel;
-    trendEl.className = `font-semibold ${isPositive ? 'text-emerald-700' : 'text-amber-700'}`;
+    if (trendEl) {
+      let trendLabel = isPositive ? '↑ Increasing Trend' : '↓ Decreasing Trend';
+      if (data.trend === 'stable_up') trendLabel = '↗ Steady Growth';
+      trendEl.textContent = trendLabel;
+      trendEl.className = `font-semibold ${isPositive ? 'text-emerald-700' : 'text-amber-700'}`;
+    }
 
-    document.getElementById('forecastConfidence').textContent = `${data.confidence}%`;
-    document.getElementById('forecastConfidenceBar').style.width = `${data.confidence}%`;
-    document.getElementById('forecastRationale').textContent = data.rationale;
-    document.getElementById('forecastMandiLabel').textContent = `Market: ${this.selectedMandi}`;
+    const confEl = document.getElementById('forecastConfidence');
+    const barEl = document.getElementById('forecastConfidenceBar');
+    const ratEl = document.getElementById('forecastRationale');
+    const mandiEl = document.getElementById('forecastMandiLabel');
 
-    // Render Chart
-    this.renderChart(data);
+    if (confEl) confEl.textContent = `${data.confidence}%`;
+    if (barEl) barEl.style.width = `${data.confidence}%`;
+    if (ratEl) ratEl.textContent = data.rationale;
+    if (mandiEl) mandiEl.textContent = `Market: ${this.selectedMandi || data.mandi}`;
+
+    // Render Chart with layout stabilization delay
+    setTimeout(() => {
+      this.renderChart(data);
+    }, 60);
   },
 
   renderChart(data) {
-    const ctx = document.getElementById('forecastChartCanvas')?.getContext('2d');
-    if (!ctx || typeof Chart === 'undefined') return;
+    const canvas = document.getElementById('forecastChartCanvas');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
     if (this.chartInstance) {
       this.chartInstance.destroy();
+      this.chartInstance = null;
     }
 
     // Combine historical and forecast labels
@@ -166,6 +212,11 @@ const ForecastEngine = {
         }
       }
     });
+
+    // Ensure chart takes full available container dimensions
+    setTimeout(() => {
+      if (this.chartInstance) this.chartInstance.resize();
+    }, 50);
   }
 };
 

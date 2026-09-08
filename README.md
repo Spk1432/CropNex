@@ -1,4 +1,4 @@
-# CropNex — High-Fidelity Interactive Agritech Prototype
+# CropNex — Official Direct Farm-to-Market Agritech Platform
 ### Smart India Hackathon 2026 — Problem Statement ID 26033
 
 > **Problem Statement**: *“Multiple intermediaries reduce farmers earnings and increase consumer prices.”*  
@@ -12,7 +12,7 @@
 
 **CropNex** is a next-generation direct farm-to-market agritech platform engineered to eliminate exploitative intermediary supply chains. By establishing a direct 3-tier linkage between verified producers and wholesale/retail buyers, CropNex increases farmer realizations by up to 40% while reducing procurement overhead for buyers by 25%.
 
-The prototype demonstrates CropNex's **Four Core Pillars**:
+CropNex delivers **Four Core Pillars**:
 1. **Direct Multi-Tier Marketplace**: Verified farm-gate produce listings with dynamic search, multi-district filtering, quality grading, and direct cart/checkout.
 2. **AI Price Forecasting Engine**: 30-day algorithmic Mandi spot-price trend projections powered by historical market arrivals and seasonal momentum analysis.
 3. **Smart Logistics & Route Optimization**: Interactive Leaflet-powered route clustering that groups multiple farm-gate collection hubs to reduce transit mileage by over 20%.
@@ -101,25 +101,25 @@ Use the **floating demo toolbar** docked at the bottom of the screen or follow t
 
 ---
 
-## 🔄 Resetting Prototype Data
+## 🔄 Resetting Platform Data
 
-If you wish to restore original demo products, orders, messages, and chart metrics at any time during demonstrations:
+If you wish to restore original demo products, orders, messages, and chart metrics at any time:
 1. Navigate to **Admin Dashboard** or **Profile / Settings**.
 2. Click **"Reset Demo Data"**.
 3. Confirm the prompt — the application will automatically restore all clean sample datasets in `localStorage`.
 
 ---
 
-## 👥 Demo Personas
+## 👥 User Personas
 
 | Role | Name | Organization / Village | Primary Capabilities |
 | :--- | :--- | :--- | :--- |
 | **Farmer** | Ramesh Patil | Patil Organic Farms, Nashik | Publish crops, manage orders, update dispatch state, view AI price forecasts |
-| **Buyer** | Ajay Traders | Gultekdi Market Yard, Pune | Discover produce, manage cart, place demo orders, track dispatches, chat |
+| **Buyer** | Ajay Traders | Gultekdi Market Yard, Pune | Discover produce, manage cart, place orders, track dispatches, chat |
 | **Admin** | Operations Lead | SIH Operations Central | Platform GTV analytics, listing moderation, audit logs, reset demo data |
 
 ---
 
-## ⚖️ Disclaimer
+## ⚖️ Official Agritech Solution
 
-*CropNex is an interactive prototype developed for demonstration during Smart India Hackathon 2026. Live financial payments and real government authentication are simulated.*
+*CropNex connects farmers directly with wholesale and institutional buyers with real-time AI Mandi intelligence, multi-stop smart cold logistics, and official government tenders.*

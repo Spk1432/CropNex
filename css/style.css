@@ -75,7 +75,7 @@ button, input, select, textarea {
   font-size: inherit;
 }
 
-/* Top Prototype Status Bar */
+/* Top Status Bar */
 .proto-top-bar {
   display: none !important;
 }
