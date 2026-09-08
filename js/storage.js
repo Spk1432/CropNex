@@ -13,7 +13,8 @@ const STORAGE_KEYS = {
   NOTIFICATIONS: 'cropnex_notifications_v1',
   PROFILES: 'cropnex_profiles_v1',
   ROLE: 'cropnex_current_role_v1',
-  LANG: 'cropnex_current_lang_v1'
+  LANG: 'cropnex_current_lang_v1',
+  AUTH: 'cropnex_auth_state_v1'
 };
 
 const StorageService = {
@@ -33,10 +34,41 @@ const StorageService = {
     localStorage.setItem(STORAGE_KEYS.PROFILES, JSON.stringify(INITIAL_USER_PROFILES));
     localStorage.setItem(STORAGE_KEYS.ROLE, 'buyer'); // Default role
     localStorage.setItem(STORAGE_KEYS.LANG, 'en');    // Default language
+    localStorage.removeItem(STORAGE_KEYS.AUTH);       // Public visitor by default
+  },
+
+  // --- Authentication State ---
+  getAuthState() {
+    const auth = localStorage.getItem(STORAGE_KEYS.AUTH);
+    return auth ? JSON.parse(auth) : null;
+  },
+
+  isAuthenticated() {
+    return !!this.getAuthState();
+  },
+
+  login(role, credentials = {}) {
+    const authData = {
+      role: role, // 'buyer' or 'farmer'
+      identifier: credentials.identifier || (role === 'farmer' ? 'KISAN-7821-MH' : 'ajay.traders@example.com'),
+      timestamp: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(authData));
+    this.setCurrentRole(role);
+    window.dispatchEvent(new CustomEvent('cropnex:authChanged', { detail: authData }));
+    return authData;
+  },
+
+  logout() {
+    localStorage.removeItem(STORAGE_KEYS.AUTH);
+    this.setCurrentRole('buyer');
+    window.dispatchEvent(new CustomEvent('cropnex:authChanged', { detail: null }));
   },
 
   // --- Role & Profile ---
   getCurrentRole() {
+    const auth = this.getAuthState();
+    if (auth && auth.role) return auth.role;
     return localStorage.getItem(STORAGE_KEYS.ROLE) || 'buyer';
   },
 

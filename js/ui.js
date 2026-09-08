@@ -4,24 +4,29 @@
  */
 
 const UI = {
-  currentView: 'landing',
+  currentView: 'marketplace',
+  lastConfirmedOrder: null,
 
   init() {
     this.bindEvents();
-    this.updateRoleBadge();
+    this.syncAuthStateUI();
     this.updateCartBadge();
     this.updateNotificationBadge();
-    this.routeTo(this.getInitialView());
+    this.renderSidebarMenu();
+
+    const initialView = this.getInitialView();
+    this.routeTo(initialView);
   },
 
   getInitialView() {
     const hash = window.location.hash.replace('#', '');
     const validViews = [
-      'landing', 'marketplace', 'forecast', 'logistics', 'tenders',
+      'marketplace', 'landing', 'forecast', 'logistics', 'tenders',
       'farmer-dashboard', 'buyer-dashboard', 'admin-dashboard',
       'messages', 'profile', 'about', 'how-it-works'
     ];
-    return validViews.includes(hash) ? hash : 'landing';
+    // Default homepage is strictly MARKETPLACE unless valid hash is provided
+    return validViews.includes(hash) ? hash : 'marketplace';
   },
 
   bindEvents() {
@@ -31,14 +36,8 @@ const UI = {
       if (navTarget) {
         e.preventDefault();
         const view = navTarget.getAttribute('data-navigate');
+        this.toggleSidebar(false); // Close sidebar on navigate
         this.routeTo(view);
-      }
-
-      const roleSwitchTarget = e.target.closest('[data-switch-role]');
-      if (roleSwitchTarget) {
-        e.preventDefault();
-        const role = roleSwitchTarget.getAttribute('data-switch-role');
-        this.switchRole(role);
       }
 
       const modalClose = e.target.closest('[data-close-modal]');
@@ -61,8 +60,14 @@ const UI = {
     });
 
     // Custom storage event listeners
+    window.addEventListener('cropnex:authChanged', () => {
+      this.syncAuthStateUI();
+      this.renderSidebarMenu();
+    });
+
     window.addEventListener('cropnex:roleChanged', () => {
-      this.updateRoleBadge();
+      this.syncAuthStateUI();
+      this.renderSidebarMenu();
     });
 
     window.addEventListener('cropnex:cartChanged', () => {
@@ -73,17 +78,18 @@ const UI = {
     window.addEventListener('cropnex:notificationsChanged', () => {
       this.updateNotificationBadge();
     });
-
-    // Mobile menu toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuToggle');
-    if (mobileMenuBtn) {
-      mobileMenuBtn.addEventListener('click', () => {
-        document.getElementById('navMenu')?.classList.toggle('active');
-      });
-    }
   },
 
   routeTo(viewName, updateHash = true) {
+    // Enforce farmer restriction: Farmers cannot access marketplace
+    const role = StorageService.getCurrentRole();
+    const isAuth = StorageService.isAuthenticated();
+
+    if (isAuth && role === 'farmer' && viewName === 'marketplace') {
+      this.showToast('Farmers manage crops and orders in Farmer Portal.', 'info');
+      viewName = 'farmer-dashboard';
+    }
+
     this.currentView = viewName;
     if (updateHash) {
       window.location.hash = viewName;
@@ -101,7 +107,7 @@ const UI = {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Update active nav links
+    // Update active nav links in sidebars
     document.querySelectorAll('[data-navigate]').forEach(link => {
       if (link.getAttribute('data-navigate') === viewName) {
         link.classList.add('active');
@@ -109,9 +115,6 @@ const UI = {
         link.classList.remove('active');
       }
     });
-
-    // Close mobile menu if open
-    document.getElementById('navMenu')?.classList.remove('active');
 
     // Trigger view-specific renderers
     this.onViewActivated(viewName);
@@ -164,34 +167,274 @@ const UI = {
     }
   },
 
-  switchRole(role) {
-    StorageService.setCurrentRole(role);
-    this.closeAllModals();
-    this.showToast(`Switched to ${role.toUpperCase()} mode`, 'info');
+  // Synchronize Top Navbar and Profile/Login Visibility
+  syncAuthStateUI() {
+    const isAuth = StorageService.isAuthenticated();
+    const role = StorageService.getCurrentRole();
+    const profile = StorageService.getProfile(role);
 
-    // Automatically navigate to role's dashboard
-    if (role === 'farmer') {
-      this.routeTo('farmer-dashboard');
-    } else if (role === 'buyer') {
-      this.routeTo('buyer-dashboard');
-    } else if (role === 'admin') {
-      this.routeTo('admin-dashboard');
+    const loginBtn = document.getElementById('navLoginBtn');
+    const profileBtn = document.getElementById('navProfileBtn');
+
+    if (loginBtn && profileBtn) {
+      if (isAuth) {
+        loginBtn.style.display = 'none';
+        profileBtn.style.display = 'inline-flex';
+
+        const userNameEl = profileBtn.querySelector('.current-user-name');
+        if (userNameEl) {
+          userNameEl.textContent = profile.name ? profile.name.split(' ')[0] : (role === 'farmer' ? 'Kisan' : 'Buyer');
+        }
+      } else {
+        loginBtn.style.display = 'inline-flex';
+        profileBtn.style.display = 'none';
+      }
     }
   },
 
-  updateRoleBadge() {
-    const role = StorageService.getCurrentRole();
-    const badges = document.querySelectorAll('.user-role-badge');
-    badges.forEach(b => {
-      b.textContent = `${role.toUpperCase()} DEMO`;
-      b.className = `user-role-badge role-${role}`;
-    });
+  // Sidebar Panel (Slide-In from Left)
+  toggleSidebar(forceState) {
+    const panel = document.getElementById('appSidebarPanel');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (!panel || !backdrop) return;
 
-    const userNames = document.querySelectorAll('.current-user-name');
+    const isOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('open');
+    if (isOpen) {
+      this.renderSidebarMenu();
+      panel.classList.add('open');
+      backdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (window.lucide) lucide.createIcons();
+    } else {
+      panel.classList.remove('open');
+      backdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  },
+
+  // Role-Aware Sidebar Rendering (Visitor vs. Buyer vs. Farmer)
+  renderSidebarMenu() {
+    const listEl = document.getElementById('sidebarMenuList');
+    const nameEl = document.getElementById('sidebarUserName');
+    const roleEl = document.getElementById('sidebarUserRole');
+    const avatarEl = document.getElementById('sidebarUserAvatar');
+    if (!listEl) return;
+
+    const isAuth = StorageService.isAuthenticated();
+    const role = StorageService.getCurrentRole();
     const profile = StorageService.getProfile(role);
-    userNames.forEach(u => {
-      u.textContent = profile.name || (role.charAt(0).toUpperCase() + role.slice(1));
-    });
+
+    if (!isAuth) {
+      // 1. VISITOR / UNLOGGED-IN SIDEBAR
+      if (nameEl) nameEl.textContent = 'Guest Visitor';
+      if (roleEl) roleEl.textContent = 'Browsing Marketplace';
+      if (avatarEl) avatarEl.textContent = '🛒';
+
+      listEl.innerHTML = `
+        <li class="sidebar-item" data-navigate="marketplace">
+          <i data-lucide="shopping-bag"></i> <span>Marketplace</span>
+        </li>
+        <li class="sidebar-item" onclick="UI.toggleSidebar(false); UI.toggleCart();">
+          <i data-lucide="shopping-cart"></i> <span>Shopping Cart</span>
+        </li>
+        <li class="sidebar-item" data-navigate="landing">
+          <i data-lucide="info"></i> <span>About CropNex (SIH 2026)</span>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li class="sidebar-item font-bold text-emerald-700" onclick="UI.toggleSidebar(false); UI.openLoginModal('user');">
+          <i data-lucide="log-in"></i> <span>User Login</span>
+        </li>
+        <li class="sidebar-item font-bold text-emerald-800" onclick="UI.toggleSidebar(false); UI.openLoginModal('farmer');">
+          <i data-lucide="sprout"></i> <span>Farmer Login (Kisan ID)</span>
+        </li>
+      `;
+    } else if (role === 'farmer') {
+      // 2. FARMER SIDEBAR (NO MARKETPLACE AS REQUIRED)
+      if (nameEl) nameEl.textContent = profile.name || 'Ramesh Patil';
+      if (roleEl) roleEl.textContent = 'Farmer Portal • Kisan ID';
+      if (avatarEl) avatarEl.textContent = '👨‍🌾';
+
+      listEl.innerHTML = `
+        <li class="sidebar-item" data-navigate="farmer-dashboard">
+          <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+        </li>
+        <li class="sidebar-item" onclick="UI.toggleSidebar(false); Dashboard.openAddProductModal();">
+          <i data-lucide="plus-circle"></i> <span>Add Product</span>
+        </li>
+        <li class="sidebar-item" data-navigate="farmer-dashboard" onclick="setTimeout(() => { document.getElementById('farmerProductsTableBody')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+          <i data-lucide="package"></i> <span>My Products</span>
+        </li>
+        <li class="sidebar-item" data-navigate="farmer-dashboard" onclick="setTimeout(() => { document.getElementById('farmerOrdersTableBody')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+          <i data-lucide="clipboard-list"></i> <span>Orders</span>
+        </li>
+        <li class="sidebar-item" data-navigate="forecast">
+          <i data-lucide="trending-up"></i> <span>AI Forecast</span>
+        </li>
+        <li class="sidebar-item" data-navigate="tenders">
+          <i data-lucide="file-text"></i> <span>Tenders</span>
+        </li>
+        <li class="sidebar-item" data-navigate="logistics">
+          <i data-lucide="truck"></i> <span>Logistics</span>
+        </li>
+        <li class="sidebar-item" data-navigate="messages">
+          <i data-lucide="message-square"></i> <span>Messages</span>
+        </li>
+        <li class="sidebar-item" data-navigate="profile">
+          <i data-lucide="user"></i> <span>Profile & Farm Settings</span>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li class="sidebar-item text-red-600" onclick="UI.handleLogout()">
+          <i data-lucide="log-out"></i> <span>Logout</span>
+        </li>
+      `;
+    } else {
+      // 3. NORMAL USER / BUYER SIDEBAR
+      if (nameEl) nameEl.textContent = profile.name || 'Ajay Traders';
+      if (roleEl) roleEl.textContent = 'Wholesale Buyer Account';
+      if (avatarEl) avatarEl.textContent = '🏢';
+
+      listEl.innerHTML = `
+        <li class="sidebar-item" data-navigate="buyer-dashboard">
+          <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+        </li>
+        <li class="sidebar-item" data-navigate="marketplace">
+          <i data-lucide="shopping-bag"></i> <span>Marketplace</span>
+        </li>
+        <li class="sidebar-item" data-navigate="buyer-dashboard" onclick="setTimeout(() => { document.getElementById('buyerOrdersTableBody')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+          <i data-lucide="package-check"></i> <span>My Orders</span>
+        </li>
+        <li class="sidebar-item" data-navigate="buyer-dashboard" onclick="setTimeout(() => { document.getElementById('buyerOrdersTableBody')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+          <i data-lucide="map-pin"></i> <span>Track Orders</span>
+        </li>
+        <li class="sidebar-item" data-navigate="buyer-dashboard" onclick="setTimeout(() => { document.getElementById('buyerFavoritesGrid')?.scrollIntoView({behavior:'smooth'}); }, 100);">
+          <i data-lucide="heart"></i> <span>Favorites</span>
+        </li>
+        <li class="sidebar-item" data-navigate="messages">
+          <i data-lucide="message-square"></i> <span>Messages</span>
+        </li>
+        <li class="sidebar-item" data-navigate="profile">
+          <i data-lucide="user"></i> <span>Profile</span>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li class="sidebar-item text-red-600" onclick="UI.handleLogout()">
+          <i data-lucide="log-out"></i> <span>Logout</span>
+        </li>
+      `;
+    }
+
+    if (window.lucide) lucide.createIcons();
+  },
+
+  // Authentication Flow
+  openLoginModal(defaultTab = 'user', noticeMsg = '') {
+    this.closeAllModals();
+    const noticeEl = document.getElementById('loginNoticeBanner');
+    const noticeText = document.getElementById('loginNoticeText');
+    if (noticeEl && noticeText) {
+      if (noticeMsg) {
+        noticeText.textContent = noticeMsg;
+        noticeEl.style.display = 'flex';
+      } else {
+        noticeEl.style.display = 'none';
+      }
+    }
+
+    this.switchLoginTab(defaultTab);
+    this.openModal('loginModal');
+  },
+
+  switchLoginTab(tab) {
+    const userForm = document.getElementById('formUserLogin');
+    const farmerForm = document.getElementById('formFarmerLogin');
+    const userTabBtn = document.getElementById('tabBtnUserLogin');
+    const farmerTabBtn = document.getElementById('tabBtnFarmerLogin');
+    const titleEl = document.getElementById('loginModalTitle');
+
+    if (tab === 'farmer') {
+      if (userForm) userForm.style.display = 'none';
+      if (farmerForm) farmerForm.style.display = 'block';
+      if (userTabBtn) {
+        userTabBtn.style.borderBottomColor = 'transparent';
+        userTabBtn.style.color = 'var(--slate-500)';
+      }
+      if (farmerTabBtn) {
+        farmerTabBtn.style.borderBottomColor = 'var(--primary-600)';
+        farmerTabBtn.style.color = 'var(--primary-700)';
+      }
+      if (titleEl) titleEl.textContent = 'Farmer Login (Kisan ID)';
+    } else {
+      if (userForm) userForm.style.display = 'block';
+      if (farmerForm) farmerForm.style.display = 'none';
+      if (userTabBtn) {
+        userTabBtn.style.borderBottomColor = 'var(--primary-600)';
+        userTabBtn.style.color = 'var(--primary-700)';
+      }
+      if (farmerTabBtn) {
+        farmerTabBtn.style.borderBottomColor = 'transparent';
+        farmerTabBtn.style.color = 'var(--slate-500)';
+      }
+      if (titleEl) titleEl.textContent = 'User Login';
+    }
+  },
+
+  handleUserLoginSubmit(e) {
+    if (e) e.preventDefault();
+    const identifier = document.getElementById('loginUserIdentifier')?.value.trim() || 'procurement@ajaytraders.demo';
+
+    StorageService.login('buyer', { identifier });
+    this.closeAllModals();
+    this.showToast(`Logged in successfully as User (${identifier})`, 'success');
+
+    // If there were items in cart and checkout was pending, continue to checkout!
+    const cart = StorageService.getCart();
+    if (cart.length > 0) {
+      Marketplace.openCheckoutModal();
+    } else {
+      this.routeTo('buyer-dashboard');
+    }
+  },
+
+  handleFarmerLoginSubmit(e) {
+    if (e) e.preventDefault();
+    const kisanId = document.getElementById('loginFarmerKisanId')?.value.trim() || 'KISAN-7821-MH';
+
+    StorageService.login('farmer', { identifier: kisanId });
+    this.closeAllModals();
+    this.showToast(`Logged in successfully with Kisan ID: ${kisanId}`, 'success');
+
+    // Automatically navigate to Farmer Dashboard (NOT Marketplace)
+    this.routeTo('farmer-dashboard');
+  },
+
+  handleLogout() {
+    StorageService.logout();
+    this.toggleSidebar(false);
+    this.closeAllModals();
+    this.showToast('Logged out successfully. Returned to Marketplace.', 'info');
+    this.routeTo('marketplace');
+  },
+
+  // Order Confirmed Modal
+  showOrderConfirmedModal(order) {
+    this.lastConfirmedOrder = order;
+
+    document.getElementById('confirmedOrderId').textContent = order.id;
+    document.getElementById('confirmedOrderDate').textContent = order.date || new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    document.getElementById('confirmedOrderProduct').textContent = `${order.productName} (${order.quantity} ${order.unit})`;
+    document.getElementById('confirmedOrderAmount').textContent = `₹${(order.total || 0).toLocaleString('en-IN')}`;
+    document.getElementById('confirmedOrderAddress').textContent = order.deliveryAddress;
+    document.getElementById('confirmedOrderExpected').textContent = '1-2 Days (Direct Express Dispatch)';
+
+    this.openModal('orderConfirmedModal');
+  },
+
+  trackConfirmedOrder() {
+    this.closeAllModals();
+    if (this.lastConfirmedOrder) {
+      Dashboard.openOrderTrackingModal(this.lastConfirmedOrder.id);
+    } else {
+      this.routeTo('buyer-dashboard');
+    }
   },
 
   updateCartBadge() {

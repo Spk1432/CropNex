@@ -32,44 +32,37 @@
     </div>
     <div class="flex items-center gap-3">
       <span class="hidden md:inline" style="opacity: 0.85;" data-i18n="proto_disclaimer">Demonstration prototype — No real money processed</span>
-      <button class="demo-btn-pill" onclick="UI.openModal('roleSwitchModal')">
-        <i data-lucide="refresh-cw" style="width:12px;height:12px;display:inline-block;"></i> Switch Role
-      </button>
     </div>
   </div>
 
   <!-- Global Application Header -->
   <header class="app-header">
     <div class="header-inner">
-      <!-- Brand Logo -->
-      <div class="brand-logo" data-navigate="landing">
-        <svg class="logo-icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Leaf geometry -->
-          <path d="M24 6C15 6 8 13 8 22C8 33 24 42 24 42C24 42 40 33 40 22C40 13 33 6 24 6Z" fill="#15803D" fill-opacity="0.15" stroke="#15803D" stroke-width="2.5"/>
-          <path d="M24 12V34M24 20L16 16M24 26L32 22" stroke="#166534" stroke-width="2.5" stroke-linecap="round"/>
-          <!-- Connected Network Nodes -->
-          <circle cx="16" cy="16" r="3.5" fill="#22C55E" stroke="#ffffff" stroke-width="1.5"/>
-          <circle cx="32" cy="22" r="3.5" fill="#22C55E" stroke="#ffffff" stroke-width="1.5"/>
-          <circle cx="24" cy="12" r="3.5" fill="#22C55E" stroke="#ffffff" stroke-width="1.5"/>
-          <circle cx="24" cy="34" r="3.5" fill="#F59E0B" stroke="#ffffff" stroke-width="1.5"/>
-        </svg>
-        <span class="brand-text">Crop<span>Nex</span></span>
+      <!-- Left: Dashboard Slide-Panel Trigger & Brand Logo -->
+      <div class="flex items-center gap-3">
+        <!-- Dashboard button on LEFT to open Sidebar Panel -->
+        <button class="btn btn-primary btn-sm btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span class="font-semibold" data-i18n="nav_dashboard">Dashboard</span>
+        </button>
+
+        <!-- Brand Logo -->
+        <div class="brand-logo" data-navigate="marketplace" title="CropNex Marketplace">
+          <svg class="logo-icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Leaf geometry -->
+            <path d="M24 6C15 6 8 13 8 22C8 33 24 42 24 42C24 42 40 33 40 22C40 13 33 6 24 6Z" fill="#15803D" fill-opacity="0.15" stroke="#15803D" stroke-width="2.5"/>
+            <path d="M24 12V34M24 20L16 16M24 26L32 22" stroke="#166534" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Connected Network Nodes -->
+            <circle cx="16" cy="16" r="3.5" fill="#22C55E" stroke="#ffffff" stroke-width="1.5"/>
+            <circle cx="32" cy="22" r="3.5" fill="#22C55E" stroke="#ffffff" stroke-width="1.5"/>
+            <circle cx="24" cy="12" r="3.5" fill="#22C55E" stroke="#ffffff" stroke-width="1.5"/>
+            <circle cx="24" cy="34" r="3.5" fill="#F59E0B" stroke="#ffffff" stroke-width="1.5"/>
+          </svg>
+          <span class="brand-text">Crop<span>Nex</span></span>
+        </div>
       </div>
 
-      <!-- Navigation Menu -->
-      <nav>
-        <ul class="nav-menu" id="navMenu">
-          <li><a class="nav-link active" data-navigate="landing" data-i18n="nav_home">Home</a></li>
-          <li><a class="nav-link" data-navigate="marketplace" data-i18n="nav_marketplace">Marketplace</a></li>
-          <li><a class="nav-link" data-navigate="forecast" data-i18n="nav_forecast">AI Forecast</a></li>
-          <li><a class="nav-link" data-navigate="logistics" data-i18n="nav_logistics">Logistics</a></li>
-          <li><a class="nav-link" data-navigate="tenders" data-i18n="nav_tenders">Tenders</a></li>
-          <li><a class="nav-link" data-navigate="how-it-works" data-i18n="nav_how_it_works">How It Works</a></li>
-          <li><a class="nav-link" data-navigate="about" data-i18n="nav_about">About</a></li>
-        </ul>
-      </nav>
-
-      <!-- Header Right Controls -->
+      <!-- Header Right Minimal Controls: Language, Cart, Login / Profile -->
       <div class="header-actions">
         <!-- Language Selector -->
         <div class="lang-dropdown">
@@ -80,30 +73,48 @@
           </select>
         </div>
 
-        <!-- Role Badge & Dashboard Link -->
-        <span class="user-role-badge role-buyer" onclick="UI.openModal('roleSwitchModal')">
-          BUYER DEMO
-        </span>
-
-        <!-- Cart Button -->
+        <!-- Cart Button (Accessible to visitor without login) -->
         <button class="cart-icon-btn" data-toggle-cart title="Shopping Cart">
           <i data-lucide="shopping-cart"></i>
           <span class="cart-badge-count" style="display:none;">0</span>
         </button>
 
-        <!-- Messages CTA -->
-        <button class="btn-icon" data-navigate="messages" title="Messages">
-          <i data-lucide="message-square"></i>
+        <!-- Unauthenticated Visitor: Login Button -->
+        <button class="btn btn-outline btn-sm auth-btn-login" id="navLoginBtn" onclick="UI.openLoginModal()">
+          <i data-lucide="log-in"></i>
+          <span data-i18n="nav_login">Login</span>
         </button>
 
-        <!-- Get Started / Dashboard CTA -->
-        <button class="btn btn-primary btn-sm" onclick="UI.switchRole(StorageService.getCurrentRole())">
-          <i data-lucide="layout-dashboard"></i>
-          <span data-i18n="nav_dashboard">Dashboard</span>
+        <!-- Authenticated User: Profile Button -->
+        <button class="btn btn-outline btn-sm auth-btn-profile" id="navProfileBtn" data-navigate="profile" style="display:none;">
+          <i data-lucide="user"></i>
+          <span class="current-user-name" data-i18n="nav_profile">Profile</span>
         </button>
       </div>
     </div>
   </header>
+
+  <!-- Role-Aware Side Panel / Sidebar Drawer -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="UI.toggleSidebar(false)"></div>
+  <aside class="app-sidebar-panel" id="appSidebarPanel">
+    <div class="sidebar-header">
+      <div class="sidebar-user-preview">
+        <div class="sidebar-avatar" id="sidebarUserAvatar">👤</div>
+        <div>
+          <div class="sidebar-user-name" id="sidebarUserName">Guest Visitor</div>
+          <div class="sidebar-user-role" id="sidebarUserRole">Browsing Marketplace</div>
+        </div>
+      </div>
+      <button class="sidebar-close-btn" onclick="UI.toggleSidebar(false)" title="Close Panel">&times;</button>
+    </div>
+
+    <!-- Dynamic navigation menu items injected by UI.renderSidebarMenu() -->
+    <nav class="sidebar-nav-container">
+      <ul class="sidebar-menu-list" id="sidebarMenuList">
+        <!-- Rendered dynamically according to Visitor / Buyer / Farmer -->
+      </ul>
+    </nav>
+  </aside>
 
   <!-- Slide-Out Shopping Cart Drawer -->
   <div class="cart-overlay" id="cartOverlay" data-toggle-cart></div>
@@ -140,9 +151,9 @@
   <main class="app-main">
 
     <!-- ==========================================
-         VIEW 1: LANDING PAGE
+         VIEW 1: ABOUT & PLATFORM OVERVIEW (LANDING)
          ========================================== -->
-    <section class="app-view active" id="view-landing">
+    <section class="app-view" id="view-landing">
       <!-- Hero Section -->
       <div class="hero-section">
         <div class="hero-container">
@@ -160,7 +171,7 @@
               <button class="btn btn-primary" data-navigate="marketplace">
                 <i data-lucide="shopping-bag"></i> <span data-i18n="btn_explore_mkt">Explore Marketplace</span>
               </button>
-              <button class="btn btn-secondary" onclick="UI.openModal('roleSwitchModal')">
+              <button class="btn btn-secondary" onclick="UI.openLoginModal('user')">
                 <i data-lucide="users"></i> <span data-i18n="btn_join_cropnex">Join CropNex</span>
               </button>
             </div>
@@ -380,9 +391,9 @@
 
 
     <!-- ==========================================
-         VIEW 2: DIRECT MARKETPLACE
+         VIEW 2: DIRECT MARKETPLACE (DEFAULT HOMEPAGE)
          ========================================== -->
-    <section class="app-view" id="view-marketplace">
+    <section class="app-view active" id="view-marketplace">
       <div class="marketplace-layout">
         <!-- Filter Sidebar -->
         <aside class="marketplace-sidebar">
@@ -695,7 +706,7 @@
             <li class="dash-menu-item" data-navigate="tenders"><i data-lucide="file-text"></i> Tenders</li>
             <li class="dash-menu-item" data-navigate="messages"><i data-lucide="message-square"></i> Messages</li>
             <li class="dash-menu-item" data-navigate="profile"><i data-lucide="user"></i> Farm Profile</li>
-            <li class="dash-menu-item text-red-600" onclick="UI.openModal('roleSwitchModal')"><i data-lucide="log-out"></i> Switch Role</li>
+            <li class="dash-menu-item text-red-600" onclick="UI.handleLogout()"><i data-lucide="log-out"></i> Logout</li>
           </ul>
         </aside>
 
@@ -828,11 +839,9 @@
           <ul class="dash-menu">
             <li class="dash-menu-item active" data-navigate="buyer-dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</li>
             <li class="dash-menu-item" data-navigate="marketplace"><i data-lucide="shopping-bag"></i> Marketplace</li>
-            <li class="dash-menu-item" data-navigate="forecast"><i data-lucide="trending-up"></i> Price Forecast</li>
-            <li class="dash-menu-item" data-navigate="tenders"><i data-lucide="file-text"></i> Tenders</li>
             <li class="dash-menu-item" data-navigate="messages"><i data-lucide="message-square"></i> Messages</li>
             <li class="dash-menu-item" data-navigate="profile"><i data-lucide="user"></i> Business Profile</li>
-            <li class="dash-menu-item text-red-600" onclick="UI.openModal('roleSwitchModal')"><i data-lucide="log-out"></i> Switch Role</li>
+            <li class="dash-menu-item text-red-600" onclick="UI.handleLogout()"><i data-lucide="log-out"></i> Logout</li>
           </ul>
         </aside>
 
@@ -1436,42 +1445,131 @@
     </div>
   </div>
 
-  <!-- 6. Demo Role Switcher Modal -->
-  <div class="modal-window" id="roleSwitchModal">
+  <!-- 6. Dedicated Authentication Modal (User Login & Farmer Login) -->
+  <div class="modal-window" id="loginModal">
     <div class="modal-header">
-      <h3>Select Demo Persona / Role</h3>
+      <h3 id="loginModalTitle">Login to CropNex</h3>
       <button class="btn-icon" data-close-modal>&times;</button>
     </div>
-    <div class="modal-body">
-      <p class="text-xs text-slate-500 mb-4">
-        Switch experiences seamlessly to demonstrate both sides of the CropNex supply chain during your Smart India Hackathon presentation.
-      </p>
+    <div class="modal-body" style="display:flex; flex-direction:column; gap:16px;">
+      <!-- Login Prompt Banner when redirected from checkout -->
+      <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-md text-xs text-emerald-900" id="loginNoticeBanner" style="display:none; padding:12px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; color:#065f46;">
+        <i data-lucide="info" class="inline-icon" style="width:14px; height:14px; margin-right:4px;"></i>
+        <strong id="loginNoticeText">Please login to continue your order.</strong>
+      </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
-        <!-- Farmer Role Card -->
-        <div class="comparison-card text-center cursor-pointer hover:border-emerald-500" style="padding:18px; cursor:pointer;" data-switch-role="farmer">
-          <div style="font-size:2.2rem; margin-bottom:8px;">👨‍🌾</div>
-          <h4 class="font-bold text-slate-800 text-sm">Farmer Demo</h4>
-          <p class="text-xs text-slate-500 mt-1">List produce, manage orders, view price forecasts</p>
+      <!-- Tab Switcher between User Login and Farmer Login -->
+      <div class="login-tab-group" style="display:flex; border-bottom:1px solid #e2e8f0; margin-bottom:6px;">
+        <button type="button" class="login-tab-btn active" id="tabBtnUserLogin" onclick="UI.switchLoginTab('user')" style="flex:1; padding:10px; font-weight:700; border-bottom:3px solid var(--primary-600); background:none; border-top:none; border-left:none; border-right:none; cursor:pointer; color:var(--primary-700);">
+          <i data-lucide="user" style="width:14px; height:14px; display:inline-block; vertical-align:middle;"></i> User Login
+        </button>
+        <button type="button" class="login-tab-btn" id="tabBtnFarmerLogin" onclick="UI.switchLoginTab('farmer')" style="flex:1; padding:10px; font-weight:700; border-bottom:3px solid transparent; background:none; border-top:none; border-left:none; border-right:none; cursor:pointer; color:var(--slate-500);">
+          <i data-lucide="sprout" style="width:14px; height:14px; display:inline-block; vertical-align:middle;"></i> Farmer Login
+        </button>
+      </div>
+
+      <!-- Path A: Normal User Login Form -->
+      <form id="formUserLogin" onsubmit="UI.handleUserLoginSubmit(event)">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Email or Phone Number *</label>
+            <input type="text" id="loginUserIdentifier" required placeholder="e.g. buyer@example.com or +91 98231 44521" value="procurement@ajaytraders.demo" class="form-input w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Password *</label>
+            <input type="password" id="loginUserPassword" required placeholder="••••••••" value="password123" class="form-input w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+          </div>
+          <div class="text-xs text-slate-500" style="font-size:0.75rem; color:#64748b;">
+            <span class="badge-demo">Prototype Login</span> Auto-fills demo credentials for Ajay Wholesale Procurement.
+          </div>
+          <button type="submit" class="btn btn-primary w-full" style="width:100%; padding:10px; margin-top:6px;">
+            <i data-lucide="log-in"></i> Login as User
+          </button>
+          <div class="text-center text-xs text-slate-500 mt-1">
+            New to CropNex? <a href="javascript:void(0)" onclick="UI.showToast('Account creation is automated in this prototype.', 'info')" class="text-emerald-700 font-bold">Create Account</a>
+          </div>
         </div>
+      </form>
 
-        <!-- Buyer Role Card -->
-        <div class="comparison-card text-center cursor-pointer hover:border-blue-500" style="padding:18px; cursor:pointer;" data-switch-role="buyer">
-          <div style="font-size:2.2rem; margin-bottom:8px;">🏢</div>
-          <h4 class="font-bold text-slate-800 text-sm">Buyer Demo</h4>
-          <p class="text-xs text-slate-500 mt-1">Browse market, place orders, live dispatch tracking</p>
+      <!-- Path B: Dedicated Farmer Login Form -->
+      <form id="formFarmerLogin" onsubmit="UI.handleFarmerLoginSubmit(event)" style="display:none;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="p-2 bg-emerald-50 border border-emerald-100 rounded text-xs text-emerald-800">
+            <strong>Farmer Identification:</strong> Login using your unique Kisan ID.
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kisan ID *</label>
+            <input type="text" id="loginFarmerKisanId" required placeholder="e.g. KISAN-7821-MH" value="KISAN-7821-MH" class="form-input w-full font-mono" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem; font-weight:700; color:#065f46;">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Password *</label>
+            <input type="password" id="loginFarmerPassword" required placeholder="••••••••" value="kisan123" class="form-input w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+          </div>
+          <div class="text-xs text-slate-500" style="font-size:0.75rem; color:#64748b;">
+            <span class="badge-demo">Prototype Login</span> Verified Farmer: Ramesh Patil (Patil Organic Farms, Nashik).
+          </div>
+          <button type="submit" class="btn btn-primary w-full" style="width:100%; padding:10px; margin-top:6px;">
+            <i data-lucide="sprout"></i> Login as Farmer
+          </button>
         </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm" data-close-modal>Close</button>
+    </div>
+  </div>
 
-        <!-- Admin Role Card -->
-        <div class="comparison-card text-center cursor-pointer hover:border-purple-500" style="padding:18px; cursor:pointer;" data-switch-role="admin">
-          <div style="font-size:2.2rem; margin-bottom:8px;">⚙️</div>
-          <h4 class="font-bold text-slate-800 text-sm">Admin Demo</h4>
-          <p class="text-xs text-slate-500 mt-1">Platform KPIs, verification audit, tenders control</p>
+  <!-- 7. Order Confirmed Modal -->
+  <div class="modal-window" id="orderConfirmedModal">
+    <div class="modal-header" style="background:#ecfdf5; border-bottom:1px solid #a7f3d0;">
+      <h3 style="color:#065f46; display:flex; align-items:center; gap:8px;">
+        <i data-lucide="check-circle" style="color:#10b981;"></i> Order Confirmed
+      </h3>
+      <button class="btn-icon" data-close-modal>&times;</button>
+    </div>
+    <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px;">
+      <div class="text-center" style="padding:10px 0;">
+        <div style="width:64px; height:64px; border-radius:50%; background:#d1fae5; color:#059669; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:1.8rem;">
+          ✓
+        </div>
+        <h4 class="font-bold text-slate-900 text-lg">Thank You for Supporting Direct Farmers!</h4>
+        <p class="text-xs text-slate-500 mt-1">Your order has been placed directly with the farm without intermediary markups.</p>
+      </div>
+
+      <div class="p-4 bg-slate-50 border border-slate-200 rounded-md text-xs space-y-2" style="line-height:1.7; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+        <div class="flex justify-between">
+          <span class="text-slate-500">Order ID:</span>
+          <strong class="font-mono text-emerald-800" id="confirmedOrderId">CNX-2026-XXXX</strong>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Order Date:</span>
+          <span id="confirmedOrderDate">Today</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Produce:</span>
+          <span id="confirmedOrderProduct">Produce</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Amount Paid / Payable:</span>
+          <strong class="text-emerald-800" id="confirmedOrderAmount">₹0</strong>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Delivery Address:</span>
+          <span id="confirmedOrderAddress" style="max-width:200px; text-align:right;">Address</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Expected Delivery:</span>
+          <span class="font-semibold text-blue-700" id="confirmedOrderExpected">1-2 Days (Direct Express Dispatch)</span>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline btn-sm" data-close-modal>Cancel</button>
+    <div class="modal-footer" style="display:flex; justify-content:space-between;">
+      <button class="btn btn-outline btn-sm" onclick="UI.closeAllModals(); UI.routeTo('marketplace');">
+        Continue Browsing
+      </button>
+      <button class="btn btn-primary btn-sm" id="confirmedTrackOrderBtn" onclick="UI.trackConfirmedOrder()">
+        <i data-lucide="map-pin"></i> Track Order
+      </button>
     </div>
   </div>
 

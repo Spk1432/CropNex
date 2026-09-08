@@ -1840,8 +1840,211 @@ button, input, select, textarea {
 
 @media (max-width: 768px) {
   .header-inner { flex-wrap: wrap; }
-  .nav-menu { display: none; width: 100%; flex-direction: column; }
-  .nav-menu.active { display: flex; }
   .comparison-grid { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   ROLE-AWARE SLIDING SIDEBAR PANEL (LEFT)
+   ========================================================================== */
+
+.btn-dashboard-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(21, 128, 61, 0.2);
+  transition: var(--transition);
+}
+
+.btn-dashboard-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(21, 128, 61, 0.3);
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 2500;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.app-sidebar-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  max-width: 85vw;
+  height: 100vh;
+  background: var(--white);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  z-index: 2600;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.app-sidebar-panel.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  padding: 20px 18px;
+  background: linear-gradient(135deg, var(--primary-900), var(--primary-800));
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-user-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.sidebar-user-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.sidebar-user-role {
+  font-size: 0.75rem;
+  color: var(--primary-200);
+}
+
+.sidebar-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--white);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sidebar-close-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.sidebar-nav-container {
+  padding: 16px 12px;
+  flex: 1;
+}
+
+.sidebar-menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--slate-700);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sidebar-item i {
+  width: 18px;
+  height: 18px;
+  color: var(--slate-500);
+  transition: var(--transition);
+}
+
+.sidebar-item:hover {
+  background: var(--primary-50);
+  color: var(--primary-800);
+}
+
+.sidebar-item:hover i {
+  color: var(--primary-700);
+}
+
+.sidebar-item.active {
+  background: var(--primary-100);
+  color: var(--primary-900);
+}
+
+.sidebar-item.active i {
+  color: var(--primary-800);
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--slate-200);
+  margin: 10px 6px;
+}
+
+/* Auth Buttons in Minimal Navbar */
+.auth-btn-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  border-color: var(--primary-600);
+  color: var(--primary-800);
+}
+
+.auth-btn-login:hover {
+  background: var(--primary-50);
+}
+
+.auth-btn-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  background: var(--slate-100);
+  border-color: var(--slate-300);
+  color: var(--slate-800);
+}
+
+.auth-btn-profile:hover {
+  background: var(--slate-200);
 }

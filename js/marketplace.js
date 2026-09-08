@@ -250,11 +250,14 @@ const Marketplace = {
             </div>
           </div>
 
-          <div class="product-card-footer">
-            <button class="btn btn-sm btn-outline flex-1" onclick="Marketplace.openProductModal('${prod.id}')">
+          <div class="product-card-footer" style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="btn btn-xs btn-outline" style="flex:1; min-width:65px; padding:6px 8px; font-size:0.75rem;" onclick="Marketplace.openProductModal('${prod.id}')" title="View full specifications">
               <i data-lucide="eye"></i> Details
             </button>
-            <button class="btn btn-sm btn-primary flex-1" onclick="Marketplace.quickBuy('${prod.id}')">
+            <button class="btn btn-xs btn-outline" style="flex:1; min-width:70px; padding:6px 8px; font-size:0.75rem;" onclick="Marketplace.addProductToCart('${prod.id}')" title="Add to cart without leaving">
+              <i data-lucide="shopping-cart"></i> +Cart
+            </button>
+            <button class="btn btn-xs btn-primary" style="flex:1; min-width:75px; padding:6px 8px; font-size:0.75rem;" onclick="Marketplace.quickBuy('${prod.id}')" title="Buy now">
               <i data-lucide="shopping-bag"></i> Buy Now
             </button>
           </div>
@@ -334,6 +337,13 @@ const Marketplace = {
     if (window.lucide) lucide.createIcons();
   },
 
+  addProductToCart(productId) {
+    const prod = StorageService.getProductById(productId);
+    if (!prod) return;
+    StorageService.addToCart(productId, prod.minOrder || 1);
+    UI.showToast(`Added ${prod.minOrder || 1} ${prod.unit} of ${prod.name} to cart`, 'success');
+  },
+
   quickBuy(productId) {
     const prod = StorageService.getProductById(productId);
     if (!prod) return;
@@ -410,6 +420,13 @@ const Marketplace = {
       return;
     }
 
+    // Check if user is authenticated before allowing checkout
+    if (!StorageService.isAuthenticated()) {
+      UI.toggleCart(); // Close cart drawer
+      UI.openLoginModal('user', 'Please login to continue your order.');
+      return;
+    }
+
     UI.toggleCart(); // close drawer
     const totals = StorageService.getCartTotals();
     const buyerProfile = StorageService.getProfile('buyer');
@@ -456,11 +473,8 @@ const Marketplace = {
     StorageService.clearCart();
     UI.closeAllModals();
 
-    UI.showToast(`🎉 Order #${newOrder.id} successfully placed!`, 'success', 5000);
-
-    // Switch to buyer dashboard to show tracking
-    StorageService.setCurrentRole('buyer');
-    UI.routeTo('buyer-dashboard');
+    // Show Order Confirmed Modal
+    UI.showOrderConfirmedModal(newOrder);
   }
 };
 
