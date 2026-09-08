@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=3.3">
+  <link rel="stylesheet" href="css/style.css?v=3.4">
 
   <!-- Lucide Icons & Chart.js via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -636,39 +636,22 @@
 
 
     <!-- ==========================================
-         VIEW 6: FARMER DASHBOARD
+         VIEW 6: FARMER DASHBOARD (Overview - KPIs, Charts & Orders)
          ========================================== -->
     <section class="app-view" id="view-farmer-dashboard">
-      <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="dashboard-sidebar">
-          <div class="dash-user-card">
-            <span class="user-role-badge role-farmer">FARMER PORTAL</span>
-            <div class="dash-user-name mt-2" style="margin-top:8px;">Ramesh Patil</div>
-            <div class="text-xs text-slate-500">Patil Organic Farms • Nashik</div>
-          </div>
-          <ul class="dash-menu">
-            <li class="dash-menu-item active" data-navigate="farmer-dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</li>
-            <li class="dash-menu-item" onclick="Dashboard.openAddProductModal()"><i data-lucide="plus-circle"></i> Add Produce</li>
-            <li class="dash-menu-item" data-navigate="forecast"><i data-lucide="trending-up"></i> Price Forecast</li>
-            <li class="dash-menu-item" data-navigate="logistics"><i data-lucide="truck"></i> Logistics</li>
-            <li class="dash-menu-item" data-navigate="tenders"><i data-lucide="file-text"></i> Tenders</li>
-            <li class="dash-menu-item" data-navigate="profile"><i data-lucide="user"></i> Farm Profile</li>
-            <li class="dash-menu-item text-red-600" onclick="UI.handleLogout()"><i data-lucide="log-out"></i> Logout</li>
-          </ul>
-        </aside>
-
-        <!-- Main Dashboard Area -->
-        <div class="dashboard-main">
-          <div class="flex justify-between items-center mb-6" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <div class="page-container" style="max-width:1360px;">
+        <div class="page-header-block mb-6" style="margin-bottom:24px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;">
             <div>
+              <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">KISAN / PRODUCER PORTAL</span>
               <h2 class="text-2xl font-bold text-slate-900" data-i18n="dash_farmer_title">Farmer Operations Dashboard</h2>
               <p class="text-sm text-slate-500">Direct sales metrics, listing management, and wholesale order dispatch.</p>
             </div>
-            <button class="btn btn-primary" onclick="Dashboard.openAddProductModal()">
-              <i data-lucide="plus"></i> <span data-i18n="btn_add_product">Add Product</span>
+            <button class="btn btn-primary" onclick="Dashboard.openAddProductModal()" style="display:inline-flex; align-items:center; gap:6px;">
+              <i data-lucide="plus-circle"></i> <span data-i18n="btn_add_product">Add Product</span>
             </button>
           </div>
+        </div>
 
           <!-- KPI Cards -->
           <div class="kpi-cards-grid">
@@ -772,7 +755,6 @@
             </div>
           </div>
         </div>
-      </div>
     </section>
 
 
@@ -1045,11 +1027,12 @@
         </div>
 
         <!-- Saved Favorites Grid -->
-        <div class="data-table-card">
-          <div class="table-header-row">
+        <div class="data-table-card" style="padding: 20px;">
+          <div class="table-header-row" style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <h4 class="font-bold text-slate-800">Bookmarked Produce</h4>
+            <span class="text-xs text-slate-500">Quick re-order from preferred farmers</span>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;" id="buyerFavoritesGrid">
+          <div class="favorites-grid" id="buyerFavoritesGrid">
             <!-- Injected via Dashboard.renderBuyerFavorites() -->
           </div>
         </div>
@@ -1731,17 +1714,17 @@
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->
-  <script src="js/data.js?v=3.3"></script>
-  <script src="js/storage.js?v=3.3"></script>
-  <script src="js/language.js?v=3.3"></script>
-  <script src="js/ui.js?v=3.3"></script>
-  <script src="js/marketplace.js?v=3.3"></script>
-  <script src="js/dashboard.js?v=3.3"></script>
-  <script src="js/forecast.js?v=3.3"></script>
-  <script src="js/logistics.js?v=3.3"></script>
-  <script src="js/tenders.js?v=3.3"></script>
-  <script src="js/messages.js?v=3.3"></script>
-  <script src="js/app.js?v=3.3"></script>
+  <script src="js/data.js?v=3.4"></script>
+  <script src="js/storage.js?v=3.4"></script>
+  <script src="js/language.js?v=3.4"></script>
+  <script src="js/ui.js?v=3.4"></script>
+  <script src="js/marketplace.js?v=3.4"></script>
+  <script src="js/dashboard.js?v=3.4"></script>
+  <script src="js/forecast.js?v=3.4"></script>
+  <script src="js/logistics.js?v=3.4"></script>
+  <script src="js/tenders.js?v=3.4"></script>
+  <script src="js/messages.js?v=3.4"></script>
+  <script src="js/app.js?v=3.4"></script>
 
 </body>
 </html>

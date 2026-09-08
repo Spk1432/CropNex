@@ -1329,6 +1329,112 @@ button, input, select, textarea {
 .status-delivered { background: #dcfce7; color: #166534; }
 .status-cancelled { background: #fee2e2; color: #991b1b; }
 
+/* Favorites System */
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.fav-item-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.fav-item-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-400);
+}
+
+.fav-item-thumb {
+  width: 72px;
+  height: 72px;
+  min-width: 72px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--slate-100);
+}
+
+.fav-item-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.fav-item-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--slate-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.fav-item-variety {
+  font-size: 0.76rem;
+  color: var(--primary-700);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.fav-item-farmer {
+  font-size: 0.74rem;
+  color: var(--slate-500);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.fav-item-price {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary-700);
+}
+
+.fav-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.btn-fav-remove {
+  background: transparent;
+  border: none;
+  color: var(--slate-400);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-fav-remove i {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-fav-remove:hover {
+  color: var(--accent-red);
+  background: var(--accent-red-light);
+}
+
 /* ==========================================================================
    AI PRICE INTELLIGENCE & LOGISTICS MODULES
    ========================================================================== */
@@ -1930,12 +2036,27 @@ button, input, select, textarea {
   }
 
   /* Dashboard on Tablet */
+  .page-container {
+    padding: 20px 16px;
+  }
+
   .dashboard-container {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .dashboard-sidebar {
-    position: static;
+    display: none !important;
+  }
+
+  .charts-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .favorites-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
 
   .kpi-cards-grid {
@@ -2118,37 +2239,123 @@ button, input, select, textarea {
     gap: 10px !important;
   }
 
-  /* Dashboards Mobile */
+  /* Dashboards Mobile (Farmer & Buyer) */
+  .page-container {
+    padding: 14px 10px !important;
+  }
+
+  .page-header-block {
+    margin-bottom: 16px !important;
+  }
+
+  .page-header-block h2 {
+    font-size: 1.3rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .page-header-block p {
+    font-size: 0.8rem !important;
+  }
+
   .dashboard-container {
-    padding: 14px 10px;
+    padding: 14px 10px !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-sidebar {
+    display: none !important;
   }
 
   .kpi-cards-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
   }
 
   .kpi-card {
-    padding: 12px 10px;
+    padding: 10px 8px !important;
+    border-radius: var(--radius-sm) !important;
   }
 
   .kpi-value {
-    font-size: 1.25rem;
+    font-size: 1.15rem !important;
   }
 
   .kpi-label {
-    font-size: 0.72rem;
+    font-size: 0.68rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .charts-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .chart-wrapper {
+    height: 200px !important;
   }
 
   .data-table-card {
-    padding: 12px 10px;
+    padding: 12px 8px !important;
+    margin-bottom: 16px !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  .table-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
   }
 
   .data-table th,
   .data-table td {
-    padding: 8px 10px;
-    font-size: 0.76rem;
-    white-space: nowrap;
+    padding: 8px 8px !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Favorites Mobile Responsive */
+  .favorites-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .fav-item-card {
+    padding: 10px !important;
+    gap: 10px !important;
+  }
+
+  .fav-item-thumb {
+    width: 60px !important;
+    height: 60px !important;
+    min-width: 60px !important;
+  }
+
+  .fav-item-title {
+    font-size: 0.88rem !important;
+  }
+
+  .fav-item-variety {
+    font-size: 0.72rem !important;
+  }
+
+  .fav-item-farmer {
+    font-size: 0.7rem !important;
+  }
+
+  .fav-item-price {
+    font-size: 0.92rem !important;
+  }
+
+  .fav-item-actions {
+    gap: 6px !important;
+  }
+
+  .fav-item-actions .btn {
+    padding: 4px 8px !important;
+    font-size: 0.75rem !important;
   }
 
   /* Logistics Map Mobile */
@@ -2158,11 +2365,6 @@ button, input, select, textarea {
 
   .logistics-stats-card {
     padding: 16px 12px;
-  }
-
-  /* Forecast Chart Mobile */
-  .chart-wrapper {
-    height: 240px !important;
   }
 
   /* Toast Notifications Mobile */

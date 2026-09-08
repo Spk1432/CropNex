@@ -406,10 +406,11 @@ const Dashboard = {
 
     if (favProducts.length === 0) {
       container.innerHTML = `
-        <div class="empty-state p-6 col-span-full">
-          <i data-lucide="heart" class="empty-icon"></i>
-          <h4>No saved produce</h4>
-          <p>Click the heart icon on any crop in the marketplace to save it here for fast re-ordering.</p>
+        <div class="empty-state p-6 col-span-full" style="text-align:center; padding:36px 16px; width:100%; grid-column:1/-1;">
+          <i data-lucide="heart" class="empty-icon" style="width:48px; height:48px; color:var(--slate-400); margin:0 auto 12px; display:block;"></i>
+          <h4 style="font-size:1.1rem; font-weight:700; color:var(--slate-800); margin-bottom:6px;">No saved produce yet</h4>
+          <p style="font-size:0.85rem; color:var(--slate-500); margin-bottom:16px;">Click the heart icon on any crop in the marketplace to bookmark it here for fast re-ordering.</p>
+          <button class="btn btn-primary btn-sm" onclick="UI.routeTo('marketplace')">Explore Marketplace</button>
         </div>
       `;
       if (window.lucide) lucide.createIcons();
@@ -421,15 +422,16 @@ const Dashboard = {
         <img src="${prod.image}" alt="${prod.name}" class="fav-item-thumb">
         <div class="fav-item-info">
           <h5 class="fav-item-title">${prod.name}</h5>
-          <div class="fav-item-farmer">by ${prod.farmer} (${prod.location})</div>
-          <div class="fav-item-price">₹${prod.price} / ${prod.unit}</div>
+          <div class="fav-item-variety">${prod.variety || ''}</div>
+          <div class="fav-item-farmer">by ${prod.farmer} • ${prod.location}</div>
+          <div class="fav-item-price">₹${prod.price} <span style="font-size:0.75rem; font-weight:normal; color:var(--slate-500);">/ ${prod.unit}</span></div>
         </div>
         <div class="fav-item-actions">
-          <button class="btn btn-xs btn-primary" onclick="Marketplace.quickBuy('${prod.id}')">
-            <i data-lucide="shopping-cart"></i> Buy
+          <button class="btn btn-sm btn-primary" onclick="Marketplace.quickBuy('${prod.id}')" style="display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+            <i data-lucide="shopping-cart"></i> <span>Buy</span>
           </button>
-          <button class="btn-icon text-slate-400" onclick="Marketplace.toggleFavorite('${prod.id}', null); Dashboard.renderBuyerFavorites();">
-            <i data-lucide="x"></i>
+          <button class="btn-fav-remove" title="Remove from favorites" onclick="Marketplace.toggleFavorite('${prod.id}', null); Dashboard.renderBuyerFavorites();">
+            <i data-lucide="trash-2"></i>
           </button>
         </div>
       </div>
