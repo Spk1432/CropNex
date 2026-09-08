@@ -59,9 +59,9 @@
 
       <!-- Center: Nav Links & Search Bar -->
       <div class="header-center-col" style="display:flex; align-items:center; gap:14px; flex:1; max-width:700px; margin:0 10px;">
-        <!-- Nav Links: Home, Marketplace (Buyer Only), About Us -->
+        <!-- Nav Links: Marketplace (Buyer), About Us (Home hidden on User page) -->
         <nav class="nav-center-menu" id="navCenterMenu" style="display:flex; align-items:center; gap:4px;">
-          <a href="javascript:void(0)" class="nav-link" id="navHomeLink" data-navigate="marketplace" title="CropNex Home">
+          <a href="javascript:void(0)" class="nav-link" id="navHomeLink" data-navigate="farmer-dashboard" title="CropNex Home" style="display:none;">
             <i data-lucide="home" style="width:15px; height:15px;"></i>
             <span>Home</span>
           </a>
@@ -1876,15 +1876,65 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-2">Payment Method:</label>
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
-              <input type="radio" name="checkoutPayment" value="Cash on Delivery" checked>
-              <span>Cash on Delivery (Farm-Gate Inspection)</span>
+          <label class="block text-xs font-bold text-slate-700 mb-2">Select Payment Method:</label>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <!-- UPI Option (Default) -->
+            <label id="labelPayUpi" style="display:flex; align-items:flex-start; gap:10px; font-size:0.88rem; cursor:pointer; padding:10px 12px; border:1px solid #10b981; background:#f0fdf4; border-radius:8px;">
+              <input type="radio" name="checkoutPayment" id="payMethodUpi" value="UPI / QR Code" checked onchange="Marketplace.togglePaymentMethodUI('upi')" style="margin-top:3px; accent-color:#059669;">
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                  <strong style="color:#065f46;">Direct UPI / Scan & Pay QR Code</strong>
+                  <span class="badge badge-success" style="font-size:0.7rem; padding:2px 8px; background:#dcfce7; color:#15803d; border-radius:10px; font-weight:700;">Instant & Escrow Protected</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1" style="margin:2px 0 0 0;">Pay directly with GPay, PhonePe, Paytm, BHIM or any UPI banking app.</p>
+              </div>
             </label>
-            <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
-              <input type="radio" name="checkoutPayment" value="UPI / Direct Transfer">
-              <span>Direct UPI Escrow / Bank Transfer</span>
+
+            <!-- UPI QR Container Card -->
+            <div id="checkoutUpiQrContainer" style="display:block; padding:14px; background:#ffffff; border:1px solid #a7f3d0; border-radius:10px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+              <div style="font-size:0.75rem; font-weight:700; color:#065f46; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;">
+                CropNex Mandi Escrow • Scan to Pay
+              </div>
+              
+              <!-- QR Code Box -->
+              <div style="display:inline-block; padding:10px; background:#fff; border:2px dashed #059669; border-radius:12px; position:relative;">
+                <img id="checkoutUpiQrImg" 
+                     src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3Dcropnex.escrow%40icici%26pn%3DCropNex%2520Agri%2520Platform%26cu%3DINR" 
+                     alt="UPI Payment QR Code" 
+                     style="width:160px; height:160px; display:block; margin:0 auto; border-radius:6px;">
+                
+                <div style="margin-top:6px; font-size:0.75rem; font-weight:700; color:#065f46; display:flex; align-items:center; justify-content:center; gap:4px;">
+                  <i data-lucide="shield-check" style="width:14px; height:14px; color:#10b981;"></i>
+                  <span>Pay Amount: <span id="upiDisplayAmount" style="font-size:0.9rem; font-weight:800; color:#047857;">₹0</span></span>
+                </div>
+              </div>
+
+              <!-- UPI ID & Copy Button -->
+              <div style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px; background:#f8fafc; padding:6px 12px; border-radius:6px; border:1px solid #e2e8f0; max-width:320px; margin-left:auto; margin-right:auto;">
+                <span style="font-size:0.78rem; color:#64748b;">UPI ID:</span>
+                <strong style="font-size:0.82rem; font-family:monospace; color:#1e293b;" id="upiIdText">cropnex.escrow@icici</strong>
+                <button type="button" onclick="Marketplace.copyUpiId()" class="btn btn-outline btn-sm" style="padding:2px 8px; font-size:0.7rem; border-radius:4px; display:inline-flex; align-items:center; gap:3px;" title="Copy UPI ID">
+                  <i data-lucide="copy" style="width:12px; height:12px;"></i> Copy
+                </button>
+              </div>
+
+              <!-- Supported Apps Strip -->
+              <div style="margin-top:10px; display:flex; justify-content:center; gap:6px; flex-wrap:wrap;">
+                <span style="font-size:0.7rem; padding:2px 8px; background:#f1f5f9; color:#475569; border-radius:4px; font-weight:600;">GPay</span>
+                <span style="font-size:0.7rem; padding:2px 8px; background:#f1f5f9; color:#475569; border-radius:4px; font-weight:600;">PhonePe</span>
+                <span style="font-size:0.7rem; padding:2px 8px; background:#f1f5f9; color:#475569; border-radius:4px; font-weight:600;">Paytm</span>
+                <span style="font-size:0.7rem; padding:2px 8px; background:#f1f5f9; color:#475569; border-radius:4px; font-weight:600;">BHIM</span>
+                <span style="font-size:0.7rem; padding:2px 8px; background:#f1f5f9; color:#475569; border-radius:4px; font-weight:600;">Cred</span>
+              </div>
+            </div>
+
+            <!-- Cash on Delivery Option -->
+            <label id="labelPayCod" style="display:flex; align-items:flex-start; gap:10px; font-size:0.88rem; cursor:pointer; padding:10px 12px; border:1px solid #e2e8f0; background:#ffffff; border-radius:8px;">
+              <input type="radio" name="checkoutPayment" id="payMethodCod" value="Cash on Delivery" onchange="Marketplace.togglePaymentMethodUI('cod')" style="margin-top:3px; accent-color:#059669;">
+              <div style="flex:1;">
+                <strong>Cash on Delivery (Farm-Gate Inspection)</strong>
+                <p class="text-xs text-slate-500 mt-1" style="margin:2px 0 0 0;">Inspect consignment upon unloading at delivery hub before cash payment.</p>
+              </div>
             </label>
           </div>
         </div>

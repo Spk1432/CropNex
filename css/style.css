@@ -2709,3 +2709,19 @@ body:has(#view-farmer-orders.active) .nav-buyer-only,
 body:has(#view-farmer-returns.active) .nav-buyer-only {
   display: none !important;
 }
+
+/* User page: Remove Home Button from Navbar */
+body:not(.is-farmer) #navHomeLink,
+html:not(.is-farmer) #navHomeLink,
+body[data-view="marketplace"] #navHomeLink,
+body[data-view="buyer-dashboard"] #navHomeLink,
+body[data-view="buyer-orders"] #navHomeLink,
+body[data-view="buyer-tracking"] #navHomeLink,
+body[data-view="buyer-favorites"] #navHomeLink,
+body:has(#view-marketplace.active) #navHomeLink,
+body:has(#view-buyer-dashboard.active) #navHomeLink,
+body:has(#view-buyer-orders.active) #navHomeLink,
+body:has(#view-buyer-tracking.active) #navHomeLink,
+body:has(#view-buyer-favorites.active) #navHomeLink {
+  display: none !important;
+}

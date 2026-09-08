@@ -599,13 +599,77 @@ const Marketplace = {
     const totals = StorageService.getCartTotals();
     const buyerProfile = StorageService.getProfile('buyer');
 
-    document.getElementById('checkoutSummaryTotal').textContent = `₹${totals.total.toLocaleString('en-IN')}`;
-    document.getElementById('checkoutSummaryItems').textContent = `${totals.itemCount} items`;
-    document.getElementById('checkoutBuyerName').value = buyerProfile.name || 'Ajay Traders';
-    document.getElementById('checkoutBuyerPhone').value = buyerProfile.phone || '+91 98231 44521';
-    document.getElementById('checkoutAddress').value = buyerProfile.location || 'Gala No. 42, Gultekdi Market Yard, Pune - 411037';
+    const totalFormatted = `₹${totals.total.toLocaleString('en-IN')}`;
+    const summaryTotalEl = document.getElementById('checkoutSummaryTotal');
+    const summaryItemsEl = document.getElementById('checkoutSummaryItems');
+    const upiDisplayEl = document.getElementById('upiDisplayAmount');
+    const buyerNameInput = document.getElementById('checkoutBuyerName');
+    const buyerPhoneInput = document.getElementById('checkoutBuyerPhone');
+    const addressInput = document.getElementById('checkoutAddress');
+
+    if (summaryTotalEl) summaryTotalEl.textContent = totalFormatted;
+    if (summaryItemsEl) summaryItemsEl.textContent = `${totals.itemCount} items`;
+    if (upiDisplayEl) upiDisplayEl.textContent = totalFormatted;
+    if (buyerNameInput) buyerNameInput.value = buyerProfile.name || 'Ajay Traders';
+    if (buyerPhoneInput) buyerPhoneInput.value = buyerProfile.phone || '+91 98231 44521';
+    if (addressInput) addressInput.value = buyerProfile.location || 'Gala No. 42, Gultekdi Market Yard, Pune - 411037';
+
+    // Update dynamic UPI QR Code image
+    const qrImg = document.getElementById('checkoutUpiQrImg');
+    if (qrImg) {
+      const upiUrl = encodeURIComponent(`upi://pay?pa=cropnex.escrow@icici&pn=CropNex%20Agri%20Platform&am=${totals.total}&cu=INR&tn=CropNex%20Wholesale%20Order`);
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${upiUrl}`;
+    }
+
+    // Default to UPI payment method
+    this.togglePaymentMethodUI('upi');
 
     UI.openModal('checkoutModal');
+  },
+
+  togglePaymentMethodUI(method) {
+    const qrContainer = document.getElementById('checkoutUpiQrContainer');
+    const labelUpi = document.getElementById('labelPayUpi');
+    const labelCod = document.getElementById('labelPayCod');
+    const radioUpi = document.getElementById('payMethodUpi');
+    const radioCod = document.getElementById('payMethodCod');
+
+    if (method === 'upi') {
+      if (qrContainer) qrContainer.style.display = 'block';
+      if (radioUpi) radioUpi.checked = true;
+      if (labelUpi) {
+        labelUpi.style.borderColor = '#10b981';
+        labelUpi.style.backgroundColor = '#f0fdf4';
+      }
+      if (labelCod) {
+        labelCod.style.borderColor = '#e2e8f0';
+        labelCod.style.backgroundColor = '#ffffff';
+      }
+    } else {
+      if (qrContainer) qrContainer.style.display = 'none';
+      if (radioCod) radioCod.checked = true;
+      if (labelCod) {
+        labelCod.style.borderColor = '#10b981';
+        labelCod.style.backgroundColor = '#f0fdf4';
+      }
+      if (labelUpi) {
+        labelUpi.style.borderColor = '#e2e8f0';
+        labelUpi.style.backgroundColor = '#ffffff';
+      }
+    }
+  },
+
+  copyUpiId() {
+    const upiId = 'cropnex.escrow@icici';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(upiId).then(() => {
+        UI.showToast(`UPI ID copied: ${upiId}`, 'success');
+      }).catch(() => {
+        UI.showToast(`UPI ID: ${upiId}`, 'info');
+      });
+    } else {
+      UI.showToast(`UPI ID: ${upiId}`, 'info');
+    }
   },
 
   handleCheckoutSubmit() {
@@ -613,10 +677,10 @@ const Marketplace = {
     if (cart.length === 0) return;
 
     const totals = StorageService.getCartTotals();
-    const buyerName = document.getElementById('checkoutBuyerName').value;
-    const buyerPhone = document.getElementById('checkoutBuyerPhone').value;
-    const deliveryAddress = document.getElementById('checkoutAddress').value;
-    const paymentMethod = document.querySelector('input[name="checkoutPayment"]:checked')?.value || 'Cash on Delivery (Demo)';
+    const buyerName = document.getElementById('checkoutBuyerName')?.value || 'Ajay Traders';
+    const buyerPhone = document.getElementById('checkoutBuyerPhone')?.value || '+91 98231 44521';
+    const deliveryAddress = document.getElementById('checkoutAddress')?.value || 'Market Yard, Pune';
+    const paymentMethod = document.querySelector('input[name="checkoutPayment"]:checked')?.value || 'UPI / QR Code';
 
     // Build order records for cart items
     const primaryItem = cart[0];
@@ -642,8 +706,14 @@ const Marketplace = {
     StorageService.clearCart();
     UI.closeAllModals();
 
-    // Show Order Confirmed Modal
-    UI.showOrderConfirmedModal(newOrder);
+    // Directly redirect to My Orders page as requested
+    UI.showToast(`Payment registered & Order #${newOrder.id} confirmed! Redirecting to My Orders...`, 'success');
+    UI.routeTo('buyer-orders');
+
+    // Ensure the table in buyer-orders is rendered immediately with the new order
+    if (typeof Dashboard !== 'undefined') {
+      Dashboard.renderBuyerOrdersTable(StorageService.getOrders());
+    }
   }
 };
 

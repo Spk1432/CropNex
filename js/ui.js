@@ -187,14 +187,18 @@ const UI = {
       if (searchBar) searchBar.style.setProperty('display', 'none', 'important');
       if (topLeftFilterBtn) topLeftFilterBtn.style.setProperty('display', 'none', 'important');
       if (cartBtn) cartBtn.style.setProperty('display', 'none', 'important');
-      if (homeLink) homeLink.setAttribute('data-navigate', 'farmer-dashboard');
+      if (homeLink) {
+        homeLink.style.display = 'inline-flex';
+        homeLink.setAttribute('data-navigate', 'farmer-dashboard');
+      }
       if (brandLogo) brandLogo.setAttribute('data-navigate', 'farmer-dashboard');
     } else {
+      // User page: Remove Home button from Navbar as requested
+      if (homeLink) homeLink.style.setProperty('display', 'none', 'important');
       if (marketplaceLink) marketplaceLink.style.display = 'inline-flex';
       if (returnOrderBtn) returnOrderBtn.style.display = 'none'; // Return order belongs in Dashboard Orders section!
       if (searchBar) searchBar.style.display = 'block';
       if (cartBtn) cartBtn.style.display = 'inline-flex';
-      if (homeLink) homeLink.setAttribute('data-navigate', 'marketplace');
       if (brandLogo) brandLogo.setAttribute('data-navigate', 'marketplace');
     }
   },
