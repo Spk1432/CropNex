@@ -145,9 +145,16 @@ const UI = {
   },
 
   updateNavbarVisibility(viewName = this.currentView) {
-    const isAuth = StorageService.isAuthenticated();
     const role = StorageService.getCurrentRole();
-    const isFarmer = (isAuth && role === 'farmer') || (viewName && viewName.startsWith('farmer-'));
+    const isFarmer = role === 'farmer' || (viewName && viewName.startsWith('farmer-'));
+
+    if (document.body) {
+      if (isFarmer) {
+        document.body.classList.add('is-farmer');
+      } else {
+        document.body.classList.remove('is-farmer');
+      }
+    }
 
     const marketplaceLink = document.getElementById('navMarketplaceLink');
     const returnOrderBtn = document.getElementById('navReturnOrderBtn');
@@ -156,14 +163,14 @@ const UI = {
     const homeLink = document.getElementById('navHomeLink');
 
     if (isFarmer) {
-      if (marketplaceLink) marketplaceLink.style.display = 'none';
-      if (returnOrderBtn) returnOrderBtn.style.display = 'none';
-      if (searchBar) searchBar.style.display = 'none';
-      if (topLeftFilterBtn) topLeftFilterBtn.style.display = 'none';
+      if (marketplaceLink) marketplaceLink.style.setProperty('display', 'none', 'important');
+      if (returnOrderBtn) returnOrderBtn.style.setProperty('display', 'none', 'important');
+      if (searchBar) searchBar.style.setProperty('display', 'none', 'important');
+      if (topLeftFilterBtn) topLeftFilterBtn.style.setProperty('display', 'none', 'important');
       if (homeLink) homeLink.setAttribute('data-navigate', 'farmer-dashboard');
     } else {
       if (marketplaceLink) marketplaceLink.style.display = 'inline-flex';
-      if (returnOrderBtn) returnOrderBtn.style.display = 'inline-flex';
+      if (returnOrderBtn) returnOrderBtn.style.display = 'none'; // Return order belongs in Dashboard Orders section!
       if (searchBar) searchBar.style.display = 'block';
       if (homeLink) homeLink.setAttribute('data-navigate', 'marketplace');
     }
@@ -573,14 +580,17 @@ const UI = {
   },
 
   // Return Order Modal Handlers
-  openReturnOrderModal() {
+  openReturnOrderModal(preselectedOrderId = null) {
     const orderSelect = document.getElementById('returnOrderIdSelect');
     if (orderSelect) {
       const orders = StorageService.getOrders();
       if (orders && orders.length > 0) {
         orderSelect.innerHTML = orders.map(o => 
-          `<option value="${o.id}">#${o.id} - ${o.productName} (${o.quantity} ${o.unit || 'kg'}, ₹${o.total}) [${o.status}]</option>`
+          `<option value="${o.id}" ${preselectedOrderId === o.id ? 'selected' : ''}>#${o.id} - ${o.productName} (${o.quantity} ${o.unit || 'kg'}, ₹${o.total}) [${o.status}]</option>`
         ).join('');
+        if (preselectedOrderId) {
+          orderSelect.value = preselectedOrderId;
+        }
       } else {
         orderSelect.innerHTML = `<option value="CNX-2026-1048">#CNX-2026-1048 - Tomato Hybrid (100 kg, ₹2,544)</option>`;
       }

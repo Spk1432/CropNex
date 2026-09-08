@@ -59,7 +59,7 @@
 
       <!-- Center: Nav Links & Search Bar -->
       <div class="header-center-col" style="display:flex; align-items:center; gap:14px; flex:1; max-width:700px; margin:0 10px;">
-        <!-- Nav Links: Home, Marketplace, About Us, Return Order -->
+        <!-- Nav Links: Home, Marketplace, About Us -->
         <nav class="nav-center-menu" id="navCenterMenu" style="display:flex; align-items:center; gap:4px;">
           <a href="javascript:void(0)" class="nav-link" id="navHomeLink" data-navigate="marketplace" title="CropNex Home">
             <i data-lucide="home" style="width:15px; height:15px;"></i>
@@ -73,10 +73,6 @@
             <i data-lucide="info" style="width:15px; height:15px;"></i>
             <span>About Us</span>
           </a>
-          <button type="button" class="btn btn-outline btn-sm nav-return-btn" id="navReturnOrderBtn" onclick="UI.openReturnOrderModal()" title="Request Return for Orders" style="display:inline-flex; align-items:center; gap:5px; padding:5px 9px; font-size:0.78rem; border-radius:6px; border-color:#e2e8f0; color:#475569; font-weight:600; white-space:nowrap;">
-            <i data-lucide="rotate-ccw" style="width:13px; height:13px; color:#e11d48;"></i>
-            <span>Return Order</span>
-          </button>
         </nav>
 
         <!-- Navbar Search Bar -->
@@ -1109,6 +1105,31 @@
           </div>
         </div>
 
+        <!-- Buyer Dashboard Quick Actions -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px;">
+          <div class="stat-card" data-navigate="marketplace" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
+            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
+              <i data-lucide="store"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">Direct Marketplace</div>
+            <div class="text-xs text-slate-500">Procure farm produce at mandi rates</div>
+          </div>
+          <div class="stat-card" data-navigate="buyer-orders" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
+            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
+              <i data-lucide="clipboard-list"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">My Orders & Invoices</div>
+            <div class="text-xs text-slate-500">Track active consignments & history</div>
+          </div>
+          <div class="stat-card" onclick="UI.openReturnOrderModal()" style="cursor: pointer; padding: 16px; border: 1px solid #fecaca; background: #fffdfd; transition: all 0.2s ease;">
+            <div class="stat-icon-wrap" style="margin-bottom: 8px; background:#fee2e2; color:#b91c1c;">
+              <i data-lucide="rotate-ccw"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">Return Order</div>
+            <div class="text-xs text-red-600">Claim quality dispute or refund</div>
+          </div>
+        </div>
+
         <!-- Charts Grid -->
         <div class="charts-grid-2">
           <div class="chart-card">
@@ -1190,6 +1211,10 @@
               <h4 class="font-bold text-slate-800">Your Ordered Produce</h4>
               <p class="text-xs text-slate-500">All current and past farm-direct produce orders</p>
             </div>
+            <button type="button" class="btn btn-outline text-red-600 btn-sm" onclick="UI.openReturnOrderModal()" title="Request Return or Refund for an Order" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; border-color:#fca5a5; background:#fff1f2; color:#be123c; padding:7px 14px; border-radius:8px; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+              <i data-lucide="rotate-ccw" style="width:14px; height:14px; color:#e11d48;"></i>
+              <span>Return Order</span>
+            </button>
           </div>
           <div class="table-responsive">
             <table class="data-table">
@@ -1202,6 +1227,7 @@
                   <th>Total Amount</th>
                   <th>Order Date</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody id="buyerOrdersTableBody">

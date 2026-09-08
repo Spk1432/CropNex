@@ -2685,3 +2685,11 @@ button, input, select, textarea {
     padding: 5px 8px !important;
   }
 }
+
+/* Guaranteed role-based Navbar display: Farmer Page Restrictions */
+body.is-farmer #navMarketplaceLink,
+body.is-farmer #navReturnOrderBtn,
+body.is-farmer #navSearchBarContainer,
+body.is-farmer #navTopLeftFilterBtn {
+  display: none !important;
+}
