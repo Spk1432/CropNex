@@ -483,7 +483,120 @@ const HISTORICAL_PRICE_DATA = {
   }
 };
 
-const INITIAL_ORDERS = [];
+const INITIAL_ORDERS = [
+  {
+    id: 'CNX-2026-1048',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Ramesh Patil',
+    farmerPhone: '+91 94220 88712',
+    productName: 'Tomato - Hybrid',
+    category: 'Vegetables',
+    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80',
+    quantity: 100,
+    unit: 'kg',
+    pricePerUnit: 24,
+    subtotal: 2400,
+    logisticsCost: 144,
+    total: 2544,
+    date: '2026-09-08 10:30 AM',
+    status: 'Accepted',
+    paymentMethod: 'UPI / Escrow',
+    deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
+    timeline: [
+      { status: 'Order Placed', time: '08 Sep, 10:30 AM', done: true },
+      { status: 'Accepted', time: '08 Sep, 11:15 AM', done: true },
+      { status: 'Preparing', time: '08 Sep, 02:00 PM', done: false },
+      { status: 'Dispatched', time: 'Pending', done: false },
+      { status: 'Out for Delivery', time: 'Pending', done: false },
+      { status: 'Delivered', time: 'Pending', done: false }
+    ]
+  },
+  {
+    id: 'CNX-2026-1045',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Sunita Jadhav',
+    farmerPhone: '+91 97654 33210',
+    productName: 'Onion - Nashik Red',
+    category: 'Vegetables',
+    image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80',
+    quantity: 250,
+    unit: 'kg',
+    pricePerUnit: 18,
+    subtotal: 4500,
+    logisticsCost: 270,
+    total: 4770,
+    date: '2026-09-07 04:15 PM',
+    status: 'Dispatched',
+    paymentMethod: 'UPI / Escrow',
+    deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
+    timeline: [
+      { status: 'Order Placed', time: '07 Sep, 04:15 PM', done: true },
+      { status: 'Accepted', time: '07 Sep, 05:00 PM', done: true },
+      { status: 'Preparing', time: '08 Sep, 09:00 AM', done: true },
+      { status: 'Dispatched', time: '08 Sep, 01:30 PM', done: true },
+      { status: 'Out for Delivery', time: '09 Sep, 08:00 AM', done: true },
+      { status: 'Delivered', time: 'Pending', done: false }
+    ]
+  },
+  {
+    id: 'CNX-2026-1039',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Mahesh Shinde',
+    farmerPhone: '+91 98901 22345',
+    productName: 'Potato - Kufri Pukhraj',
+    category: 'Vegetables',
+    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80',
+    quantity: 300,
+    unit: 'kg',
+    pricePerUnit: 15,
+    subtotal: 4500,
+    logisticsCost: 270,
+    total: 4770,
+    date: '2026-09-05 11:00 AM',
+    status: 'Delivered',
+    paymentMethod: 'UPI / Escrow',
+    deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
+    timeline: [
+      { status: 'Order Placed', time: '05 Sep, 11:00 AM', done: true },
+      { status: 'Accepted', time: '05 Sep, 11:30 AM', done: true },
+      { status: 'Preparing', time: '05 Sep, 03:00 PM', done: true },
+      { status: 'Dispatched', time: '06 Sep, 08:30 AM', done: true },
+      { status: 'Out for Delivery', time: '06 Sep, 01:00 PM', done: true },
+      { status: 'Delivered', time: '06 Sep, 03:45 PM', done: true }
+    ]
+  },
+  {
+    id: 'CNX-2026-1032',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Vithal Gumbhare',
+    farmerPhone: '+91 94221 66321',
+    productName: 'Wheat - Lokwan Premium',
+    category: 'Grains',
+    image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80',
+    quantity: 500,
+    unit: 'kg',
+    pricePerUnit: 28,
+    subtotal: 14000,
+    logisticsCost: 840,
+    total: 14840,
+    date: '2026-09-02 02:20 PM',
+    status: 'Delivered',
+    paymentMethod: 'UPI / Escrow',
+    deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
+    timeline: [
+      { status: 'Order Placed', time: '02 Sep, 02:20 PM', done: true },
+      { status: 'Accepted', time: '02 Sep, 03:00 PM', done: true },
+      { status: 'Preparing', time: '03 Sep, 10:00 AM', done: true },
+      { status: 'Dispatched', time: '03 Sep, 04:00 PM', done: true },
+      { status: 'Out for Delivery', time: '04 Sep, 11:30 AM', done: true },
+      { status: 'Delivered', time: '04 Sep, 02:15 PM', done: true }
+    ]
+  }
+];
 
 const INITIAL_RETURNS = [];
 

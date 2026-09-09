@@ -7,7 +7,7 @@
 const STORAGE_KEYS = {
   PRODUCTS: 'cropnex_products_v4',
   CART: 'cropnex_cart_v2',
-  ORDERS: 'cropnex_orders_v2',
+  ORDERS: 'cropnex_orders_v3',
   FAVORITES: 'cropnex_favorites_v2',
   MESSAGES: 'cropnex_messages_v2',
   NOTIFICATIONS: 'cropnex_notifications_v2',
@@ -23,6 +23,10 @@ const StorageService = {
     const existing = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
     if (!existing || JSON.parse(existing).length === 0) {
       this.resetToDefaults();
+    }
+    const existingOrders = localStorage.getItem(STORAGE_KEYS.ORDERS);
+    if (!existingOrders || JSON.parse(existingOrders).length === 0) {
+      localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(typeof INITIAL_ORDERS !== 'undefined' ? INITIAL_ORDERS : []));
     }
   },
 
