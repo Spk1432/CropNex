@@ -385,15 +385,15 @@ const Marketplace = {
             </div>
           </div>
 
-          <div class="product-card-footer" style="display:flex; gap:6px; flex-wrap:wrap;">
-            <button class="btn btn-xs btn-outline" style="flex:1; min-width:65px; padding:6px 8px; font-size:0.75rem;" onclick="Marketplace.openProductModal('${prod.id}')" title="View full specifications">
-              <i data-lucide="eye"></i> Details
+          <div class="product-card-footer">
+            <button type="button" class="btn btn-xs btn-outline btn-prod-details" onclick="Marketplace.openProductModal('${prod.id}')" title="View full specifications">
+              <i data-lucide="eye"></i> <span>Details</span>
             </button>
-            <button class="btn btn-xs btn-outline" style="flex:1; min-width:70px; padding:6px 8px; font-size:0.75rem;" onclick="Marketplace.addProductToCart('${prod.id}')" title="Add to cart without leaving">
-              <i data-lucide="shopping-cart"></i> +Cart
+            <button type="button" class="btn btn-xs btn-outline btn-prod-cart" onclick="Marketplace.addProductToCart('${prod.id}')" title="Add to cart without leaving">
+              <i data-lucide="shopping-cart"></i> <span>+Cart</span>
             </button>
-            <button class="btn btn-xs btn-primary" style="flex:1; min-width:75px; padding:6px 8px; font-size:0.75rem;" onclick="Marketplace.quickBuy('${prod.id}')" title="Buy now">
-              <i data-lucide="shopping-bag"></i> Buy Now
+            <button type="button" class="btn btn-xs btn-primary btn-prod-buy" onclick="Marketplace.quickBuy('${prod.id}')" title="Buy now">
+              <i data-lucide="shopping-bag"></i> <span>Buy Now</span>
             </button>
           </div>
         </div>

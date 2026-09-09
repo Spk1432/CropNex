@@ -33,17 +33,17 @@
   <!-- Global Application Header -->
   <header class="app-header">
     <div class="header-inner">
-      <!-- Left: Brand Logo, Dashboard Button Under It & Top-Left Filter Button -->
-      <div class="header-left-col" style="display:flex; align-items:center; gap:12px;">
-        <div class="brand-dashboard-wrapper" style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
+      <!-- Left: Brand Logo, Menu Button & Top-Left Filter Button -->
+      <div class="header-left-col">
+        <div class="brand-dashboard-wrapper">
           <!-- Brand Logo -->
           <div class="brand-logo" id="brandLogoLink" data-navigate="marketplace" title="CropNex">
             <img src="assets/cropnex-logo.jpg?v=4.0" alt="CropNex Logo" class="brand-logo-img">
             <span class="brand-text">Crop<span>Nex</span></span>
           </div>
 
-          <!-- Navigation Menu button right under CropNex -->
-          <button class="btn btn-primary btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Menu" style="padding:4px 10px; font-size:0.78rem; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+          <!-- Navigation Menu button -->
+          <button type="button" class="btn btn-primary btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Menu">
             <i data-lucide="menu" style="width:14px; height:14px;"></i>
             <span class="font-semibold">Menu</span>
           </button>
