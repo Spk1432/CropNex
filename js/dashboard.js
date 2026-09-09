@@ -74,7 +74,7 @@ const Dashboard = {
     if (activeEl) activeEl.textContent = activeProductsCount;
     if (pendingEl) pendingEl.textContent = pendingOrders.length;
     if (completedEl) completedEl.textContent = completedOrders.length;
-    if (earningsEl) earningsEl.textContent = `₹${Math.round(totalSales * 0.94).toLocaleString('en-IN')}`;
+    if (earningsEl) earningsEl.textContent = `₹${totalSales.toLocaleString('en-IN')}`;
 
     // Render Farmer Returns KPIs and table
     this.renderFarmerReturnsTable();
