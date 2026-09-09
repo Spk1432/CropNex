@@ -5,17 +5,17 @@
  */
 
 const STORAGE_KEYS = {
-  PRODUCTS: 'cropnex_products_v1',
-  CART: 'cropnex_cart_v1',
-  ORDERS: 'cropnex_orders_v1',
-  FAVORITES: 'cropnex_favorites_v1',
-  MESSAGES: 'cropnex_messages_v1',
-  NOTIFICATIONS: 'cropnex_notifications_v1',
-  PROFILES: 'cropnex_profiles_v1',
-  ROLE: 'cropnex_current_role_v1',
-  LANG: 'cropnex_current_lang_v1',
-  AUTH: 'cropnex_auth_state_v1',
-  RETURNS: 'cropnex_returns_v1'
+  PRODUCTS: 'cropnex_products_v2',
+  CART: 'cropnex_cart_v2',
+  ORDERS: 'cropnex_orders_v2',
+  FAVORITES: 'cropnex_favorites_v2',
+  MESSAGES: 'cropnex_messages_v2',
+  NOTIFICATIONS: 'cropnex_notifications_v2',
+  PROFILES: 'cropnex_profiles_v2',
+  ROLE: 'cropnex_current_role_v2',
+  LANG: 'cropnex_current_lang_v2',
+  AUTH: 'cropnex_auth_state_v2',
+  RETURNS: 'cropnex_returns_v2'
 };
 
 const StorageService = {
@@ -23,19 +23,16 @@ const StorageService = {
     if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
       this.resetToDefaults();
     }
-    if (!localStorage.getItem(STORAGE_KEYS.RETURNS)) {
-      localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(typeof INITIAL_RETURNS !== 'undefined' ? INITIAL_RETURNS : []));
-    }
   },
 
   resetToDefaults() {
-    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(INITIAL_PRODUCTS));
+    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(typeof INITIAL_PRODUCTS !== 'undefined' ? INITIAL_PRODUCTS : []));
     localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify([]));
-    localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(INITIAL_ORDERS));
+    localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(typeof INITIAL_ORDERS !== 'undefined' ? INITIAL_ORDERS : []));
     localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(typeof INITIAL_RETURNS !== 'undefined' ? INITIAL_RETURNS : []));
-    localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(['prod-001', 'prod-004']));
-    localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(INITIAL_MESSAGES));
-    localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
+    localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify([]));
+    localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(typeof INITIAL_MESSAGES !== 'undefined' ? INITIAL_MESSAGES : {}));
+    localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(typeof INITIAL_NOTIFICATIONS !== 'undefined' ? INITIAL_NOTIFICATIONS : []));
     localStorage.setItem(STORAGE_KEYS.PROFILES, JSON.stringify(INITIAL_USER_PROFILES));
     localStorage.setItem(STORAGE_KEYS.ROLE, 'buyer'); // Default role
     localStorage.setItem(STORAGE_KEYS.LANG, 'en');    // Default language

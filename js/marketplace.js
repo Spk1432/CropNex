@@ -295,14 +295,32 @@ const Marketplace = {
     if (countEl) countEl.textContent = `Showing ${products.length} fresh produce items`;
 
     if (products.length === 0) {
-      grid.innerHTML = `
-        <div class="empty-state col-span-full">
-          <i data-lucide="sprout" class="empty-icon"></i>
-          <h3>No agricultural produce found</h3>
-          <p>Try adjusting your search criteria, category filters, harvest dates, or location filters.</p>
-          <button class="btn btn-outline" onclick="Marketplace.resetFilters()">Reset All Filters</button>
-        </div>
-      `;
+      const allProducts = StorageService.getProducts();
+      if (allProducts.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state col-span-full" style="grid-column: 1 / -1; padding: 48px 20px; text-align: center; background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 16px; margin: 20px 0;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">🌾</div>
+            <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin-bottom: 8px;">No Produce Listed in Marketplace Yet</h3>
+            <p style="color: #64748b; font-size: 0.9rem; max-width: 520px; margin: 0 auto 20px auto;">
+              Direct farm listings will appear here in real-time as you add produce. Click below to add your first fresh harvest listing!
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="UI.routeTo('farmer-add-product')" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+                <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> + Add New Produce
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        grid.innerHTML = `
+          <div class="empty-state col-span-full" style="grid-column: 1 / -1; padding: 40px 20px; text-align: center;">
+            <i data-lucide="sprout" class="empty-icon"></i>
+            <h3>No agricultural produce found matching filters</h3>
+            <p>Try adjusting your search criteria, category filters, harvest dates, or price range.</p>
+            <button class="btn btn-outline" onclick="Marketplace.resetFilters()">Reset All Filters</button>
+          </div>
+        `;
+      }
       if (window.lucide) lucide.createIcons();
       return;
     }

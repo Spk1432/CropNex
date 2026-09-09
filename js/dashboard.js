@@ -485,7 +485,21 @@ const Dashboard = {
     if (!tbody) return;
 
     if (products.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-muted">No produce listed yet. Click "+ Add New Produce" to list.</td></tr>`;
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align: center; padding: 48px 20px;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">🌾</div>
+            <div class="font-bold text-slate-800" style="font-size: 1.1rem;">No produce listed yet</div>
+            <p class="text-xs text-slate-500" style="margin: 4px auto 16px auto; max-width: 420px;">
+              Click "+ Add New Produce" to publish your crop batches directly to the marketplace with real farm photos, harvest dates, and scannable barcodes.
+            </p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="UI.routeTo('farmer-add-product')" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+              <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> + Add New Produce
+            </button>
+          </td>
+        </tr>
+      `;
+      if (window.lucide) lucide.createIcons();
       return;
     }
 
@@ -1129,13 +1143,16 @@ const Dashboard = {
     const salesCtx = document.getElementById('farmerSalesChartCanvas')?.getContext('2d');
     if (salesCtx) {
       if (this.farmerSalesChartInstance) this.farmerSalesChartInstance.destroy();
+      const orders = StorageService.getOrders();
+      const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+      
       this.farmerSalesChartInstance = new Chart(salesCtx, {
         type: 'line',
         data: {
-          labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug (MTD)'],
+          labels: ['Apr', 'May', 'Jun', 'Jul', 'Current'],
           datasets: [{
             label: 'Monthly Direct Revenue (₹)',
-            data: [28500, 36200, 44800, 52100, 68400],
+            data: totalRevenue > 0 ? [0, Math.round(totalRevenue * 0.3), Math.round(totalRevenue * 0.6), Math.round(totalRevenue * 0.8), totalRevenue] : [0, 0, 0, 0, 0],
             borderColor: '#15803d',
             backgroundColor: 'rgba(21, 128, 61, 0.1)',
             fill: true,
@@ -1151,7 +1168,7 @@ const Dashboard = {
           scales: {
             y: {
               grid: { color: '#f1f5f9' },
-              ticks: { callback: v => '₹' + (v / 1000) + 'k' }
+              ticks: { callback: v => '₹' + v.toLocaleString('en-IN') }
             },
             x: { grid: { display: false } }
           }
@@ -1159,17 +1176,36 @@ const Dashboard = {
       });
     }
 
-    // Crop mix chart
+    // Dynamic Crop mix chart from actual products
     const cropCtx = document.getElementById('farmerCropMixCanvas')?.getContext('2d');
     if (cropCtx) {
       if (this.farmerCropChartInstance) this.farmerCropChartInstance.destroy();
+      const products = StorageService.getProducts();
+      let labels = [];
+      let data = [];
+      let colors = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#ec4899', '#14b8a6'];
+
+      if (products.length > 0) {
+        const counts = {};
+        products.forEach(p => {
+          const key = p.name ? p.name.split(' ')[0] : 'Produce';
+          counts[key] = (counts[key] || 0) + (parseFloat(p.availableQty) || 1);
+        });
+        labels = Object.keys(counts);
+        data = Object.values(counts);
+      } else {
+        labels = ['No Produce Listed Yet'];
+        data = [1];
+        colors = ['#cbd5e1'];
+      }
+
       this.farmerCropChartInstance = new Chart(cropCtx, {
         type: 'doughnut',
         data: {
-          labels: ['Tomatoes', 'Onions', 'Potatoes', 'Grapes'],
+          labels: labels,
           datasets: [{
-            data: [42, 28, 18, 12],
-            backgroundColor: ['#ef4444', '#f97316', '#eab308', '#8b5cf6'],
+            data: data,
+            backgroundColor: colors,
             borderWidth: 2,
             borderColor: '#ffffff'
           }]
