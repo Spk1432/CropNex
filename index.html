@@ -2776,6 +2776,33 @@
   <!-- Toast Alerts Container -->
   <div class="toast-container" id="toastContainer"></div>
 
+  <!-- Professional Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <button type="button" class="bottom-nav-item active" id="bnavMarketplace" onclick="UI.routeTo('marketplace')">
+      <i data-lucide="store"></i>
+      <span>Market</span>
+    </button>
+    <button type="button" class="bottom-nav-item" id="bnavDashboard" onclick="UI.routeToDashboardByRole()">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Dashboard</span>
+    </button>
+    <button type="button" class="bottom-nav-item" id="bnavLogistics" onclick="UI.routeTo('logistics')">
+      <i data-lucide="route"></i>
+      <span>Logistics</span>
+    </button>
+    <button type="button" class="bottom-nav-item" id="bnavTenders" onclick="UI.routeTo('tenders')">
+      <i data-lucide="file-text"></i>
+      <span>Tenders</span>
+    </button>
+    <button type="button" class="bottom-nav-item" id="bnavCart" onclick="UI.toggleCart()">
+      <div class="bnav-cart-badge-wrap">
+        <i data-lucide="shopping-bag"></i>
+        <span class="bnav-cart-badge cart-badge-count" style="display:none;">0</span>
+      </div>
+      <span>Cart</span>
+    </button>
+  </nav>
+
 
 
   <!-- Core JavaScript Modules (Zero-Build Pure Vanilla Stack) -->

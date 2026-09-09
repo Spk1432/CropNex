@@ -143,7 +143,7 @@ const UI = {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Update active nav links in sidebars
+    // Update active nav links in sidebars & mobile bottom bar
     document.querySelectorAll('[data-navigate]').forEach(link => {
       if (link.getAttribute('data-navigate') === viewName) {
         link.classList.add('active');
@@ -151,6 +151,19 @@ const UI = {
         link.classList.remove('active');
       }
     });
+
+    // Synchronize Mobile Bottom Navigation Tabs
+    const bnavItems = document.querySelectorAll('.mobile-bottom-nav .bottom-nav-item');
+    bnavItems.forEach(item => item.classList.remove('active'));
+    if (viewName === 'marketplace') {
+      document.getElementById('bnavMarketplace')?.classList.add('active');
+    } else if (viewName && (viewName.includes('dashboard') || viewName.includes('orders') || viewName.includes('products') || viewName.includes('tracking') || viewName.includes('favorites'))) {
+      document.getElementById('bnavDashboard')?.classList.add('active');
+    } else if (viewName === 'logistics') {
+      document.getElementById('bnavLogistics')?.classList.add('active');
+    } else if (viewName === 'tenders') {
+      document.getElementById('bnavTenders')?.classList.add('active');
+    }
 
     // Update top navbar based on active view and role
     this.updateNavbarVisibility(viewName);
@@ -162,6 +175,15 @@ const UI = {
     LanguageService.applyLanguage();
     if (window.lucide) {
       lucide.createIcons();
+    }
+  },
+
+  routeToDashboardByRole() {
+    const role = StorageService.getCurrentRole();
+    if (role === 'farmer') {
+      this.routeTo('farmer-dashboard');
+    } else {
+      this.routeTo('buyer-orders');
     }
   },
 

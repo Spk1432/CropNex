@@ -2637,27 +2637,56 @@ button, input, select, textarea {
 
   .product-card-footer {
     display: grid !important;
-    grid-template-columns: 1fr 1fr 1.1fr !important;
-    gap: 6px !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
     padding: 10px 12px !important;
     background: #f8fafc !important;
+    border-top: 1px solid #f1f5f9 !important;
   }
 
   .product-card-footer .btn {
-    padding: 8px 4px !important;
-    font-size: 0.74rem !important;
+    padding: 9px 8px !important;
+    font-size: 0.8rem !important;
     font-weight: 700 !important;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 4px !important;
+    gap: 5px !important;
     width: 100% !important;
+    min-height: 38px !important;
+  }
+
+  .product-card-footer .btn-prod-details {
+    grid-column: 1 / 2 !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+  }
+
+  .product-card-footer .btn-prod-cart {
+    grid-column: 2 / 3 !important;
+    background: #ecfdf5 !important;
+    border: 1px solid #a7f3d0 !important;
+    color: #065f46 !important;
+  }
+
+  .product-card-footer .btn-prod-buy {
+    grid-column: 1 / -1 !important;
+    padding: 11px 14px !important;
+    font-size: 0.88rem !important;
+    font-weight: 800 !important;
+    border-radius: 8px !important;
+    background: #059669 !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25) !important;
+    min-height: 42px !important;
   }
 
   .product-card-footer .btn i {
-    width: 13px !important;
-    height: 13px !important;
+    width: 14px !important;
+    height: 14px !important;
   }
 
   /* Farmer Dashboard on Mobile Phone */
@@ -3515,6 +3544,126 @@ body[data-view="landing"] .farmer-only {
 #imageUploadDropzone:hover {
   border-color: #059669 !important;
   background: #f0fdf4 !important;
+}
+
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION BAR & PROFESSIONAL BUTTON SYSTEM
+   ========================================================================== */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Ensure page content has bottom padding on mobile so nothing is blocked */
+  body {
+    padding-bottom: 70px !important;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 58px;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1050;
+    padding: 2px 4px;
+    padding-bottom: max(2px, env(safe-area-inset-bottom));
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 6px 2px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 8px;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav-item i {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.2;
+    transition: transform 0.15s ease;
+  }
+
+  .bottom-nav-item:active i {
+    transform: scale(0.9);
+  }
+
+  .bottom-nav-item.active {
+    color: #059669;
+    font-weight: 800;
+  }
+
+  .bottom-nav-item.active i {
+    color: #059669;
+  }
+
+  .bnav-cart-badge-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bnav-cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 0.62rem;
+    font-weight: 800;
+    min-width: 15px;
+    height: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    line-height: 1;
+    border: 1.5px solid #ffffff;
+  }
+
+  /* Universal Mobile Touch-Friendly Button Enhancements */
+  button, .btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .btn {
+    min-height: 36px;
+  }
+
+  .btn-primary, .btn-secondary, .btn-outline {
+    border-radius: 8px;
+    font-weight: 700;
+  }
+
+  /* Table Action Buttons on Mobile */
+  .data-table .btn {
+    padding: 5px 8px !important;
+    font-size: 0.72rem !important;
+    min-height: 28px !important;
+  }
 }
 
 
