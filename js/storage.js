@@ -5,7 +5,7 @@
  */
 
 const STORAGE_KEYS = {
-  PRODUCTS: 'cropnex_products_v2',
+  PRODUCTS: 'cropnex_products_v3',
   CART: 'cropnex_cart_v2',
   ORDERS: 'cropnex_orders_v2',
   FAVORITES: 'cropnex_favorites_v2',
@@ -20,7 +20,8 @@ const STORAGE_KEYS = {
 
 const StorageService = {
   init() {
-    if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
+    const existing = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
+    if (!existing || JSON.parse(existing).length === 0) {
       this.resetToDefaults();
     }
   },
