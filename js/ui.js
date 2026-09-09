@@ -165,15 +165,6 @@ const UI = {
     }
   },
 
-  routeToDashboardByRole() {
-    const role = StorageService.getCurrentRole();
-    if (role === 'farmer') {
-      this.routeTo('farmer-dashboard');
-    } else {
-      this.routeTo('buyer-orders');
-    }
-  },
-
   updateNavbarVisibility(viewName = this.currentView) {
     const role = StorageService.getCurrentRole();
     const isFarmer = role === 'farmer' || (viewName && viewName.startsWith('farmer-'));
