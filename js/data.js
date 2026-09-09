@@ -595,6 +595,62 @@ const INITIAL_ORDERS = [
       { status: 'Out for Delivery', time: '04 Sep, 11:30 AM', done: true },
       { status: 'Delivered', time: '04 Sep, 02:15 PM', done: true }
     ]
+  },
+  {
+    id: 'CNX-2026-1025',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Suresh More',
+    farmerPhone: '+91 98902 11442',
+    productName: 'Mango - Alphonso (Hapus)',
+    category: 'Fruits',
+    image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80',
+    quantity: 20,
+    unit: 'dozen',
+    pricePerUnit: 380,
+    subtotal: 7600,
+    logisticsCost: 456,
+    total: 8056,
+    date: '2026-08-28 09:15 AM',
+    status: 'Delivered',
+    paymentMethod: 'UPI / Escrow',
+    deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
+    timeline: [
+      { status: 'Order Placed', time: '28 Aug, 09:15 AM', done: true },
+      { status: 'Accepted', time: '28 Aug, 10:00 AM', done: true },
+      { status: 'Preparing', time: '28 Aug, 02:30 PM', done: true },
+      { status: 'Dispatched', time: '29 Aug, 06:00 AM', done: true },
+      { status: 'Out for Delivery', time: '29 Aug, 02:00 PM', done: true },
+      { status: 'Delivered', time: '29 Aug, 04:30 PM', done: true }
+    ]
+  },
+  {
+    id: 'CNX-2026-1018',
+    buyerName: 'Ajay Traders (Wholesale)',
+    buyerPhone: '+91 98231 44521',
+    farmerName: 'Gajendra Chavan',
+    farmerPhone: '+91 97653 22991',
+    productName: 'Turmeric - Salem Golden',
+    category: 'Spices',
+    image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80',
+    quantity: 50,
+    unit: 'kg',
+    pricePerUnit: 120,
+    subtotal: 6000,
+    logisticsCost: 360,
+    total: 6360,
+    date: '2026-08-20 03:40 PM',
+    status: 'Delivered',
+    paymentMethod: 'UPI / Escrow',
+    deliveryAddress: 'Gala No. 42, Gultekdi Market Yard, Pune - 411037',
+    timeline: [
+      { status: 'Order Placed', time: '20 Aug, 03:40 PM', done: true },
+      { status: 'Accepted', time: '20 Aug, 04:30 PM', done: true },
+      { status: 'Preparing', time: '21 Aug, 09:00 AM', done: true },
+      { status: 'Dispatched', time: '21 Aug, 05:00 PM', done: true },
+      { status: 'Out for Delivery', time: '22 Aug, 12:00 PM', done: true },
+      { status: 'Delivered', time: '22 Aug, 03:30 PM', done: true }
+    ]
   }
 ];
 

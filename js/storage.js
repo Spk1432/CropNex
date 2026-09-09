@@ -7,7 +7,7 @@
 const STORAGE_KEYS = {
   PRODUCTS: 'cropnex_products_v4',
   CART: 'cropnex_cart_v2',
-  ORDERS: 'cropnex_orders_v3',
+  ORDERS: 'cropnex_orders_v5',
   FAVORITES: 'cropnex_favorites_v2',
   MESSAGES: 'cropnex_messages_v2',
   NOTIFICATIONS: 'cropnex_notifications_v2',
