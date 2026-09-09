@@ -1007,28 +1007,68 @@
         <div class="data-table-card" style="padding: 28px;">
           <form id="farmerAddProducePageForm" onsubmit="Dashboard.handleNewProductPageSubmit(event)">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 20px;">
-              <div>
+              
+              <!-- 1. Produce Name with Typeable Input, Datalist & Interactive Quick Suggestions -->
+              <div style="grid-column: 1 / -1;">
                 <label class="block text-xs font-bold text-slate-700 mb-1">Produce Name *</label>
-                <input type="text" id="pageFormCropName" required placeholder="e.g. Tomato - Hybrid, Lokwan Wheat" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+                <div style="position:relative;">
+                  <input type="text" id="pageFormCropName" list="cropNameSuggestionsList" required placeholder="Type any crop name (e.g. Tomato, Onion, Wheat, Mango...) or select a popular crop below" oninput="Dashboard.onCropNameInput(this.value)" class="form-input w-full" style="width:100%; padding:11px 14px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.95rem; font-weight:600; color:#1e293b; background:#ffffff;">
+                  <datalist id="cropNameSuggestionsList">
+                    <option value="Tomato (Hybrid)"></option>
+                    <option value="Onion (Nashik Red)"></option>
+                    <option value="Potato (Kufri Pukhraj)"></option>
+                    <option value="Wheat (Sharbati / Lokwan)"></option>
+                    <option value="Turmeric (Salem Golden)"></option>
+                    <option value="Mango (Alphonso / Hapus)"></option>
+                    <option value="Green Chilli (G-4 Fresh)"></option>
+                    <option value="Garlic (Ooty Extra Bold)"></option>
+                    <option value="Grapes (Thompson Seedless)"></option>
+                    <option value="Sweet Corn (Sugar-75)"></option>
+                    <option value="Basmati Rice (1121 Steam)"></option>
+                    <option value="Soybean (JS-335 Yellow)"></option>
+                  </datalist>
+                </div>
+                <!-- Quick Selection Chips -->
+                <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                  <span style="font-size:0.75rem; font-weight:700; color:#64748b;">Quick Suggestions:</span>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill active" onclick="Dashboard.selectCropSuggestion('Tomato', this)">🍅 Tomato</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Onion', this)">🧅 Onion</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Potato', this)">🥔 Potato</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Wheat', this)">🌾 Wheat</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Turmeric', this)">🌿 Turmeric</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Mango', this)">🥭 Mango</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Green Chilli', this)">🌶️ Chilli</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Garlic', this)">🧄 Garlic</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Grapes', this)">🍇 Grapes</button>
+                  <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Rice', this)">🌾 Rice</button>
+                </div>
               </div>
+
+              <!-- 2. Category -->
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Category *</label>
                 <select id="pageFormCropCategory" class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
-                  <option value="Vegetables">Vegetables</option>
+                  <option value="Vegetables" selected>Vegetables</option>
                   <option value="Fruits">Fruits</option>
                   <option value="Grains">Grains</option>
                   <option value="Spices">Spices</option>
                   <option value="Oilseeds">Oilseeds</option>
                 </select>
               </div>
+
+              <!-- 3. Variety -->
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Variety / Sub-variety *</label>
-                <input type="text" id="pageFormCropVariety" required placeholder="e.g. Vaishali S-22 / Red Ruby" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+                <input type="text" id="pageFormCropVariety" required placeholder="e.g. Vaishali S-22 / Red Ruby" value="Vaishali S-22 / Red Ruby" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
               </div>
+
+              <!-- 4. Harvesting Date -->
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Harvesting Date *</label>
                 <input type="date" id="pageFormCropHarvestDate" required class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;" value="2026-09-08" onchange="Dashboard.updateFormBarcodePreview('page')">
               </div>
+
+              <!-- 5. Shelf Life -->
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Product Shelf Life / Life Span *</label>
                 <select id="pageFormCropLifeSpan" required class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
@@ -1039,6 +1079,8 @@
                   <option value="6-12 months">6-12 Months (Storable Dry Goods)</option>
                 </select>
               </div>
+
+              <!-- 6. Traceability Barcode -->
               <div style="grid-column: span 2;">
                 <label class="block text-xs font-bold text-slate-700 mb-1">Harvest Traceability Barcode & Batch Code *</label>
                 <div style="display:flex; gap:10px; align-items:center;">
@@ -1057,58 +1099,121 @@
                   </div>
                 </div>
               </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Wholesale Price (₹) *</label>
-                <input type="number" id="pageFormCropPrice" required min="1" step="0.5" placeholder="e.g. 24" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+
+              <!-- 7. Wholesale Price, Selling Unit & AI Mandi Rate Suggestion Card -->
+              <div style="grid-column: 1 / -1; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin: 4px 0;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 14px;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                      <label class="block text-xs font-bold text-slate-700">Wholesale Price (₹) *</label>
+                      <span class="text-xs text-emerald-700 font-bold" id="formPriceUnitHint">₹ / kg</span>
+                    </div>
+                    <input type="number" id="pageFormCropPrice" required min="1" step="0.5" placeholder="e.g. 26" value="26" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:1.15rem; font-weight:800; color:#065f46; background:#ffffff;">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Selling Unit *</label>
+                    <select id="pageFormCropUnit" class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;" onchange="Dashboard.onUnitChange(this.value)">
+                      <option value="kg" selected>per kg</option>
+                      <option value="quintal">per quintal (100 kg)</option>
+                      <option value="crate">per crate (20-25 kg)</option>
+                      <option value="dozen">per dozen</option>
+                      <option value="ton">per ton (1000 kg)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- AI Mandi Intelligence Box -->
+                <div style="background: #ffffff; border: 1px solid #bbf7d0; border-left: 4px solid #059669; border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;" id="aiMandiPriceCard">
+                  <div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                      <span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#065f46; background:#ecfdf5; padding:2px 8px; border-radius:4px; border:1px solid #a7f3d0; display:inline-flex; align-items:center; gap:4px;">
+                        <i data-lucide="sparkles" style="width:13px; height:13px; color:#059669;"></i> AI Price Discovery
+                      </span>
+                      <span style="font-size:0.82rem; color:#475569;" id="aiMandiBenchmarkLabel">Current APMC Spot: <strong>Nashik APMC: ₹24/kg</strong> (<span style="color:#059669; font-weight:700;">▲ +10.4%</span>)</span>
+                    </div>
+                    <div style="font-size:0.9rem; font-weight:700; color:#1e293b;" id="aiSuggestedPriceLabel">
+                      AI Suggested Listing Rate: <span style="color:#059669; font-weight:800; font-size:1.05rem;">₹26 / kg</span> <span style="font-size:0.75rem; color:#64748b; font-weight:500;">(Optimal for 84% fast wholesale clearance)</span>
+                    </div>
+                    <div style="font-size:0.75rem; color:#64748b; margin-top:2px;" id="aiPriceRationaleLabel">
+                      Monsoon supply constraint in southern hubs & high urban bulk demand support firm wholesale rates.
+                    </div>
+                  </div>
+
+                  <button type="button" class="btn btn-sm" id="btnApplyAiPrice" onclick="Dashboard.applyAiSuggestedPrice()" style="background:#059669; color:#ffffff; font-weight:800; border:none; padding:9px 16px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 6px rgba(5,150,105,0.25); cursor:pointer;">
+                    <i data-lucide="zap" style="width:15px; height:15px;"></i>
+                    <span id="btnApplyAiPriceText">Apply AI Rate (₹26/kg)</span>
+                  </button>
+                </div>
               </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Selling Unit *</label>
-                <select id="pageFormCropUnit" class="form-select w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
-                  <option value="kg">per kg</option>
-                  <option value="quintal">per quintal (100 kg)</option>
-                  <option value="crate">per crate (20-25 kg)</option>
-                  <option value="dozen">per dozen</option>
-                  <option value="ton">per ton</option>
-                </select>
-              </div>
+
+              <!-- 8. Quantities -->
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Available Quantity *</label>
-                <input type="number" id="pageFormCropQuantity" required min="1" placeholder="e.g. 1500" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+                <input type="number" id="pageFormCropQuantity" required min="1" placeholder="e.g. 1500" value="1500" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Minimum Order Quantity (MOQ) *</label>
-                <input type="number" id="pageFormCropMinOrder" required min="1" value="20" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+                <input type="number" id="pageFormCropMinOrder" required min="1" value="50" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Farm Origin / Mandi Hub *</label>
                 <input type="text" id="pageFormCropLocation" required value="Nashik, Maharashtra" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
               </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Photo URL *</label>
-                <input type="url" id="pageFormCropImageUrl" required value="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">
+
+              <!-- 9. Real Image Upload (No URL required) -->
+              <div style="grid-column: 1 / -1;">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Real Produce Photo (Upload from Mobile Camera / Gallery) *</label>
+                <input type="file" id="pageFormCropImageFile" accept="image/png, image/jpeg, image/jpg, image/webp" style="display:none;" onchange="Dashboard.handleImageUpload(event)">
+                <input type="hidden" id="pageFormCropImageData" value="">
+                <input type="hidden" id="pageFormCropFallbackImage" value="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600">
+
+                <!-- Upload Drag & Drop Area / Live Preview -->
+                <div id="imageUploadDropzone" onclick="document.getElementById('pageFormCropImageFile').click()" style="border:2px dashed #94a3b8; border-radius:12px; padding:22px 20px; text-align:center; background:#f8fafc; cursor:pointer; transition:all 0.2s ease;">
+                  <div id="imageUploadPlaceholder">
+                    <div style="width:52px; height:52px; border-radius:50%; background:#ecfdf5; color:#059669; display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px;">
+                      <i data-lucide="camera" style="width:26px; height:26px;"></i>
+                    </div>
+                    <div style="font-size:0.95rem; font-weight:800; color:#1e293b;">Click to Upload Real Produce Photo from Device</div>
+                    <div style="font-size:0.78rem; color:#64748b; margin-top:4px;">Take a direct farm-gate camera photo or select from gallery (JPG, PNG, WebP)</div>
+                    <button type="button" class="btn btn-outline btn-sm" style="margin-top:12px; pointer-events:none; background:#ffffff; font-weight:700; border-color:#cbd5e1;">
+                      <i data-lucide="upload"></i> Select Produce Image
+                    </button>
+                  </div>
+
+                  <div id="imageUploadPreviewContainer" style="display:none; align-items:center; justify-content:center; gap:20px; flex-wrap:wrap;">
+                    <div style="position:relative;">
+                      <img id="imageUploadPreviewImg" src="" alt="Uploaded Produce" style="width:190px; height:135px; object-fit:cover; border-radius:10px; border:2px solid #10b981; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                      <span style="position:absolute; top:6px; right:6px; background:#059669; color:#fff; border-radius:20px; padding:2px 8px; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; gap:3px;">
+                        <i data-lucide="check" style="width:11px; height:11px;"></i> Real Photo Ready
+                      </span>
+                    </div>
+                    <div style="text-align:left;">
+                      <div style="font-weight:800; font-size:0.9rem; color:#065f46;" id="uploadedImageFilename">harvest_photo.jpg</div>
+                      <div style="font-size:0.75rem; color:#64748b; margin-top:2px;" id="uploadedImageFilesize">Real photo verified</div>
+                      <div style="display:flex; gap:8px; margin-top:10px;">
+                        <button type="button" class="btn btn-sm btn-outline" onclick="event.stopPropagation(); document.getElementById('pageFormCropImageFile').click()" style="font-size:0.78rem; padding:5px 12px;">
+                          <i data-lucide="refresh-cw" style="width:13px; height:13px;"></i> Change Photo
+                        </button>
+                        <button type="button" class="btn btn-sm text-red-600" onclick="event.stopPropagation(); Dashboard.removeUploadedImage()" style="background:#fff1f2; border:1px solid #fecaca; font-size:0.78rem; padding:5px 12px;">
+                          <i data-lucide="trash-2" style="width:13px; height:13px;"></i> Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
 
-            <!-- Quick Image Presets -->
-            <div style="margin-bottom: 18px;">
-              <label class="block text-xs font-bold text-slate-600 mb-2">Quick Photo Selection (Click to apply):</label>
-              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600')">🍅 Tomato</button>
-                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600')">🧅 Onion</button>
-                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600')">🥔 Potato</button>
-                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600')">🌾 Wheat</button>
-                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1553279768-865429fa0078?w=600')">🥭 Mango</button>
-                <button type="button" class="btn btn-xs btn-outline" onclick="Dashboard.setProduceFormImage('https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600')">🌿 Turmeric</button>
-              </div>
-            </div>
-
+            <!-- Description -->
             <div style="margin-bottom: 20px;">
               <label class="block text-xs font-bold text-slate-700 mb-1">Harvest & Crop Quality Details</label>
-              <textarea id="pageFormCropDescription" rows="3" placeholder="Describe quality parameters, harvesting techniques, moisture level, packaging type..." class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;"></textarea>
+              <textarea id="pageFormCropDescription" rows="3" placeholder="Describe quality parameters, harvesting techniques, moisture level, packaging type..." class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem;">Freshly harvested A-Grade organic produce directly from farm gate. Uniform grading and zero chemical residue.</textarea>
             </div>
 
+            <!-- Organic Certification -->
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px; padding:12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
-              <input type="checkbox" id="pageFormCropOrganic" style="width:18px; height:18px; accent-color:#059669; cursor:pointer;">
+              <input type="checkbox" id="pageFormCropOrganic" checked style="width:18px; height:18px; accent-color:#059669; cursor:pointer;">
               <label for="pageFormCropOrganic" class="text-sm font-bold text-emerald-900 cursor-pointer" style="cursor:pointer; margin:0;">
                 Certified 100% Organic Farm Produce (PGS-India / Jaivik Bharat Verified)
               </label>

@@ -85,25 +85,354 @@ const Dashboard = {
     }, 60);
   },
 
-  initFarmerAddProductView() {
-    const form = document.getElementById('farmerAddProducePageForm');
-    if (form) form.reset();
+  // --- Produce Knowledge Base & AI Mandi Rates ---
+  cropKnowledge: {
+    'Tomato': {
+      name: 'Tomato (Hybrid)',
+      category: 'Vegetables',
+      variety: 'Vaishali S-22 / Red Ruby',
+      lifeSpan: '7-10 days',
+      mandiPriceKg: 24,
+      aiSuggestedPriceKg: 26,
+      mandi: 'Nashik APMC',
+      trend: '+10.4%',
+      unit: 'kg',
+      minOrder: 50,
+      icon: '🍅',
+      defaultImage: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600',
+      rationale: 'Monsoon supply constraint in southern hubs & high urban bulk demand support firm wholesale rates.'
+    },
+    'Onion': {
+      name: 'Onion (Nashik Red)',
+      category: 'Vegetables',
+      variety: 'Nashik Red / Garwa',
+      lifeSpan: '15-30 days',
+      mandiPriceKg: 18,
+      aiSuggestedPriceKg: 20,
+      mandi: 'Lasalgaon APMC',
+      trend: '+5.5%',
+      unit: 'kg',
+      minOrder: 100,
+      icon: '🧅',
+      defaultImage: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600',
+      rationale: 'Lasalgaon export momentum and post-harvest drying demand indicate favorable buyer bid ranges.'
+    },
+    'Potato': {
+      name: 'Potato (Kufri Pukhraj)',
+      category: 'Vegetables',
+      variety: 'Kufri Jyoti / Pukhraj',
+      lifeSpan: '15-30 days',
+      mandiPriceKg: 15,
+      aiSuggestedPriceKg: 17,
+      mandi: 'Ahmednagar Mandi',
+      trend: '+5.3%',
+      unit: 'kg',
+      minOrder: 100,
+      icon: '🥔',
+      defaultImage: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600',
+      rationale: 'Steady consumption across processing units and balanced cold store releases support price floor.'
+    },
+    'Wheat': {
+      name: 'Wheat (Sharbati / Lokwan)',
+      category: 'Grains',
+      variety: 'Lokwan Grade-1',
+      lifeSpan: '6-12 months',
+      mandiPriceKg: 28,
+      aiSuggestedPriceKg: 30,
+      mandi: 'Solapur APMC',
+      trend: '+3.2%',
+      unit: 'kg',
+      minOrder: 200,
+      icon: '🌾',
+      defaultImage: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600',
+      rationale: 'Consistent institutional procurement demand and dry grain quality command premium.'
+    },
+    'Turmeric': {
+      name: 'Turmeric (Salem Golden)',
+      category: 'Spices',
+      variety: 'Salem Golden Cured Fingers',
+      lifeSpan: '6-12 months',
+      mandiPriceKg: 120,
+      aiSuggestedPriceKg: 128,
+      mandi: 'Nanded APMC',
+      trend: '+7.1%',
+      unit: 'kg',
+      minOrder: 25,
+      icon: '🌿',
+      defaultImage: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600',
+      rationale: 'High curcumin export demand and low national ending stocks driving spicy bullish momentum.'
+    },
+    'Mango': {
+      name: 'Mango (Alphonso / Hapus)',
+      category: 'Fruits',
+      variety: 'Devgad Ratnagiri Alphonso',
+      lifeSpan: '7-10 days',
+      mandiPriceKg: 90,
+      aiSuggestedPriceKg: 98,
+      mandi: 'Vashi APMC Navi Mumbai',
+      trend: '+8.0%',
+      unit: 'kg',
+      minOrder: 20,
+      icon: '🥭',
+      defaultImage: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=600',
+      rationale: 'Premium GI-tagged Ratnagiri harvest with high metro retail distributor pull.'
+    },
+    'Green Chilli': {
+      name: 'Green Chilli (G-4 Fresh)',
+      category: 'Vegetables',
+      variety: 'G-4 Teja / Jwala',
+      lifeSpan: '7-10 days',
+      mandiPriceKg: 45,
+      aiSuggestedPriceKg: 48,
+      mandi: 'Nashik APMC',
+      trend: '+6.2%',
+      unit: 'kg',
+      minOrder: 20,
+      icon: '🌶️',
+      defaultImage: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=600',
+      rationale: 'Strong daily spice market off-take with rapid 24-hour turnaround.'
+    },
+    'Garlic': {
+      name: 'Garlic (Ooty Extra Bold)',
+      category: 'Spices',
+      variety: 'Yamuna Safed (G-1)',
+      lifeSpan: '3-6 months',
+      mandiPriceKg: 110,
+      aiSuggestedPriceKg: 120,
+      mandi: 'Mandsaur APMC',
+      trend: '+9.4%',
+      unit: 'kg',
+      minOrder: 50,
+      icon: '🧄',
+      defaultImage: 'https://images.unsplash.com/photo-1615477032219-bc1885a37c95?w=600',
+      rationale: 'Bold pod grading and excellent storage life driving wholesale bidding interest.'
+    },
+    'Grapes': {
+      name: 'Grapes (Thompson Seedless)',
+      category: 'Fruits',
+      variety: 'Thompson Export Grade',
+      lifeSpan: '7-10 days',
+      mandiPriceKg: 55,
+      aiSuggestedPriceKg: 60,
+      mandi: 'Nashik APMC',
+      trend: '+4.8%',
+      unit: 'kg',
+      minOrder: 40,
+      icon: '🍇',
+      defaultImage: 'https://images.unsplash.com/photo-1596363505729-4190a9506133?w=600',
+      rationale: 'Cold-chain dispatch readiness and uniform brix level sugar content.'
+    },
+    'Rice': {
+      name: 'Basmati Rice (1121 Steam)',
+      category: 'Grains',
+      variety: 'Pusa Basmati 1121',
+      lifeSpan: '6-12 months',
+      mandiPriceKg: 65,
+      aiSuggestedPriceKg: 72,
+      mandi: 'Karnal APMC',
+      trend: '+3.8%',
+      unit: 'kg',
+      minOrder: 100,
+      icon: '🌾',
+      defaultImage: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600',
+      rationale: 'Long grain elongation ratio and high institutional pantry ordering.'
+    }
   },
 
-  setProduceFormImage(url) {
-    const input = document.getElementById('pageFormCropImageUrl');
-    if (input) {
-      input.value = url;
-      UI.showToast('Selected crop photo applied!', 'info');
+  currentSelectedCropKey: 'Tomato',
+  currentAiSuggestedPrice: 26,
+
+  initFarmerAddProductView() {
+    this.initBarcodePreviews();
+    this.updatePriceIntelligence(this.currentSelectedCropKey || 'Tomato');
+  },
+
+  onCropNameInput(typedVal) {
+    if (!typedVal) return;
+    const lower = typedVal.toLowerCase();
+    
+    // Find matching crop key
+    const matchKey = Object.keys(this.cropKnowledge).find(key => 
+      lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)
+    );
+
+    if (matchKey) {
+      this.currentSelectedCropKey = matchKey;
+      const data = this.cropKnowledge[matchKey];
+      
+      const catSelect = document.getElementById('pageFormCropCategory');
+      if (catSelect && data.category) catSelect.value = data.category;
+      
+      const varietyInput = document.getElementById('pageFormCropVariety');
+      if (varietyInput && (!varietyInput.value || varietyInput.value.includes('Vaishali') || varietyInput.value === '')) {
+        varietyInput.value = data.variety;
+      }
+
+      const lifeSelect = document.getElementById('pageFormCropLifeSpan');
+      if (lifeSelect && data.lifeSpan) lifeSelect.value = data.lifeSpan;
+
+      const fallbackInput = document.getElementById('pageFormCropFallbackImage');
+      if (fallbackInput) fallbackInput.value = data.defaultImage;
+
+      this.updatePriceIntelligence(matchKey);
     }
+  },
+
+  selectCropSuggestion(cropKey, btnEl) {
+    this.currentSelectedCropKey = cropKey;
+    const data = this.cropKnowledge[cropKey];
+    if (!data) return;
+
+    // Highlight button
+    document.querySelectorAll('.crop-suggestion-pill').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    // Populate inputs
+    const nameInput = document.getElementById('pageFormCropName');
+    if (nameInput) nameInput.value = data.name;
+
+    const catSelect = document.getElementById('pageFormCropCategory');
+    if (catSelect) catSelect.value = data.category;
+
+    const varietyInput = document.getElementById('pageFormCropVariety');
+    if (varietyInput) varietyInput.value = data.variety;
+
+    const lifeSelect = document.getElementById('pageFormCropLifeSpan');
+    if (lifeSelect) lifeSelect.value = data.lifeSpan;
+
+    const minOrderInput = document.getElementById('pageFormCropMinOrder');
+    if (minOrderInput) minOrderInput.value = data.minOrder;
+
+    const fallbackInput = document.getElementById('pageFormCropFallbackImage');
+    if (fallbackInput) fallbackInput.value = data.defaultImage;
+
+    this.updatePriceIntelligence(cropKey);
+    UI.showToast(`Selected "${data.name}" with live APMC rates loaded.`, 'info');
+  },
+
+  onUnitChange(unit) {
+    const hint = document.getElementById('formPriceUnitHint');
+    if (hint) hint.textContent = `₹ / ${unit}`;
+    this.updatePriceIntelligence(this.currentSelectedCropKey || 'Tomato');
+  },
+
+  updatePriceIntelligence(cropKey) {
+    const data = this.cropKnowledge[cropKey] || this.cropKnowledge['Tomato'];
+    const unitSelect = document.getElementById('pageFormCropUnit');
+    const unit = unitSelect ? unitSelect.value : 'kg';
+
+    let unitMultiplier = 1;
+    let unitLabel = 'kg';
+
+    if (unit === 'quintal') {
+      unitMultiplier = 100;
+      unitLabel = 'quintal (100kg)';
+    } else if (unit === 'crate') {
+      unitMultiplier = 25;
+      unitLabel = 'crate (~25kg)';
+    } else if (unit === 'ton') {
+      unitMultiplier = 1000;
+      unitLabel = 'ton';
+    } else if (unit === 'dozen') {
+      unitMultiplier = 1.5;
+      unitLabel = 'dozen';
+    }
+
+    const currentMandiPrice = Math.round(data.mandiPriceKg * unitMultiplier);
+    const aiSuggestedPrice = Math.round(data.aiSuggestedPriceKg * unitMultiplier);
+    this.currentAiSuggestedPrice = aiSuggestedPrice;
+
+    const benchLabel = document.getElementById('aiMandiBenchmarkLabel');
+    if (benchLabel) {
+      benchLabel.innerHTML = `Current APMC Spot: <strong>${data.mandi}: ₹${currentMandiPrice.toLocaleString('en-IN')}/${unit}</strong> (<span style="color:#059669; font-weight:700;">▲ ${data.trend}</span>)`;
+    }
+
+    const sugLabel = document.getElementById('aiSuggestedPriceLabel');
+    if (sugLabel) {
+      sugLabel.innerHTML = `AI Suggested Listing Rate: <span style="color:#059669; font-weight:800; font-size:1.05rem;">₹${aiSuggestedPrice.toLocaleString('en-IN')} / ${unit}</span> <span style="font-size:0.75rem; color:#64748b; font-weight:500;">(Optimal for 84% fast clearance)</span>`;
+    }
+
+    const rationaleLabel = document.getElementById('aiPriceRationaleLabel');
+    if (rationaleLabel) {
+      rationaleLabel.textContent = data.rationale || 'Direct farm-to-buyer rate optimization based on seasonal APMC arrival momentum.';
+    }
+
+    const applyBtnText = document.getElementById('btnApplyAiPriceText');
+    if (applyBtnText) {
+      applyBtnText.textContent = `Apply AI Rate (₹${aiSuggestedPrice.toLocaleString('en-IN')}/${unit})`;
+    }
+  },
+
+  applyAiSuggestedPrice() {
+    const priceInput = document.getElementById('pageFormCropPrice');
+    if (priceInput && this.currentAiSuggestedPrice) {
+      priceInput.value = this.currentAiSuggestedPrice;
+      const unitSelect = document.getElementById('pageFormCropUnit');
+      const unit = unitSelect ? unitSelect.value : 'kg';
+      UI.showToast(`Applied AI optimal rate: ₹${this.currentAiSuggestedPrice.toLocaleString('en-IN')}/${unit}!`, 'success');
+    }
+  },
+
+  handleImageUpload(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      UI.showToast('Please select a valid image file (JPG, PNG, WebP).', 'warning');
+      return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      UI.showToast('Image file size exceeds 8MB. Please choose a smaller photo.', 'warning');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target.result;
+      const previewImg = document.getElementById('imageUploadPreviewImg');
+      const previewContainer = document.getElementById('imageUploadPreviewContainer');
+      const placeholder = document.getElementById('imageUploadPlaceholder');
+      const dataInput = document.getElementById('pageFormCropImageData');
+      const filenameEl = document.getElementById('uploadedImageFilename');
+      const filesizeEl = document.getElementById('uploadedImageFilesize');
+
+      if (previewImg) previewImg.src = dataUrl;
+      if (dataInput) dataInput.value = dataUrl;
+      if (placeholder) placeholder.style.display = 'none';
+      if (previewContainer) previewContainer.style.display = 'flex';
+      if (filenameEl) filenameEl.textContent = file.name;
+      if (filesizeEl) filesizeEl.textContent = `Real photo • ${(file.size / 1024).toFixed(1)} KB`;
+
+      if (window.lucide) lucide.createIcons();
+      UI.showToast(`Real produce photo "${file.name}" uploaded successfully!`, 'success');
+    };
+    reader.readAsDataURL(file);
+  },
+
+  removeUploadedImage() {
+    const fileInput = document.getElementById('pageFormCropImageFile');
+    const dataInput = document.getElementById('pageFormCropImageData');
+    const previewContainer = document.getElementById('imageUploadPreviewContainer');
+    const placeholder = document.getElementById('imageUploadPlaceholder');
+    const previewImg = document.getElementById('imageUploadPreviewImg');
+
+    if (fileInput) fileInput.value = '';
+    if (dataInput) dataInput.value = '';
+    if (previewImg) previewImg.src = '';
+    if (previewContainer) previewContainer.style.display = 'none';
+    if (placeholder) placeholder.style.display = 'block';
+
+    if (window.lucide) lucide.createIcons();
+    UI.showToast('Uploaded produce photo removed.', 'info');
   },
 
   handleNewProductPageSubmit(e) {
     if (e) e.preventDefault();
 
-    const name = document.getElementById('pageFormCropName').value;
+    const name = document.getElementById('pageFormCropName').value.trim();
     const category = document.getElementById('pageFormCropCategory').value;
-    const variety = document.getElementById('pageFormCropVariety').value;
+    const variety = document.getElementById('pageFormCropVariety').value.trim();
     const price = parseFloat(document.getElementById('pageFormCropPrice').value) || 0;
     const unit = document.getElementById('pageFormCropUnit').value;
     const availableQty = parseFloat(document.getElementById('pageFormCropQuantity').value) || 0;
@@ -114,7 +443,11 @@ const Dashboard = {
     const organic = document.getElementById('pageFormCropOrganic').checked;
     const location = document.getElementById('pageFormCropLocation').value || 'Nashik, Maharashtra';
     const description = document.getElementById('pageFormCropDescription').value;
-    const image = document.getElementById('pageFormCropImageUrl').value || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600';
+    
+    // Use uploaded real photo if present; otherwise use fallback preset photo
+    const uploadedData = document.getElementById('pageFormCropImageData')?.value;
+    const fallbackImage = document.getElementById('pageFormCropFallbackImage')?.value || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600';
+    const image = uploadedData || fallbackImage;
 
     const farmerProfile = StorageService.getProfile('farmer');
 
