@@ -721,7 +721,7 @@ const INITIAL_USER_PROFILES = {
     farmSize: '12.5 Acres',
     primaryCrops: 'Tomato, Onion, Grapes, Green Chilli',
     phone: '+91 94220 88712',
-    email: 'ramesh.patil@cropnex.demo',
+    email: 'ramesh.patil@cropnex.in',
     verified: true,
     kycStatus: 'Verified (Aadhaar & Land 7/12 Extract)',
     rating: 4.9,
@@ -730,6 +730,7 @@ const INITIAL_USER_PROFILES = {
     totalDeliveries: 142
   },
   buyer: {
+    username: 'ajay.traders',
     name: 'Ajay Traders (Ajay Agarwal)',
     role: 'Buyer',
     businessName: 'Ajay Wholesale & Distribution Pvt Ltd',
@@ -740,7 +741,7 @@ const INITIAL_USER_PROFILES = {
     gstin: '27AABCA1234F1Z5',
     preferredCrops: 'Tomato, Onion, Potato, Grains',
     phone: '+91 98231 44521',
-    email: 'procurement@ajaytraders.demo',
+    email: 'procurement@ajaytraders.in',
     verified: true,
     rating: 4.8,
     joinedDate: 'January 2024',

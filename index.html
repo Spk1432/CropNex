@@ -42,10 +42,10 @@
             <span class="brand-text">Crop<span>Nex</span></span>
           </div>
 
-          <!-- Dashboard button right under CropNex -->
-          <button class="btn btn-primary btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Dashboard" style="padding:4px 10px; font-size:0.78rem; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
-            <i data-lucide="layout-dashboard" style="width:14px; height:14px;"></i>
-            <span class="font-semibold" data-i18n="nav_dashboard">Dashboard</span>
+          <!-- Navigation Menu button right under CropNex -->
+          <button class="btn btn-primary btn-dashboard-toggle" id="btnSidebarToggle" onclick="UI.toggleSidebar()" title="Open Navigation Menu" style="padding:4px 10px; font-size:0.78rem; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+            <i data-lucide="menu" style="width:14px; height:14px;"></i>
+            <span class="font-semibold">Menu</span>
           </button>
         </div>
 
@@ -679,103 +679,314 @@
 
 
     <!-- ==========================================
-         VIEW 6: FARMER DASHBOARD (Overview - KPIs, Charts & Quick Actions)
+         VIEW 6: FARMER DASHBOARD (Overview - KPIs, Charts, Recent Orders & Action Hub)
          ========================================== -->
     <section class="app-view" id="view-farmer-dashboard">
       <div class="page-container" style="max-width:1360px;">
-        <div class="page-header-block mb-6" style="margin-bottom:24px;">
-          <div>
-            <span class="user-role-badge role-farmer" style="margin-bottom:8px; display:inline-block;">KISAN / PRODUCER PORTAL</span>
-            <h2 class="text-2xl font-bold text-slate-900" data-i18n="dash_farmer_title">Farmer Operations Dashboard</h2>
-            <p class="text-sm text-slate-500">Direct sales metrics, live performance analytics, and farm revenue realization.</p>
+        <!-- 1. Farmer Hero Profile Banner -->
+        <div class="farmer-hero-card">
+          <div style="position:absolute; right:-40px; top:-40px; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.06); pointer-events:none;"></div>
+          <div style="position:absolute; right:140px; bottom:-60px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none;"></div>
+
+          <div style="position:relative; z-index:1; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+            <!-- Profile Info -->
+            <div style="display:flex; align-items:center; gap:18px;">
+              <div style="width:68px; height:68px; border-radius:50%; background:#ffffff; color:#065f46; display:flex; align-items:center; justify-content:center; font-size:2rem; box-shadow:0 4px 12px rgba(0,0,0,0.15); border:3px solid #6ee7b7; flex-shrink:0;">
+                👨‍🌾
+              </div>
+              <div>
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px;">
+                  <h2 style="margin:0; font-size:1.6rem; font-weight:800; color:#ffffff; letter-spacing:-0.02em;" id="farmerHeroName">Ramesh Patil</h2>
+                  <span style="display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:800; background:#dcfce7; color:#14532d;">
+                    <i data-lucide="check-circle" style="width:13px; height:13px;"></i> Verified Producer
+                  </span>
+                  <span style="display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:700; background:rgba(255,255,255,0.2); color:#ffffff; font-family:monospace;" id="farmerHeroKisanId">
+                    KISAN-7821-MH
+                  </span>
+                </div>
+                <div style="font-size:0.88rem; color:#d1fae5; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                  <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="map-pin" style="width:14px; height:14px;"></i> <span id="farmerHeroLocation">Pimpalgaon Baswant, Nashik</span></span>
+                  <span>•</span>
+                  <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="sprout" style="width:14px; height:14px;"></i> <span id="farmerHeroFarmName">Patil Organic Farms (12.5 Acres)</span></span>
+                  <span>•</span>
+                  <span style="display:flex; align-items:center; gap:4px; color:#fde047;"><i data-lucide="award" style="width:14px; height:14px;"></i> Jaivik Bharat 100% Organic</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Header Action Buttons -->
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <button type="button" class="btn btn-sm" onclick="UI.routeTo('farmer-add-product')" style="background:#ffffff; color:#065f46; font-weight:800; border:none; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:8px 16px; border-radius:8px;">
+                <i data-lucide="plus-circle" style="width:16px; height:16px; color:#059669;"></i>
+                <span>Add Produce Listing</span>
+              </button>
+              <button type="button" class="btn btn-sm" onclick="UI.routeTo('farmer-orders')" style="background:rgba(255,255,255,0.18); color:#ffffff; font-weight:700; border:1px solid rgba(255,255,255,0.3); display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px;">
+                <i data-lucide="clipboard-list" style="width:16px; height:16px;"></i>
+                <span>Incoming Orders</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- KPI Cards -->
-        <div class="kpi-cards-grid">
-          <div class="kpi-card">
-            <span class="kpi-label" data-i18n="kpi_total_sales">Total Direct Revenue</span>
-            <div class="kpi-value text-emerald-700" id="farmerKpiSales">₹0</div>
-            <span class="text-xs text-slate-500">Real-time settlement</span>
+        <!-- 2. Live Weather & Mandi APMC Benchmark Ticker Strip -->
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:12px 18px; margin-bottom:24px; box-shadow:0 1px 3px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:36px; height:36px; border-radius:8px; background:#eff6ff; color:#2563eb; display:flex; align-items:center; justify-content:center;">
+              <i data-lucide="cloud-sun" style="width:20px; height:20px;"></i>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:#64748b; font-weight:700; text-transform:uppercase;">Nashik Agri-Weather</div>
+              <div style="font-size:0.86rem; font-weight:800; color:#1e293b;">27°C • Clear Sky • Optimal Harvesting & Dispatch Window</div>
+            </div>
           </div>
-          <div class="kpi-card" data-navigate="farmer-products" style="cursor:pointer;" title="View My Products">
-            <span class="kpi-label" data-i18n="kpi_active_products">Active Listings</span>
-            <div class="kpi-value" id="farmerKpiActiveProducts">0</div>
-            <span class="text-xs text-emerald-700 font-semibold flex items-center gap-1">Manage Listings <i data-lucide="arrow-right" style="width:12px;height:12px;"></i></span>
+
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div style="font-size:0.72rem; color:#64748b; font-weight:700; text-transform:uppercase;">Mandi Benchmarks:</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <span style="font-size:0.8rem; font-weight:700; padding:3px 8px; background:#f0fdf4; color:#15803d; border-radius:6px; border:1px solid #bbf7d0;">
+                🍅 Tomato: ₹24/kg <span style="font-size:0.7rem; color:#059669;">▲ +₹2</span>
+              </span>
+              <span style="font-size:0.8rem; font-weight:700; padding:3px 8px; background:#f0fdf4; color:#15803d; border-radius:6px; border:1px solid #bbf7d0;">
+                🧅 Onion: ₹18/kg <span style="font-size:0.7rem; color:#059669;">▲ +₹1</span>
+              </span>
+              <span style="font-size:0.8rem; font-weight:700; padding:3px 8px; background:#f8fafc; color:#334155; border-radius:6px; border:1px solid #e2e8f0;">
+                🥔 Potato: ₹15/kg
+              </span>
+              <span style="font-size:0.8rem; font-weight:700; padding:3px 8px; background:#f0fdf4; color:#15803d; border-radius:6px; border:1px solid #bbf7d0;">
+                🌾 Wheat: ₹28/kg <span style="font-size:0.7rem; color:#059669;">▲ +₹0.8</span>
+              </span>
+            </div>
           </div>
-          <div class="kpi-card" data-navigate="farmer-orders" style="cursor:pointer;" title="View Incoming Orders">
-            <span class="kpi-label" data-i18n="kpi_pending_orders">Incoming Orders</span>
-            <div class="kpi-value text-amber-600" id="farmerKpiPendingOrders">0</div>
-            <span class="text-xs text-amber-700 font-semibold flex items-center gap-1">Action Required <i data-lucide="arrow-right" style="width:12px;height:12px;"></i></span>
+        </div>
+
+        <!-- 3. Redesigned 5-KPI Performance Cards -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:16px; margin-bottom:24px;">
+          <!-- KPI 1: Gross Direct Revenue -->
+          <div class="farmer-kpi-card" style="border-left:4px solid #059669;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Direct Revenue</span>
+              <div style="width:34px; height:34px; border-radius:8px; background:#ecfdf5; color:#059669; display:flex; align-items:center; justify-content:center;">
+                <i data-lucide="indian-rupee" style="width:17px; height:17px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-emerald-700" id="farmerKpiSales" style="font-size:1.75rem; font-weight:800; margin:6px 0 2px 0;">₹0</div>
+            <div style="display:flex; align-items:center; gap:4px; font-size:0.75rem; color:#059669; font-weight:700;">
+              <span>▲ +18.4%</span> <span style="color:#64748b; font-weight:500;">vs last month</span>
+            </div>
           </div>
-          <div class="kpi-card" data-navigate="farmer-orders" style="cursor:pointer;" title="View Completed Orders">
-            <span class="kpi-label" data-i18n="kpi_completed_orders">Completed Orders</span>
-            <div class="kpi-value" id="farmerKpiCompletedOrders">0</div>
+
+          <!-- KPI 2: Net Farmer Realization (94%) -->
+          <div class="farmer-kpi-card" style="border-left:4px solid #0d9488;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Net Earnings (94%)</span>
+              <div style="width:34px; height:34px; border-radius:8px; background:#f0fdfa; color:#0d9488; display:flex; align-items:center; justify-content:center;">
+                <i data-lucide="wallet" style="width:17px; height:17px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-teal-700" id="farmerKpiEarnings" style="font-size:1.75rem; font-weight:800; color:#0f766e; margin:6px 0 2px 0;">₹0</div>
+            <span class="text-xs text-teal-700 font-semibold">Zero middleman deduction</span>
+          </div>
+
+          <!-- KPI 3: Incoming Buyer Orders -->
+          <div class="farmer-kpi-card" data-navigate="farmer-orders" style="border-left:4px solid #f59e0b; cursor:pointer;" title="View Incoming Orders">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Incoming Orders</span>
+              <div style="width:34px; height:34px; border-radius:8px; background:#fef3c7; color:#d97706; display:flex; align-items:center; justify-content:center;">
+                <i data-lucide="clipboard-list" style="width:17px; height:17px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-amber-600" id="farmerKpiPendingOrders" style="font-size:1.75rem; font-weight:800; color:#b45309; margin:6px 0 2px 0;">0</div>
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#f59e0b; box-shadow:0 0 0 2px rgba(245,158,11,0.3);"></span>
+              <span class="text-xs text-amber-700 font-bold">Action Required</span>
+            </div>
+          </div>
+
+          <!-- KPI 4: Active Listings -->
+          <div class="farmer-kpi-card" data-navigate="farmer-products" style="border-left:4px solid #3b82f6; cursor:pointer;" title="View My Products">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Active Listings</span>
+              <div style="width:34px; height:34px; border-radius:8px; background:#eff6ff; color:#2563eb; display:flex; align-items:center; justify-content:center;">
+                <i data-lucide="package" style="width:17px; height:17px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-blue-700" id="farmerKpiActiveProducts" style="font-size:1.75rem; font-weight:800; color:#1d4ed8; margin:6px 0 2px 0;">0</div>
+            <span class="text-xs text-blue-700 font-semibold">Live in Marketplace</span>
+          </div>
+
+          <!-- KPI 5: Delivered Consignments -->
+          <div class="farmer-kpi-card" data-navigate="farmer-orders" style="border-left:4px solid #6366f1; cursor:pointer;" title="View Delivered Orders">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <span class="kpi-label" style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">Delivered Orders</span>
+              <div style="width:34px; height:34px; border-radius:8px; background:#eef2ff; color:#4f46e5; display:flex; align-items:center; justify-content:center;">
+                <i data-lucide="check-check" style="width:17px; height:17px;"></i>
+              </div>
+            </div>
+            <div class="kpi-value text-indigo-700" id="farmerKpiCompletedOrders" style="font-size:1.75rem; font-weight:800; color:#4338ca; margin:6px 0 2px 0;">0</div>
             <span class="text-xs text-slate-500">Delivered directly</span>
           </div>
-          <div class="kpi-card">
-            <span class="kpi-label" data-i18n="kpi_est_earnings">Net Earnings (94%)</span>
-            <div class="kpi-value text-emerald-800" id="farmerKpiEarnings">₹0</div>
-            <span class="text-xs text-emerald-700">Zero middleman cut</span>
+        </div>
+
+        <!-- 4. Operational Quick Action Hub -->
+        <div style="margin-bottom: 24px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h4 style="margin:0; font-size:1.05rem; font-weight:800; color:#1e293b;">Operational Quick Access Hub</h4>
+            <span style="font-size:0.75rem; color:#64748b;">Direct farm management controls</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+            <!-- Action 1: Add Produce -->
+            <div class="farmer-action-card" data-navigate="farmer-add-product">
+              <div class="action-icon-bubble" style="background:#ecfdf5; color:#059669;">
+                <i data-lucide="plus-circle" style="width:22px; height:22px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:0.92rem; color:#1e293b;">Add New Produce</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">Publish batch with barcode</div>
+              </div>
+              <i data-lucide="chevron-right" style="width:16px; height:16px; color:#cbd5e1;"></i>
+            </div>
+
+            <!-- Action 2: My Products -->
+            <div class="farmer-action-card" data-navigate="farmer-products">
+              <div class="action-icon-bubble" style="background:#eef2ff; color:#4f46e5;">
+                <i data-lucide="package" style="width:22px; height:22px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:0.92rem; color:#1e293b;">My Listed Produce</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">Live inventory & pricing</div>
+              </div>
+              <i data-lucide="chevron-right" style="width:16px; height:16px; color:#cbd5e1;"></i>
+            </div>
+
+            <!-- Action 3: Incoming Orders -->
+            <div class="farmer-action-card" data-navigate="farmer-orders">
+              <div class="action-icon-bubble" style="background:#fef3c7; color:#d97706;">
+                <i data-lucide="clipboard-list" style="width:22px; height:22px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:0.92rem; color:#1e293b;">Incoming Orders</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">Dispatches & fulfillment</div>
+              </div>
+              <i data-lucide="chevron-right" style="width:16px; height:16px; color:#cbd5e1;"></i>
+            </div>
+
+            <!-- Action 4: AI Price Forecast -->
+            <div class="farmer-action-card" data-navigate="forecast">
+              <div class="action-icon-bubble" style="background:#f5f3ff; color:#7c3aed;">
+                <i data-lucide="trending-up" style="width:22px; height:22px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:0.92rem; color:#1e293b;">AI Price Forecast</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">15-Day APMC rate trends</div>
+              </div>
+              <i data-lucide="chevron-right" style="width:16px; height:16px; color:#cbd5e1;"></i>
+            </div>
+
+            <!-- Action 5: Returned Orders -->
+            <div class="farmer-action-card" data-navigate="farmer-returns" style="border-color:#fecaca; background:#fffdfd;">
+              <div class="action-icon-bubble" style="background:#fee2e2; color:#be123c;">
+                <i data-lucide="rotate-ccw" style="width:22px; height:22px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:0.92rem; color:#9f1239;">Returned Orders</div>
+                <div style="font-size:0.75rem; color:#b91c1c; margin-top:2px;">Disputes & claim inspection</div>
+              </div>
+              <i data-lucide="chevron-right" style="width:16px; height:16px; color:#fca5a5;"></i>
+            </div>
           </div>
         </div>
 
-        <!-- Quick Navigation Shortcuts Bar -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px;">
-          <div class="stat-card" data-navigate="farmer-add-product" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
-            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
-              <i data-lucide="plus-circle"></i>
-            </div>
-            <div class="font-bold text-slate-800 text-sm">Add New Produce</div>
-            <div class="text-xs text-slate-500">List crops directly to buyers</div>
-          </div>
-          <div class="stat-card" data-navigate="farmer-products" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
-            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
-              <i data-lucide="package"></i>
-            </div>
-            <div class="font-bold text-slate-800 text-sm">My Listed Produce</div>
-            <div class="text-xs text-slate-500">Manage prices & inventory</div>
-          </div>
-          <div class="stat-card" data-navigate="farmer-orders" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
-            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
-              <i data-lucide="clipboard-list"></i>
-            </div>
-            <div class="font-bold text-slate-800 text-sm">Incoming Orders</div>
-            <div class="text-xs text-slate-500">Dispatch & fulfillment status</div>
-          </div>
-          <div class="stat-card" data-navigate="forecast" style="cursor: pointer; padding: 16px; border: 1px solid #cbd5e1; transition: all 0.2s ease;">
-            <div class="stat-icon-wrap icon-primary" style="margin-bottom: 8px;">
-              <i data-lucide="trending-up"></i>
-            </div>
-            <div class="font-bold text-slate-800 text-sm">AI Price Prediction</div>
-            <div class="text-xs text-slate-500">Live APMC rate trend discovery</div>
-          </div>
-          <div class="stat-card" data-navigate="farmer-returns" style="cursor: pointer; padding: 16px; border: 1px solid #fecaca; background: #fffdfd; transition: all 0.2s ease;">
-            <div class="stat-icon-wrap" style="margin-bottom: 8px; background:#fee2e2; color:#b91c1c;">
-              <i data-lucide="rotate-ccw"></i>
-            </div>
-            <div class="font-bold text-slate-800 text-sm">Returned Orders</div>
-            <div class="text-xs text-red-600">Disputes & quality claims</div>
-          </div>
-        </div>
-
-        <!-- Charts Grid -->
-        <div class="charts-grid-2">
-          <div class="chart-card">
-            <div class="chart-card-header">
-              <h4>Monthly Revenue Realization</h4>
+        <!-- 5. Charts Grid -->
+        <div class="charts-grid-2 mb-6" style="margin-bottom:24px;">
+          <div class="chart-card" style="padding:20px; border-radius:12px;">
+            <div class="chart-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <div>
+                <h4 style="margin:0; font-size:1rem; font-weight:800; color:#1e293b;">Monthly Direct Revenue Realization</h4>
+                <span style="font-size:0.75rem; color:#64748b;">Direct farm-gate settlement growth</span>
+              </div>
+              <span class="badge badge-success" style="font-size:0.72rem; padding:3px 8px; background:#dcfce7; color:#15803d; border-radius:6px; font-weight:700;">+24% YoY</span>
             </div>
             <div class="chart-wrapper">
               <canvas id="farmerSalesChartCanvas"></canvas>
             </div>
           </div>
-          <div class="chart-card">
-            <div class="chart-card-header">
-              <h4>Crop Revenue Distribution</h4>
+          <div class="chart-card" style="padding:20px; border-radius:12px;">
+            <div class="chart-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <div>
+                <h4 style="margin:0; font-size:1rem; font-weight:800; color:#1e293b;">Crop Revenue Mix</h4>
+                <span style="font-size:0.75rem; color:#64748b;">Share of earnings by produce category</span>
+              </div>
+              <span style="font-size:0.75rem; color:#64748b; font-weight:600;">Active Season</span>
             </div>
             <div class="chart-wrapper">
               <canvas id="farmerCropMixCanvas"></canvas>
             </div>
+          </div>
+        </div>
+
+        <!-- 6. Recent Wholesale Orders on Dashboard -->
+        <div class="data-table-card" style="margin-bottom:24px;">
+          <div class="table-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h4 class="font-bold text-slate-800" style="margin:0; font-size:1.05rem;">Recent Wholesale Buyer Orders</h4>
+              <span class="text-xs text-slate-500">Live consignments placed directly with your farm</span>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="UI.routeTo('farmer-orders')" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
+              <span>View All Incoming Orders</span>
+              <i data-lucide="arrow-right" style="width:14px; height:14px;"></i>
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Wholesale Buyer</th>
+                  <th>Produce & Batch</th>
+                  <th>Quantity</th>
+                  <th>Payout Amount</th>
+                  <th>Order Date</th>
+                  <th>Fulfillment Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="farmerDashRecentOrdersBody">
+                <!-- Injected via Dashboard.renderFarmerDashboardRecentOrders() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 7. Active Inventory Snapshot -->
+        <div class="data-table-card" style="margin-bottom:24px;">
+          <div class="table-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h4 class="font-bold text-slate-800" style="margin:0; font-size:1.05rem;">Active Produce Inventory Snapshot</h4>
+              <span class="text-xs text-slate-500">Current farm batches live for wholesale procurement</span>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="UI.routeTo('farmer-add-product')" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
+              <i data-lucide="plus-circle" style="width:14px; height:14px;"></i>
+              <span>+ Add New Produce</span>
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Produce</th>
+                  <th>Category</th>
+                  <th>Harvest Date</th>
+                  <th>Life Span</th>
+                  <th>Price / Unit</th>
+                  <th>Available Stock</th>
+                  <th>Traceability Barcode</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="farmerDashInventoryBody">
+                <!-- Injected via Dashboard.renderFarmerDashboardInventorySnapshot() -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1191,11 +1402,6 @@
             <div class="kpi-value" id="buyerKpiCompletedOrders">0</div>
             <span class="text-xs text-slate-500">Verified deliveries</span>
           </div>
-          <div class="kpi-card">
-            <span class="kpi-label" data-i18n="kpi_total_spent">Total Purchases</span>
-            <div class="kpi-value text-emerald-700" id="buyerKpiTotalPurchases">₹0</div>
-            <span class="text-xs text-slate-500">Direct savings ~25%</span>
-          </div>
           <div class="kpi-card" data-navigate="buyer-favorites" style="cursor:pointer;" title="View Saved Crops">
             <span class="kpi-label" data-i18n="kpi_saved_prods">Saved Crops</span>
             <div class="kpi-value text-amber-600" id="buyerKpiSavedProducts">0</div>
@@ -1585,7 +1791,7 @@
               <input type="text" id="profileInputLocation" class="form-input w-full" style="width:100%; padding:9px; border-radius:6px; border:1px solid #cbd5e1;">
             </div>
 
-            <!-- Kisan ID (Verified) -->
+            <!-- Kisan ID (Verified) - FARMER ONLY -->
             <div id="profileKisanIdContainer">
               <label class="block text-xs font-bold text-slate-700 mb-1">Kisan ID (PM-Kisan & Agri-Stack Verified) *:</label>
               <div style="display:flex; gap:10px; align-items:center;">
@@ -1595,6 +1801,18 @@
                 </span>
               </div>
               <p class="text-xs text-slate-500 mt-1">Official national farmer identity linked with DBT and direct APMC market access.</p>
+            </div>
+
+            <!-- Username / Handle - BUYER / USER ONLY -->
+            <div id="profileUsernameContainer" style="display:none;">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Username / Buyer Handle *:</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <input type="text" id="profileInputUsername" value="ajay.traders" placeholder="e.g. ajay.traders" class="form-input font-mono" style="flex:1; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-weight:700; color:#1e293b; background:#f8fafc;">
+                <span class="badge" style="padding:7px 12px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:6px;">
+                  <i data-lucide="shield-check" style="width:14px; height:14px;"></i> Verified Buyer
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Unique account username used for wholesale bids, dispatches, and invoicing.</p>
             </div>
 
             <div class="flex justify-end items-center mt-4" style="display:flex; justify-content:flex-end; align-items:center; margin-top:16px;">

@@ -865,10 +865,14 @@ const Dashboard = {
     const totalSpent = orders.reduce((sum, o) => sum + (o.total || 0), 0);
 
     // Update KPI UI
-    document.getElementById('buyerKpiActiveOrders').textContent = activeOrders.length;
-    document.getElementById('buyerKpiCompletedOrders').textContent = completedOrders.length;
-    document.getElementById('buyerKpiTotalPurchases').textContent = `₹${totalSpent.toLocaleString('en-IN')}`;
-    document.getElementById('buyerKpiSavedProducts').textContent = favs.length;
+    const kpiActive = document.getElementById('buyerKpiActiveOrders');
+    if (kpiActive) kpiActive.textContent = activeOrders.length;
+    const kpiCompleted = document.getElementById('buyerKpiCompletedOrders');
+    if (kpiCompleted) kpiCompleted.textContent = completedOrders.length;
+    const kpiTotal = document.getElementById('buyerKpiTotalPurchases');
+    if (kpiTotal) kpiTotal.textContent = `₹${totalSpent.toLocaleString('en-IN')}`;
+    const kpiSaved = document.getElementById('buyerKpiSavedProducts');
+    if (kpiSaved) kpiSaved.textContent = favs.length;
 
     // Render Buyer Orders Table
     this.renderBuyerOrdersTable(orders);
@@ -1299,37 +1303,81 @@ const Dashboard = {
     const role = StorageService.getCurrentRole();
     const profile = StorageService.getProfile(role);
 
-    document.getElementById('profileRoleBadge').textContent = role.toUpperCase();
-    document.getElementById('profileHeaderName').textContent = profile.name || 'User Name';
-    document.getElementById('profileHeaderSub').textContent = profile.farmName || profile.businessName || 'CropNex Member';
-
-    document.getElementById('profileInputName').value = profile.name || '';
-    document.getElementById('profileInputOrg').value = profile.farmName || profile.businessName || '';
-    document.getElementById('profileInputPhone').value = profile.phone || '';
-    document.getElementById('profileInputEmail').value = profile.email || '';
-    document.getElementById('profileInputLocation').value = profile.location || `${profile.village || ''}, ${profile.district || ''}, ${profile.state || ''}`.replace(/^, /, '');
-
-    const kisanIdInput = document.getElementById('profileInputKisanId');
-    if (kisanIdInput) {
-      kisanIdInput.value = profile.kisanId || (role === 'farmer' ? 'KISAN-7821-MH' : '');
+    const badgeEl = document.getElementById('profileRoleBadge');
+    if (badgeEl) {
+      badgeEl.textContent = role.toUpperCase();
+      badgeEl.className = role === 'farmer' ? 'user-role-badge role-farmer' : 'user-role-badge role-buyer';
     }
+
+    const headerNameEl = document.getElementById('profileHeaderName');
+    if (headerNameEl) {
+      headerNameEl.textContent = profile.name || (role === 'farmer' ? 'Ramesh Patil' : 'Ajay Traders');
+    }
+
+    const headerSubEl = document.getElementById('profileHeaderSub');
+    if (headerSubEl) {
+      headerSubEl.textContent = profile.farmName || profile.businessName || (role === 'farmer' ? 'Patil Organic Farms' : 'Ajay Wholesale & Distribution');
+    }
+
+    const inputName = document.getElementById('profileInputName');
+    if (inputName) inputName.value = profile.name || '';
+
+    const inputOrg = document.getElementById('profileInputOrg');
+    if (inputOrg) inputOrg.value = profile.farmName || profile.businessName || '';
+
+    const inputPhone = document.getElementById('profileInputPhone');
+    if (inputPhone) inputPhone.value = profile.phone || '';
+
+    const inputEmail = document.getElementById('profileInputEmail');
+    if (inputEmail) inputEmail.value = profile.email || '';
+
+    const inputLoc = document.getElementById('profileInputLocation');
+    if (inputLoc) inputLoc.value = profile.location || `${profile.village || ''}, ${profile.district || ''}, ${profile.state || ''}`.replace(/^, /, '');
+
+    const kisanContainer = document.getElementById('profileKisanIdContainer');
+    const usernameContainer = document.getElementById('profileUsernameContainer');
+    const kisanIdInput = document.getElementById('profileInputKisanId');
+    const usernameInput = document.getElementById('profileInputUsername');
+
+    if (role === 'farmer') {
+      if (kisanContainer) kisanContainer.style.display = 'block';
+      if (usernameContainer) usernameContainer.style.display = 'none';
+      if (kisanIdInput) {
+        kisanIdInput.value = profile.kisanId || 'KISAN-7821-MH';
+      }
+    } else {
+      // Normal User / Buyer role: NEVER show KisanID, show Username
+      if (kisanContainer) kisanContainer.style.display = 'none';
+      if (usernameContainer) usernameContainer.style.display = 'block';
+      if (usernameInput) {
+        usernameInput.value = profile.username || 'ajay.traders';
+      }
+    }
+
+    if (window.lucide) lucide.createIcons();
   },
 
   handleProfileSave() {
     const role = StorageService.getCurrentRole();
-    const name = document.getElementById('profileInputName').value;
-    const org = document.getElementById('profileInputOrg').value;
-    const phone = document.getElementById('profileInputPhone').value;
-    const email = document.getElementById('profileInputEmail').value;
-    const location = document.getElementById('profileInputLocation').value;
+    const name = document.getElementById('profileInputName')?.value || '';
+    const org = document.getElementById('profileInputOrg')?.value || '';
+    const phone = document.getElementById('profileInputPhone')?.value || '';
+    const email = document.getElementById('profileInputEmail')?.value || '';
+    const location = document.getElementById('profileInputLocation')?.value || '';
 
     const payload = { name, phone, email, location };
-    if (role === 'farmer') payload.farmName = org;
-    if (role === 'buyer') payload.businessName = org;
-
-    const kisanIdInput = document.getElementById('profileInputKisanId');
-    if (kisanIdInput && kisanIdInput.value.trim()) {
-      payload.kisanId = kisanIdInput.value.trim().toUpperCase();
+    if (role === 'farmer') {
+      payload.farmName = org;
+      const kisanIdInput = document.getElementById('profileInputKisanId');
+      if (kisanIdInput && kisanIdInput.value.trim()) {
+        payload.kisanId = kisanIdInput.value.trim().toUpperCase();
+      }
+    } else {
+      payload.businessName = org;
+      const usernameInput = document.getElementById('profileInputUsername');
+      if (usernameInput && usernameInput.value.trim()) {
+        payload.username = usernameInput.value.trim();
+      }
     }
 
     StorageService.updateProfile(role, payload);
