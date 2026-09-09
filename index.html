@@ -997,15 +997,15 @@
           <p class="text-sm text-slate-500">List your farm-fresh crops directly to bulk buyers with transparent rates and zero middleman fee.</p>
         </div>
 
-        <div class="data-table-card" style="padding: 28px;">
+        <div class="data-table-card farmer-add-card">
           <form id="farmerAddProducePageForm" onsubmit="Dashboard.handleNewProductPageSubmit(event)">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 20px;">
+            <div class="farmer-add-grid">
               
               <!-- 1. Produce Name with Typeable Input, Datalist & Interactive Quick Suggestions -->
-              <div style="grid-column: 1 / -1;">
+              <div class="farmer-field-full">
                 <label class="block text-xs font-bold text-slate-700 mb-1">Produce Name *</label>
                 <div style="position:relative;">
-                  <input type="text" id="pageFormCropName" list="cropNameSuggestionsList" required placeholder="Type any crop name (e.g. Tomato, Onion, Wheat, Mango...) or select a popular crop below" oninput="Dashboard.onCropNameInput(this.value)" class="form-input w-full" style="width:100%; padding:11px 14px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.95rem; font-weight:600; color:#1e293b; background:#ffffff;">
+                  <input type="text" id="pageFormCropName" list="cropNameSuggestionsList" required placeholder="Type any crop name (e.g. Tomato, Onion, Wheat, Mango...) or select a popular crop below" oninput="Dashboard.onCropNameInput(this.value)" class="form-input w-full crop-name-input">
                   <datalist id="cropNameSuggestionsList">
                     <option value="Tomato (Hybrid)"></option>
                     <option value="Onion (Nashik Red)"></option>
@@ -1022,8 +1022,8 @@
                   </datalist>
                 </div>
                 <!-- Quick Selection Chips -->
-                <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-                  <span style="font-size:0.75rem; font-weight:700; color:#64748b;">Quick Suggestions:</span>
+                <div class="crop-suggestions-wrap">
+                  <span class="crop-suggestions-label">Quick Suggestions:</span>
                   <button type="button" class="btn btn-xs crop-suggestion-pill active" onclick="Dashboard.selectCropSuggestion('Tomato', this)">🍅 Tomato</button>
                   <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Onion', this)">🧅 Onion</button>
                   <button type="button" class="btn btn-xs crop-suggestion-pill" onclick="Dashboard.selectCropSuggestion('Potato', this)">🥔 Potato</button>
@@ -1074,19 +1074,19 @@
               </div>
 
               <!-- 6. Traceability Barcode -->
-              <div style="grid-column: span 2;">
+              <div class="farmer-field-full">
                 <label class="block text-xs font-bold text-slate-700 mb-1">Harvest Traceability Barcode & Batch Code *</label>
-                <div style="display:flex; gap:10px; align-items:center;">
-                  <input type="text" id="pageFormCropBarcode" required readonly value="CRN-HVT-9821" class="form-input font-mono" style="flex:1; padding:9px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.9rem; font-weight:700; background:#f8fafc; color:#0f172a;">
-                  <button type="button" class="btn btn-outline btn-sm" onclick="Dashboard.generateProduceBarcode('page')" style="white-space:nowrap; display:inline-flex; align-items:center; gap:6px;">
-                    <i data-lucide="refresh-cw" style="width:14px; height:14px;"></i> Generate New Barcode
+                <div class="barcode-input-row">
+                  <input type="text" id="pageFormCropBarcode" required readonly value="CRN-HVT-9821" class="form-input font-mono barcode-input-field">
+                  <button type="button" class="btn btn-outline btn-sm barcode-gen-btn" onclick="Dashboard.generateProduceBarcode('page')">
+                    <i data-lucide="refresh-cw"></i> <span>Generate New Barcode</span>
                   </button>
                 </div>
-                <div id="pageBarcodeSvgWrap" style="margin-top:10px; padding:12px 16px; background:#fff; border:1px solid #e2e8f0; border-radius:8px; display:flex; align-items:center; justify-content:space-between; gap:16px;">
-                  <div id="pageBarcodeSvgContainer" style="flex:1; min-height:60px;">
+                <div id="pageBarcodeSvgWrap" class="barcode-svg-wrap">
+                  <div id="pageBarcodeSvgContainer" class="barcode-svg-container">
                     <!-- Injected SVG barcode via Dashboard.initBarcodePreviews() -->
                   </div>
-                  <div style="font-size:0.75rem; color:#64748b; line-height:1.4; text-align:right;">
+                  <div class="barcode-info-text">
                     <strong style="color:#059669; display:block;">✓ Scannable Farm Barcode</strong>
                     Encodes harvest date, shelf life & farm origin for buyer verification.
                   </div>
@@ -1094,14 +1094,14 @@
               </div>
 
               <!-- 7. Wholesale Price, Selling Unit & AI Mandi Rate Suggestion Card -->
-              <div style="grid-column: 1 / -1; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin: 4px 0;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 14px;">
+              <div class="farmer-field-full farmer-price-section">
+                <div class="farmer-price-inputs-grid">
                   <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                       <label class="block text-xs font-bold text-slate-700">Wholesale Price (₹) *</label>
                       <span class="text-xs text-emerald-700 font-bold" id="formPriceUnitHint">₹ / kg</span>
                     </div>
-                    <input type="number" id="pageFormCropPrice" required min="1" step="0.5" placeholder="e.g. 26" value="26" class="form-input w-full" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; font-size:1.15rem; font-weight:800; color:#065f46; background:#ffffff;">
+                    <input type="number" id="pageFormCropPrice" required min="1" step="0.5" placeholder="e.g. 26" value="26" class="form-input w-full price-input-highlight">
                   </div>
                   <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Selling Unit *</label>
@@ -1116,11 +1116,11 @@
                 </div>
 
                 <!-- AI Mandi Intelligence Box -->
-                <div style="background: #ffffff; border: 1px solid #bbf7d0; border-left: 4px solid #059669; border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;" id="aiMandiPriceCard">
-                  <div>
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
-                      <span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#065f46; background:#ecfdf5; padding:2px 8px; border-radius:4px; border:1px solid #a7f3d0; display:inline-flex; align-items:center; gap:4px;">
-                        <i data-lucide="sparkles" style="width:13px; height:13px; color:#059669;"></i> AI Price Discovery
+                <div class="ai-mandi-card" id="aiMandiPriceCard">
+                  <div class="ai-mandi-info">
+                    <div class="ai-mandi-tagline">
+                      <span class="ai-badge-pill">
+                        <i data-lucide="sparkles"></i> AI Price Discovery
                       </span>
                       <span style="font-size:0.82rem; color:#475569;" id="aiMandiBenchmarkLabel">Current APMC Spot: <strong>Nashik APMC: ₹24/kg</strong> (<span style="color:#059669; font-weight:700;">▲ +10.4%</span>)</span>
                     </div>
@@ -1132,8 +1132,8 @@
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-sm" id="btnApplyAiPrice" onclick="Dashboard.applyAiSuggestedPrice()" style="background:#059669; color:#ffffff; font-weight:800; border:none; padding:9px 16px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 6px rgba(5,150,105,0.25); cursor:pointer;">
-                    <i data-lucide="zap" style="width:15px; height:15px;"></i>
+                  <button type="button" class="btn btn-sm btn-apply-ai" id="btnApplyAiPrice" onclick="Dashboard.applyAiSuggestedPrice()">
+                    <i data-lucide="zap"></i>
                     <span id="btnApplyAiPriceText">Apply AI Rate (₹26/kg)</span>
                   </button>
                 </div>
@@ -1154,16 +1154,16 @@
               </div>
 
               <!-- 9. Real Image Upload (No URL required) -->
-              <div style="grid-column: 1 / -1;">
+              <div class="farmer-field-full">
                 <label class="block text-xs font-bold text-slate-700 mb-1">Real Produce Photo (Upload from Mobile Camera / Gallery) *</label>
                 <input type="file" id="pageFormCropImageFile" accept="image/png, image/jpeg, image/jpg, image/webp" style="display:none;" onchange="Dashboard.handleImageUpload(event)">
                 <input type="hidden" id="pageFormCropImageData" value="">
                 <input type="hidden" id="pageFormCropFallbackImage" value="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600">
 
                 <!-- Upload Drag & Drop Area / Live Preview -->
-                <div id="imageUploadDropzone" onclick="document.getElementById('pageFormCropImageFile').click()" style="border:2px dashed #94a3b8; border-radius:12px; padding:22px 20px; text-align:center; background:#f8fafc; cursor:pointer; transition:all 0.2s ease;">
+                <div id="imageUploadDropzone" class="farmer-image-dropzone" onclick="document.getElementById('pageFormCropImageFile').click()">
                   <div id="imageUploadPlaceholder">
-                    <div style="width:52px; height:52px; border-radius:50%; background:#ecfdf5; color:#059669; display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px;">
+                    <div class="upload-icon-circle">
                       <i data-lucide="camera" style="width:26px; height:26px;"></i>
                     </div>
                     <div style="font-size:0.95rem; font-weight:800; color:#1e293b;">Click to Upload Real Produce Photo from Device</div>
@@ -1173,21 +1173,21 @@
                     </button>
                   </div>
 
-                  <div id="imageUploadPreviewContainer" style="display:none; align-items:center; justify-content:center; gap:20px; flex-wrap:wrap;">
-                    <div style="position:relative;">
-                      <img id="imageUploadPreviewImg" src="" alt="Uploaded Produce" style="width:190px; height:135px; object-fit:cover; border-radius:10px; border:2px solid #10b981; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-                      <span style="position:absolute; top:6px; right:6px; background:#059669; color:#fff; border-radius:20px; padding:2px 8px; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; gap:3px;">
+                  <div id="imageUploadPreviewContainer" class="farmer-image-preview-wrap" style="display:none;">
+                    <div style="position:relative; width:max-content; max-width:100%;">
+                      <img id="imageUploadPreviewImg" src="" alt="Uploaded Produce" class="preview-img-box">
+                      <span class="preview-verified-badge">
                         <i data-lucide="check" style="width:11px; height:11px;"></i> Real Photo Ready
                       </span>
                     </div>
-                    <div style="text-align:left;">
+                    <div class="preview-info-box">
                       <div style="font-weight:800; font-size:0.9rem; color:#065f46;" id="uploadedImageFilename">harvest_photo.jpg</div>
                       <div style="font-size:0.75rem; color:#64748b; margin-top:2px;" id="uploadedImageFilesize">Real photo verified</div>
-                      <div style="display:flex; gap:8px; margin-top:10px;">
-                        <button type="button" class="btn btn-sm btn-outline" onclick="event.stopPropagation(); document.getElementById('pageFormCropImageFile').click()" style="font-size:0.78rem; padding:5px 12px;">
+                      <div class="preview-actions-row">
+                        <button type="button" class="btn btn-sm btn-outline" onclick="event.stopPropagation(); document.getElementById('pageFormCropImageFile').click()" style="font-size:0.78rem; padding:6px 12px;">
                           <i data-lucide="refresh-cw" style="width:13px; height:13px;"></i> Change Photo
                         </button>
-                        <button type="button" class="btn btn-sm text-red-600" onclick="event.stopPropagation(); Dashboard.removeUploadedImage()" style="background:#fff1f2; border:1px solid #fecaca; font-size:0.78rem; padding:5px 12px;">
+                        <button type="button" class="btn btn-sm text-red-600" onclick="event.stopPropagation(); Dashboard.removeUploadedImage()" style="background:#fff1f2; border:1px solid #fecaca; font-size:0.78rem; padding:6px 12px;">
                           <i data-lucide="trash-2" style="width:13px; height:13px;"></i> Remove
                         </button>
                       </div>
@@ -1205,16 +1205,16 @@
             </div>
 
             <!-- Organic Certification -->
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px; padding:12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
-              <input type="checkbox" id="pageFormCropOrganic" checked style="width:18px; height:18px; accent-color:#059669; cursor:pointer;">
+            <div class="farmer-organic-badge-wrap">
+              <input type="checkbox" id="pageFormCropOrganic" checked style="width:18px; height:18px; accent-color:#059669; cursor:pointer; flex-shrink:0;">
               <label for="pageFormCropOrganic" class="text-sm font-bold text-emerald-900 cursor-pointer" style="cursor:pointer; margin:0;">
                 Certified 100% Organic Farm Produce (PGS-India / Jaivik Bharat Verified)
               </label>
             </div>
 
-            <div style="display:flex; justify-content:flex-end; gap:12px;">
+            <div class="farmer-form-footer">
               <button type="button" class="btn btn-outline" onclick="UI.routeTo('farmer-products')">Cancel</button>
-              <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+              <button type="submit" class="btn btn-primary btn-publish-produce">
                 <i data-lucide="check-circle-2"></i> Publish Listing to Marketplace
               </button>
             </div>

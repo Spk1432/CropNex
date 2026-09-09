@@ -1575,6 +1575,293 @@ button, input, select, textarea {
   border-bottom: 1px solid var(--slate-100);
 }
 
+/* Farmer Add Produce Form Styling */
+.farmer-add-card {
+  padding: 28px;
+}
+
+.farmer-add-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.farmer-field-full {
+  grid-column: 1 / -1;
+}
+
+.crop-name-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+  background: #ffffff;
+}
+
+.crop-suggestions-wrap {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.crop-suggestions-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.crop-suggestion-pill {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.crop-suggestion-pill:hover,
+.crop-suggestion-pill.active {
+  background: #ecfdf5;
+  border-color: #10b981;
+  color: #065f46;
+  font-weight: 700;
+}
+
+.barcode-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.barcode-input-field {
+  flex: 1;
+  padding: 9px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.barcode-gen-btn {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.barcode-svg-wrap {
+  margin-top: 10px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.barcode-svg-container {
+  flex: 1;
+  min-height: 60px;
+  overflow-x: auto;
+}
+
+.barcode-info-text {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.farmer-price-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  margin: 4px 0;
+}
+
+.farmer-price-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.price-input-highlight {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #065f46;
+  background: #ffffff;
+}
+
+.ai-mandi-card {
+  background: #ffffff;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #059669;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.ai-mandi-info {
+  flex: 1;
+  min-width: 240px;
+}
+
+.ai-mandi-tagline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.ai-badge-pill {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #065f46;
+  background: #ecfdf5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #a7f3d0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-apply-ai {
+  background: #059669;
+  color: #ffffff;
+  font-weight: 800;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+  cursor: pointer;
+}
+
+.btn-apply-ai:hover {
+  background: #047857;
+}
+
+.farmer-image-dropzone {
+  border: 2px dashed #94a3b8;
+  border-radius: 12px;
+  padding: 22px 20px;
+  text-align: center;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.farmer-image-dropzone:hover {
+  border-color: #059669;
+  background: #f0fdf4;
+}
+
+.upload-icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: #059669;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.farmer-image-preview-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.preview-img-box {
+  width: 190px;
+  height: 135px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #10b981;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.preview-verified-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #059669;
+  color: #fff;
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.preview-info-box {
+  text-align: left;
+}
+
+.preview-actions-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.farmer-organic-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+}
+
+.farmer-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-publish-produce {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
 /* ==========================================================================
    TENDER AGGREGATOR & MESSAGES
    ========================================================================== */
@@ -2242,6 +2529,27 @@ button, input, select, textarea {
     justify-content: center !important;
   }
 
+  /* Logistics Tablet */
+  .logistics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .map-card {
+    height: 340px !important;
+  }
+
+  #logisticsMapContainer {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 340px !important;
+  }
+
+  /* Farmer Add Produce Tablet */
+  .farmer-add-card {
+    padding: 20px 16px !important;
+  }
+
   /* Modals */
   .modal-window {
     width: 95%;
@@ -2547,12 +2855,147 @@ button, input, select, textarea {
   }
 
   /* Logistics Map Mobile */
+  .logistics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .map-card {
+    height: 280px !important;
+    border-radius: 12px !important;
+  }
+
   #logisticsMapContainer {
-    height: 240px !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 280px !important;
   }
 
   .logistics-stats-card {
+    padding: 16px 14px !important;
+    border-radius: 12px !important;
+  }
+
+  .stat-row-item {
+    padding: 10px 0 !important;
+    font-size: 0.82rem !important;
+  }
+
+  #logisticsOptimizeBtn {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    font-size: 0.92rem !important;
+    justify-content: center !important;
+  }
+
+  /* Farmer Add Produce Page Mobile */
+  .farmer-add-card {
     padding: 14px 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .farmer-add-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .crop-suggestions-wrap {
+    gap: 6px !important;
+    margin-top: 6px !important;
+  }
+
+  .crop-suggestion-pill {
+    padding: 4px 8px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .barcode-input-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .barcode-gen-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 9px 12px !important;
+  }
+
+  .barcode-svg-wrap {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    padding: 12px 10px !important;
+  }
+
+  .barcode-info-text {
+    text-align: left !important;
+    font-size: 0.72rem !important;
+  }
+
+  .farmer-price-section {
+    padding: 12px 10px !important;
+    border-radius: 10px !important;
+  }
+
+  .farmer-price-inputs-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .ai-mandi-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 12px 10px !important;
+    gap: 12px !important;
+  }
+
+  .btn-apply-ai {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 10px 14px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .farmer-image-dropzone {
+    padding: 16px 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .farmer-image-preview-wrap {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+
+  .preview-info-box {
+    text-align: center !important;
+  }
+
+  .preview-actions-row {
+    justify-content: center !important;
+    width: 100% !important;
+  }
+
+  .farmer-organic-badge-wrap {
+    padding: 10px 12px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .farmer-form-footer {
+    flex-direction: column-reverse !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .farmer-form-footer .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 11px 14px !important;
+    font-size: 0.9rem !important;
   }
 
   /* Toast Notifications Mobile */
