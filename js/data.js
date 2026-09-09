@@ -272,7 +272,7 @@ const INITIAL_PRODUCTS = [
     rating: 4.7,
     reviewsCount: 27,
     verified: true,
-    image: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&w=600&q=80',
+    image: 'assets/soybean-yellow.jpg',
     description: 'Cleaned and graded yellow soybean with 39% protein and 19.5% oil yield. Ideal for oil extraction processing units, tofu production, and cattle feed formulation.'
   }
 ];
