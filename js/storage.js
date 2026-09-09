@@ -67,11 +67,10 @@ const StorageService = {
     window.dispatchEvent(new CustomEvent('cropnex:authChanged', { detail: null }));
   },
 
-  // --- Role & Profile ---
   getCurrentRole() {
     const auth = this.getAuthState();
     if (auth && auth.role) return auth.role;
-    return localStorage.getItem(STORAGE_KEYS.ROLE) || 'buyer';
+    return 'buyer'; // Always default to buyer for unauthenticated visitors and demo
   },
 
   setCurrentRole(role) {

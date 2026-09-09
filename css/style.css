@@ -2726,6 +2726,17 @@ body:has(#view-buyer-favorites.active) #navHomeLink {
   display: none !important;
 }
 
+/* Guard: Farmer-only elements strictly hidden on buyer and demo pages */
+body:not(.is-farmer) .farmer-only,
+body[data-view="marketplace"] .farmer-only,
+body[data-view="buyer-dashboard"] .farmer-only,
+body[data-view="buyer-orders"] .farmer-only,
+body[data-view="buyer-tracking"] .farmer-only,
+body[data-view="buyer-favorites"] .farmer-only,
+body[data-view="landing"] .farmer-only {
+  display: none !important;
+}
+
 /* ==========================================================================
    Farmer Returned Orders & Claims Management Styling
    ========================================================================== */
