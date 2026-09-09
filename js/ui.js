@@ -96,13 +96,26 @@ const UI = {
   },
 
   routeTo(viewName, updateHash = true) {
-    // Enforce farmer restriction: Farmers cannot access marketplace
     const role = StorageService.getCurrentRole();
     const isAuth = StorageService.isAuthenticated();
 
+    // 1. Farmer restrictions: Cannot access buyer marketplace directly
     if (isAuth && role === 'farmer' && viewName === 'marketplace') {
-      this.showToast('Farmers manage crops and orders in Farmer Portal.', 'info');
+      this.showToast('Farmers manage produce listings and dispatches in Farmer Portal.', 'info');
       viewName = 'farmer-dashboard';
+    }
+
+    // 2. Buyer / Visitor restrictions: Cannot access Farmer Add Product or Farmer Portal
+    if (viewName && viewName.startsWith('farmer-')) {
+      if (!isAuth) {
+        this.showToast('Farmer login with Kisan ID is required to add produce.', 'warning');
+        this.openLoginModal('farmer');
+        return;
+      }
+      if (role !== 'farmer') {
+        this.showToast('Only verified farmers can add produce. Buyers can browse and purchase produce on Marketplace.', 'info');
+        viewName = 'marketplace';
+      }
     }
 
     this.currentView = viewName;
