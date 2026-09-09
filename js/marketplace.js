@@ -296,40 +296,21 @@ const Marketplace = {
 
     if (products.length === 0) {
       const allProducts = StorageService.getProducts();
-      const role = StorageService.getCurrentRole();
-      const isAuth = StorageService.isAuthenticated();
 
       if (allProducts.length === 0) {
-        if (isAuth && role === 'farmer') {
-          grid.innerHTML = `
-            <div class="empty-state col-span-full" style="grid-column: 1 / -1; padding: 48px 20px; text-align: center; background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 16px; margin: 20px 0;">
-              <div style="font-size: 3rem; margin-bottom: 12px;">🌾</div>
-              <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin-bottom: 8px;">No Produce Listed in Marketplace Yet</h3>
-              <p style="color: #64748b; font-size: 0.9rem; max-width: 520px; margin: 0 auto 20px auto;">
-                Direct farm listings will appear here in real-time as you publish batches. Click below to add your fresh harvest listing!
-              </p>
-              <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                <button class="btn btn-primary" onclick="UI.routeTo('farmer-add-product')" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
-                  <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> + Add New Produce
-                </button>
-              </div>
-            </div>
-          `;
-        } else {
-          // BUYER / VISITOR: Strictly buying and browsing
-          grid.innerHTML = `
-            <div class="empty-state col-span-full" style="grid-column: 1 / -1; padding: 48px 20px; text-align: center; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 16px; margin: 20px 0;">
-              <div style="font-size: 3rem; margin-bottom: 12px;">🌱</div>
-              <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin-bottom: 8px;">Fresh Harvest Listings Updating Soon</h3>
-              <p style="color: #64748b; font-size: 0.9rem; max-width: 520px; margin: 0 auto 20px auto;">
-                Verified farmers are preparing today's farm-gate harvest consignments. Fresh batches of vegetables, fruits, and grains will be available shortly at live mandi rates.
-              </p>
-              <button class="btn btn-outline btn-sm" onclick="Marketplace.renderProducts()" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
-                <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Refresh Marketplace
-              </button>
-            </div>
-          `;
-        }
+        // Clean Buyer & Demo Visitor Empty State - NO Add Product button in Marketplace
+        grid.innerHTML = `
+          <div class="empty-state col-span-full" style="grid-column: 1 / -1; padding: 48px 20px; text-align: center; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 16px; margin: 20px 0;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">🌱</div>
+            <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin-bottom: 8px;">Fresh Harvest Listings Updating Soon</h3>
+            <p style="color: #64748b; font-size: 0.9rem; max-width: 520px; margin: 0 auto 20px auto;">
+              Verified farmers are preparing today's farm-gate harvest consignments. Fresh batches of vegetables, fruits, and grains will be available shortly at live mandi rates.
+            </p>
+            <button class="btn btn-outline btn-sm" onclick="Marketplace.renderProducts()" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+              <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Refresh Marketplace
+            </button>
+          </div>
+        `;
       } else {
         grid.innerHTML = `
           <div class="empty-state col-span-full" style="grid-column: 1 / -1; padding: 40px 20px; text-align: center;">
