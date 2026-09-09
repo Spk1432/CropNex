@@ -2338,9 +2338,9 @@ button, input, select, textarea {
 
   .brand-dashboard-wrapper {
     display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 8px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
   }
 
   .brand-logo-img {
@@ -3040,9 +3040,9 @@ button, input, select, textarea {
 
 .brand-dashboard-wrapper {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .btn-dashboard-toggle {
@@ -3286,7 +3286,48 @@ button, input, select, textarea {
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
 }
 
-/* Header Search Focus & Transitions */
+/* Mobile & Tablet Responsiveness for Header */
+@media (max-width: 992px) {
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-center-col {
+    order: 3;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 6px 0 0 0 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    padding: 8px 12px;
+  }
+  .brand-text {
+    font-size: 1.2rem;
+  }
+  .brand-logo-img {
+    width: 32px;
+    height: 32px;
+  }
+  .btn-dashboard-toggle {
+    padding: 3px 8px !important;
+    font-size: 0.72rem !important;
+  }
+  .nav-center-menu .nav-link span {
+    display: none;
+  }
+  .nav-return-btn span {
+    display: none;
+  }
+  .nav-top-filter-btn span:first-of-type {
+    display: none;
+  }
+  .nav-top-filter-btn {
+    padding: 5px 8px !important;
+  }
+}
 
 /* Guaranteed role-based Navbar display: Farmer Page Restrictions */
 body.is-farmer #navMarketplaceLink,
