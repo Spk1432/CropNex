@@ -2316,7 +2316,8 @@ button, input, select, textarea {
   .app-header {
     padding: 8px 12px;
     background: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -2346,19 +2347,51 @@ button, input, select, textarea {
   .brand-logo-img {
     width: 32px !important;
     height: 32px !important;
+    border-radius: 8px !important;
+    object-fit: contain !important;
   }
 
   .brand-text {
-    font-size: 1.2rem !important;
+    font-size: 1.18rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
   }
 
   .btn-dashboard-toggle {
-    padding: 5px 9px !important;
-    font-size: 0.76rem !important;
-    border-radius: 6px !important;
+    height: 36px !important;
+    padding: 0 10px !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 4px !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    background: #ecfdf5 !important;
+    border: 1px solid #a7f3d0 !important;
+    color: #065f46 !important;
+    cursor: pointer !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  }
+
+  .btn-dashboard-toggle:hover {
+    background: #d1fae5 !important;
+    border-color: #059669 !important;
+  }
+
+  .nav-top-filter-btn {
+    height: 36px !important;
+    padding: 0 10px !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    background: #f0fdf4 !important;
+    border: 1px solid #10b981 !important;
+    color: #065f46 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
   }
 
   .header-center-col {
@@ -2381,9 +2414,20 @@ button, input, select, textarea {
 
   .nav-search-bar input {
     width: 100% !important;
-    padding: 8px 32px 8px 34px !important;
-    font-size: 0.84rem !important;
+    height: 38px !important;
+    padding: 0 32px 0 36px !important;
+    font-size: 0.85rem !important;
     border-radius: 20px !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    outline: none !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .nav-search-bar input:focus {
+    background: #ffffff !important;
+    border-color: #059669 !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12) !important;
   }
 
   .header-actions {
@@ -2393,29 +2437,93 @@ button, input, select, textarea {
   }
 
   .lang-select-box {
-    padding: 5px 8px !important;
-    font-size: 0.75rem !important;
-    border-radius: 6px !important;
+    height: 36px !important;
+    padding: 0 8px !important;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
     border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    color: #1e293b !important;
+    cursor: pointer !important;
+    outline: none !important;
   }
 
   .cart-icon-btn {
-    width: 34px !important;
-    height: 34px !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
     padding: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     border-radius: 8px !important;
     background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+    cursor: pointer !important;
+    position: relative !important;
+    transition: all 0.15s ease !important;
   }
 
-  .auth-btn-login,
+  .cart-icon-btn:hover {
+    background: #ecfdf5 !important;
+    border-color: #10b981 !important;
+    color: #059669 !important;
+  }
+
+  .cart-badge-count {
+    position: absolute !important;
+    top: -5px !important;
+    right: -5px !important;
+    background: #ef4444 !important;
+    color: #ffffff !important;
+    font-size: 0.62rem !important;
+    font-weight: 800 !important;
+    min-width: 17px !important;
+    height: 17px !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 4px !important;
+    border: 1.5px solid #ffffff !important;
+    line-height: 1 !important;
+  }
+
+  .auth-btn-login {
+    height: 36px !important;
+    padding: 0 12px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    background: #059669 !important;
+    color: #ffffff !important;
+    border: 1px solid #059669 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25) !important;
+    cursor: pointer !important;
+  }
+
+  .auth-btn-login:hover {
+    background: #047857 !important;
+  }
+
   .auth-btn-profile {
-    padding: 5px 10px !important;
+    height: 36px !important;
+    padding: 0 10px !important;
     font-size: 0.78rem !important;
-    border-radius: 6px !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    background: #ecfdf5 !important;
+    color: #065f46 !important;
+    border: 1px solid #10b981 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    cursor: pointer !important;
   }
 
   /* Marketplace on Tablet & Mobile */
@@ -2564,7 +2672,7 @@ button, input, select, textarea {
 /* 3. Mobile Phones (< 600px) */
 @media (max-width: 600px) {
   .app-header {
-    padding: 6px 10px !important;
+    padding: 7px 10px !important;
   }
 
   .header-inner {
@@ -2572,38 +2680,69 @@ button, input, select, textarea {
   }
 
   .brand-text {
-    font-size: 1.12rem !important;
+    font-size: 1.15rem !important;
   }
 
   .brand-logo-img {
-    width: 28px !important;
-    height: 28px !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 6px !important;
   }
 
   .btn-dashboard-toggle {
-    padding: 4px 7px !important;
-    font-size: 0.72rem !important;
+    height: 34px !important;
+    padding: 0 8px !important;
+    font-size: 0.75rem !important;
+    gap: 4px !important;
+    border-radius: 7px !important;
+  }
+
+  .nav-top-filter-btn {
+    height: 34px !important;
+    padding: 0 8px !important;
+    font-size: 0.75rem !important;
+    border-radius: 7px !important;
   }
 
   .header-actions {
-    gap: 4px !important;
+    gap: 5px !important;
   }
 
   .lang-select-box {
-    padding: 4px 6px !important;
-    font-size: 0.72rem !important;
-    max-width: 72px !important;
+    height: 34px !important;
+    padding: 0 6px !important;
+    font-size: 0.74rem !important;
+    max-width: 68px !important;
+    border-radius: 7px !important;
   }
 
   .cart-icon-btn {
-    width: 32px !important;
-    height: 32px !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    border-radius: 7px !important;
   }
 
-  .auth-btn-login,
+  .auth-btn-login {
+    height: 34px !important;
+    padding: 0 9px !important;
+    font-size: 0.76rem !important;
+    border-radius: 7px !important;
+    gap: 4px !important;
+  }
+
   .auth-btn-profile {
-    padding: 4px 8px !important;
-    font-size: 0.74rem !important;
+    height: 34px !important;
+    padding: 0 8px !important;
+    font-size: 0.76rem !important;
+    border-radius: 7px !important;
+    gap: 4px !important;
+  }
+
+  .nav-search-bar input {
+    height: 36px !important;
+    padding: 0 30px 0 34px !important;
+    font-size: 0.82rem !important;
   }
 
   .products-grid {
@@ -3042,24 +3181,62 @@ button, input, select, textarea {
 
 /* 4. Very Small Phones (< 380px) */
 @media (max-width: 380px) {
-  .product-card-footer {
-    grid-template-columns: 1fr 1fr !important;
+  .app-header {
+    padding: 6px 8px !important;
   }
 
-  .product-card-footer .btn-prod-buy {
-    grid-column: span 2 !important;
+  .header-inner {
+    gap: 4px !important;
   }
 
   .brand-text {
-    font-size: 1rem !important;
+    font-size: 1.05rem !important;
+  }
+
+  .brand-logo-img {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .btn-dashboard-toggle {
+    height: 32px !important;
+    padding: 0 6px !important;
   }
 
   .btn-dashboard-toggle span {
     display: none;
   }
 
-  .btn-dashboard-toggle {
-    padding: 5px !important;
+  .header-actions {
+    gap: 4px !important;
+  }
+
+  .lang-select-box {
+    height: 32px !important;
+    padding: 0 4px !important;
+    font-size: 0.7rem !important;
+    max-width: 58px !important;
+  }
+
+  .cart-icon-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+  }
+
+  .auth-btn-login,
+  .auth-btn-profile {
+    height: 32px !important;
+    padding: 0 7px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .product-card-footer {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .product-card-footer .btn-prod-buy {
+    grid-column: 1 / -1 !important;
   }
 }
 
