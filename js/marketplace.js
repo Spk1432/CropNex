@@ -23,14 +23,6 @@ const Marketplace = {
   },
 
   bindEvents() {
-    // Search input
-    const searchInput = document.getElementById('marketplaceSearchInput');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        this.handleNavbarSearch(e.target.value);
-      });
-    }
-
     // Category pills
     document.querySelectorAll('.mkt-cat-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -157,11 +149,9 @@ const Marketplace = {
   handleNavbarSearch(query) {
     this.searchQuery = (query || '').trim().toLowerCase();
 
-    // Sync input values
+    // Sync input value
     const navInput = document.getElementById('navProduceSearchInput');
-    const mktInput = document.getElementById('marketplaceSearchInput');
     if (navInput && navInput.value !== query) navInput.value = query;
-    if (mktInput && mktInput.value !== query) mktInput.value = query;
 
     // Show or hide clear buttons
     const clearBtn = document.getElementById('navSearchClearBtn');
@@ -187,9 +177,7 @@ const Marketplace = {
 
   clearNavbarSearch() {
     const navInput = document.getElementById('navProduceSearchInput');
-    const mktInput = document.getElementById('marketplaceSearchInput');
     if (navInput) navInput.value = '';
-    if (mktInput) mktInput.value = '';
     this.handleNavbarSearch('');
   },
 
@@ -414,8 +402,6 @@ const Marketplace = {
     this.filterMaxPrice = null;
     this.sortBy = 'recommended';
 
-    const searchInput = document.getElementById('marketplaceSearchInput');
-    if (searchInput) searchInput.value = '';
     const navSearchInput = document.getElementById('navProduceSearchInput');
     if (navSearchInput) navSearchInput.value = '';
     const clearBtn = document.getElementById('navSearchClearBtn');

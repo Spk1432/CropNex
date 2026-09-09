@@ -418,11 +418,11 @@
       <div class="marketplace-layout">
         <!-- Marketplace Main Content (Clean Full-Width Browsing) -->
         <div class="marketplace-content">
-          <!-- Top Bar with Search, Filters and Sort -->
+          <!-- Top Bar with Status Count, Filters and Sort -->
           <div class="marketplace-top-controls">
-            <div class="search-input-wrap">
-              <i data-lucide="search" class="search-icon-fixed"></i>
-              <input type="text" id="marketplaceSearchInput" placeholder="Search crops, varieties or farmers..." data-i18n-ph="mkt_search_ph">
+            <div class="marketplace-count-badge" id="marketplaceProductCount" style="font-size:0.88rem; font-weight:700; color:var(--slate-700); display:flex; align-items:center; gap:6px;">
+              <i data-lucide="store" style="width:16px; height:16px; color:var(--primary-600);"></i>
+              <span>Showing fresh produce items</span>
             </div>
 
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
@@ -439,10 +439,6 @@
                 <option value="newest" data-i18n="mkt_sort_new">Newest Harvest</option>
               </select>
             </div>
-          </div>
-
-          <div style="font-size:0.85rem; color:var(--slate-500); margin-bottom:16px;" id="marketplaceProductCount">
-            Showing fresh produce items
           </div>
 
           <!-- Products Grid Container -->
